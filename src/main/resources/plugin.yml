@@ -1,0 +1,14 @@
+name: Playtime
+version: ${project.version}
+main: nl.thedutchruben.playtime.Playtime
+api-version: 1.16
+authors: [TheDutchRuben]
+description: Playtime plugin
+commands:
+  playtime:
+    aliases:
+      - ptime
+      - playertime
+      - onlinetime
+    description: Main play time command
+    permission: playtime.playtime
