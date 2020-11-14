@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.List;
+import java.util.*;
 
 public class PlayTimeCommand implements CommandExecutor, TabCompleter {
     /**
@@ -36,21 +36,58 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
         }else{
             switch (args[0]){
                 case "top":
-                case "reset":
-                default:
-                if(args[0].length() <= 16){
-                    if(Bukkit.getPlayer(args[0]) == null){
-                        sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll(
-                                "<NAME>",Bukkit.getPlayer(args[0]).getName())
-                                ,Playtime.getInstance().getStorage().getPlayTimeByName(args[0])));
-
-                    }else{
-                        Playtime.getInstance().update(Bukkit.getPlayer(args[0]).getUniqueId());
-                        sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll("<NAME>",Bukkit.getPlayer(args[0]).getName()),Playtime.getInstance().getPlayerOnlineTime().get((Bukkit.getPlayer(args[0])).getUniqueId())));
+                    if(sender.hasPermission("playtime.playtime.top")) {
+                        Map<String,Long> map = Playtime.getInstance().getStorage().getTopTenList();
+                        sortHashMapByValues((HashMap<String, Long>) map).forEach((s, aLong) -> sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll(
+                                "<NAME>", s)
+                                ,aLong)));
                     }
-                }else{
+                    break;
+                case "reset":
+//                    if(sender.hasPermission("playtime.playtime.reset")) {
+//                        if (args[0].length() <= 16) {
+//                            if (Bukkit.getPlayer(args[0]) != null) {
+//                                Playtime.getInstance().getPlayerOnlineTime().replace(Bukkit.getPlayer(args[0]).getUniqueId(), (long) 0);
+//                                Playtime.getInstance().getLastCheckedTime().replace(Bukkit.getPlayer(args[0]).getUniqueId(), (long) System.currentTimeMillis());
+//                            }
+//                            Playtime.getInstance().getStorage().reset(Bukkit.getPlayer(args[0]).getUniqueId().toString());
+//                        }else{
+//                            if (Bukkit.getPlayer(UUID.fromString(args[0])) != null) {
+//                                Playtime.getInstance().getPlayerOnlineTime().replace(UUID.fromString(args[0]), (long) 0);
+//                                Playtime.getInstance().getLastCheckedTime().replace(UUID.fromString(args[0]), (long) System.currentTimeMillis());
+//
+//                            }
+//
+//                            Playtime.getInstance().getStorage().reset(args[0]);
+//
+//                        }
+//                    }
+//
+//                    break;
+                default:
+                    if(sender.hasPermission("playtime.playtime.other")) {
+                        if (args[0].length() <= 16) {
+                            if (Bukkit.getPlayer(args[0]) == null) {
+                                sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll(
+                                        "<NAME>", Bukkit.getOfflinePlayer(args[0]).getName())
+                                        , Playtime.getInstance().getStorage().getPlayTimeByName(args[0])));
 
-                }
+                            } else {
+                                Playtime.getInstance().update(Bukkit.getPlayer(args[0]).getUniqueId());
+                                sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll("<NAME>", Bukkit.getPlayer(args[0]).getName()), Playtime.getInstance().getPlayerOnlineTime().get((Bukkit.getPlayer(args[0])).getUniqueId())));
+                            }
+                        } else {
+                            if (Bukkit.getPlayer(UUID.fromString(args[0])) == null) {
+                                sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll(
+                                        "<NAME>", Bukkit.getOfflinePlayer(UUID.fromString(args[0])).getName())
+                                        , Playtime.getInstance().getStorage().getPlayTimeByUUID(args[0])));
+
+                            } else {
+                                Playtime.getInstance().update(UUID.fromString(args[0]));
+                                sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll("<NAME>", Bukkit.getPlayer(UUID.fromString(args[0])).getName()), Playtime.getInstance().getPlayerOnlineTime().get(UUID.fromString(args[0]))));
+                            }
+                        }
+                    }
             }
         }
         return true;
@@ -67,6 +104,39 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
         time = time - minutes * 60;
         int seconds = (int) time;
         return ChatColor.translateAlternateColorCodes('&',message.replace("%H%", String.valueOf(hours)).replace("%M%", String.valueOf(minutes)).replace("%S%", String.valueOf(seconds)).replace("%D%", String.valueOf(days)));
+    }
+
+
+    public LinkedHashMap<String, Long> sortHashMapByValues(
+            HashMap<String, Long> passedMap) {
+        List<String> mapKeys = new ArrayList<>(passedMap.keySet());
+        List<Long> mapValues = new ArrayList<>(passedMap.values());
+        Collections.sort(mapValues);
+        Collections.sort(mapKeys);
+        Collections.reverse(mapValues);
+        Collections.reverse(mapKeys);
+
+        LinkedHashMap<String, Long> sortedMap =
+                new LinkedHashMap<>();
+
+        Iterator<Long> valueIt = mapValues.iterator();
+        while (valueIt.hasNext()) {
+            long val = valueIt.next();
+            Iterator<String> keyIt = mapKeys.iterator();
+
+            while (keyIt.hasNext()) {
+                String key = keyIt.next();
+                Long comp1 = passedMap.get(key);
+                long comp2 = val;
+
+                if (comp1.equals(comp2)) {
+                    keyIt.remove();
+                    sortedMap.put(key, val);
+                    break;
+                }
+            }
+        }
+        return sortedMap;
     }
 
 

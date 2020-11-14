@@ -1,9 +1,17 @@
 package nl.thedutchruben.playtime.database;
 
+import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.utils.FileManager;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.util.*;
+
 public class YamlDatabase extends Storage{
     @Override
     public void setup() {
-
+        System.out.println("yes load");
     }
 
     @Override
@@ -12,17 +20,36 @@ public class YamlDatabase extends Storage{
     }
 
     @Override
-    public Long getPlayTimeByUUID(String uuid) {
-        return null;
+    public long getPlayTimeByUUID(String uuid) {
+        return Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().getLong("onlinetime",0);
     }
 
     @Override
-    public Long getPlayTimeByName(String name) {
-        return null;
+    public long getPlayTimeByName(String name) {
+        return Playtime.getInstance().getFileManager().getConfig("players/" + Bukkit.getOfflinePlayer(name).getUniqueId().toString() + ".yaml").get().getLong("onlinetime",0);
     }
 
     @Override
-    public void savePlayTime(String uuid) {
+    public void savePlayTime(String uuid, long playtime) {
+        Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().set("onlinetime",playtime);
+        Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").save();
+    }
 
+    @Override
+    public Map<String, Long> getTopTenList() {
+        Map<String,Long> hashMap = new HashMap<>();
+        for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "players/").listFiles())) {
+            YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml","") + ".yaml").get();
+            hashMap.put(Bukkit.getPlayer
+                            (UUID.fromString(fileEntry.getName().replace(".yaml",""))).getName(),
+                    config.getLong("onlinetime"));
+        }
+        return hashMap;
+    }
+
+    @Override
+    public void reset(String uuid) {
+        Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().set("onlinetime",0);
+        Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").save();
     }
 }

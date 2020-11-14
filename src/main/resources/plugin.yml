@@ -1,4 +1,4 @@
-name: Playtime
+name: TDRPlaytime
 version: ${project.version}
 main: nl.thedutchruben.playtime.Playtime
 api-version: 1.16
@@ -12,3 +12,10 @@ commands:
       - onlinetime
     description: Main play time command
     permission: playtime.playtime
+permissions:
+  playtime.playtime:
+    default: true
+  playtime.playtime.other:
+    default: op
+  playtime.playtime.reset:
+    default: op

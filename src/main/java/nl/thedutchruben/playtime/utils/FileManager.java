@@ -1,13 +1,9 @@
 package nl.thedutchruben.playtime.utils;
 
-import jdk.internal.jline.internal.InputStreamReader;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.HashMap;
 
 public class FileManager {

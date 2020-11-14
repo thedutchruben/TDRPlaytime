@@ -10,6 +10,7 @@ import nl.thedutchruben.playtime.utils.FileManager;
 import nl.thedutchruben.playtime.utils.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,15 +30,22 @@ public final class Playtime extends JavaPlugin {
         instance = this;
         Metrics metrics = new Metrics(this, 9404);
 
-        storage.setup();
-
-        FileManager.Config config = fileManager.getConfig("config.yml");
-        switch (config.get().getString("storage","yaml")){
-            case "yaml":
-                storage = new YamlDatabase();
-            case "mariadb":
-                storage = new MysqlDatabase();
+        FileManager.Config config = fileManager.getConfig("database.yml");
+        FileConfiguration fileConfiguration = config.get();
+        fileConfiguration.addDefault("database","yaml");
+        fileConfiguration.addDefault("mysql.hostname","localhost");
+        fileConfiguration.addDefault("mysql.port",3306);
+        fileConfiguration.addDefault("mysql.user","root");
+        fileConfiguration.addDefault("mysql.password","password");
+        fileConfiguration.addDefault("mysql.database","playtime");
+        config.copyDefaults(true).save();
+        System.out.println(config.get().getString("database").toLowerCase().equalsIgnoreCase("mysql"));
+        if(config.get().getString("database").toLowerCase().equalsIgnoreCase("mysql")){
+            storage = new MysqlDatabase();
+        }else{
+            storage = new YamlDatabase();
         }
+        config.save();
         storage.setup();
         getCommand("playtime").setExecutor(new PlayTimeCommand());
 
@@ -46,22 +54,28 @@ public final class Playtime extends JavaPlugin {
 
         new UpdateChecker(this, 47894).getVersion(version -> {
             if (!this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                Bukkit.getLogger().info("There is a new update available of TDRPlaytime.");
+                Bukkit.getLogger().info("There is a new update available of TDRPlaytime. ");
+                Bukkit.getLogger().info("Download it here https://www.spigotmc.org/resources/tdrplaytime.47894/");
+
             }
         });
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            storage.getPlayTimeByUUID(onlinePlayer.getUniqueId().toString());
+        }
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), () -> {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 update(onlinePlayer.getUniqueId());
             }
-        },0,20 * 30);
+        },0,20 * 60);
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            storage.savePlayTime(onlinePlayer.getUniqueId().toString());
+            update(onlinePlayer.getUniqueId());
         }
 
         storage.stop();
@@ -76,7 +90,7 @@ public final class Playtime extends JavaPlugin {
         lastCheckedTime.replace(uuid,System.currentTimeMillis());
         long newtime = playerOnlineTime.get(uuid) + extraTime;
         playerOnlineTime.replace(uuid,newtime);
-        storage.savePlayTime(uuid.toString());
+        storage.savePlayTime(uuid.toString(),playerOnlineTime.get(uuid));
     }
 
     public Storage getStorage() {
@@ -93,5 +107,9 @@ public final class Playtime extends JavaPlugin {
 
     public static Playtime getInstance() {
         return instance;
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
     }
 }
