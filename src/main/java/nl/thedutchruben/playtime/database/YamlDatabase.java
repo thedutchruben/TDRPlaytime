@@ -11,7 +11,6 @@ import java.util.*;
 public class YamlDatabase extends Storage{
     @Override
     public void setup() {
-        System.out.println("yes load");
     }
 
     @Override

@@ -15,7 +15,6 @@ public class MysqlDatabase extends Storage{
     private FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("database.yml");
 
     public void setup(){
-        System.out.println("Mysql setup");
         try {
             connection = DriverManager.getConnection(
                     "jdbc:mysql://"+config.get().getString("mysql.hostname")+":"+config.get().getInt("mysql.port")+"/" + config.get().getString("mysql.database")

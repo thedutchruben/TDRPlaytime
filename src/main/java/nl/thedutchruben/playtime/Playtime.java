@@ -39,7 +39,6 @@ public final class Playtime extends JavaPlugin {
         fileConfiguration.addDefault("mysql.password","password");
         fileConfiguration.addDefault("mysql.database","playtime");
         config.copyDefaults(true).save();
-        System.out.println(config.get().getString("database").toLowerCase().equalsIgnoreCase("mysql"));
         if(config.get().getString("database").toLowerCase().equalsIgnoreCase("mysql")){
             storage = new MysqlDatabase();
         }else{
@@ -56,7 +55,6 @@ public final class Playtime extends JavaPlugin {
             if (!this.getDescription().getVersion().equalsIgnoreCase(version)) {
                 Bukkit.getLogger().info("There is a new update available of TDRPlaytime. ");
                 Bukkit.getLogger().info("Download it here https://www.spigotmc.org/resources/tdrplaytime.47894/");
-
             }
         });
 
@@ -69,6 +67,8 @@ public final class Playtime extends JavaPlugin {
                 update(onlinePlayer.getUniqueId());
             }
         },0,20 * 60);
+
+        metrics.addCustomChart(new Metrics.SimplePie("database_type",() -> config.get().getString("database").toLowerCase()));
     }
 
     @Override
