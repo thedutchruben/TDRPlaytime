@@ -69,6 +69,7 @@ public final class Playtime extends JavaPlugin {
         },0,20 * 60);
 
         metrics.addCustomChart(new Metrics.SimplePie("database_type",() -> config.get().getString("database").toLowerCase()));
+
     }
 
     @Override
