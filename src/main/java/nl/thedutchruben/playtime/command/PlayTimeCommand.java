@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
 import java.util.*;
 
@@ -155,6 +156,16 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+        final List<String> completions = new ArrayList<>(Arrays.asList("top"));
+
+        Set<String> COMMANDS = new HashSet<>();
+        if(sender.hasPermission("playtime.playtime.top"))
+            COMMANDS.add("top");
+
+        StringUtil.copyPartialMatches(args[0], COMMANDS, completions);
+
+        Collections.sort(completions);
+
+        return completions;
     }
 }

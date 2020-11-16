@@ -15,7 +15,6 @@ public class YamlDatabase extends Storage{
 
     @Override
     public void stop() {
-
     }
 
     @Override
