@@ -11,7 +11,6 @@ import java.util.*;
 public class YamlDatabase extends Storage{
     @Override
     public void setup() {
-        System.out.println("yes load");
     }
 
     @Override
@@ -40,9 +39,13 @@ public class YamlDatabase extends Storage{
         Map<String,Long> hashMap = new HashMap<>();
         for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "players/").listFiles())) {
             YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml","") + ".yaml").get();
-            hashMap.put(Bukkit.getPlayer
-                            (UUID.fromString(fileEntry.getName().replace(".yaml",""))).getName(),
-                    config.getLong("onlinetime"));
+            if(config != null){
+                if(config.contains("onlinetime")){
+                    hashMap.put(Bukkit.getPlayer
+                                    (UUID.fromString(fileEntry.getName().replace(".yaml",""))).getName(),
+                            config.getLong("onlinetime"));
+                }
+            }
         }
         return hashMap;
     }
