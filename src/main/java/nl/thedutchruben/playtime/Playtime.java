@@ -30,6 +30,11 @@ public final class Playtime extends JavaPlugin {
         instance = this;
         Metrics metrics = new Metrics(this, 9404);
 
+        FileManager.Config config1 = fileManager.getConfig("config.yml");
+        FileConfiguration fileConfiguration1 = config1.get();
+        fileConfiguration1.addDefault("servername","server");
+        config1.copyDefaults(true).save();
+        
         FileManager.Config config = fileManager.getConfig("database.yml");
         FileConfiguration fileConfiguration = config.get();
         fileConfiguration.addDefault("database","yaml");
