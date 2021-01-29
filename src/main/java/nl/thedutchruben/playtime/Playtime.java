@@ -9,6 +9,7 @@ import nl.thedutchruben.playtime.listeners.PlayerQuitListener;
 import nl.thedutchruben.playtime.utils.FileManager;
 import nl.thedutchruben.playtime.utils.UpdateChecker;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ public final class Playtime extends JavaPlugin {
     private static Playtime instance;
     private Storage storage;
     private FileManager fileManager = new FileManager(this);
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -68,7 +70,7 @@ public final class Playtime extends JavaPlugin {
             }
         },0,20 * 60);
 
-        metrics.addCustomChart(new Metrics.SimplePie("database_type",() -> config.get().getString("database").toLowerCase()));
+        metrics.addCustomChart(new SimplePie("database_type",() -> config.get().getString("database").toLowerCase()));
 
     }
 
