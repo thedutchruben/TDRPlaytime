@@ -115,10 +115,9 @@ public class MysqlDatabase extends Storage{
     @SneakyThrows
     @Override
     public void reset(String uuid) {
-        try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `playtime` SET `uuid`=?,`time`=? WHERE `uuid` = ?")) {
-            preparedStatement.setString(1,uuid);
-            preparedStatement.setLong(2, 0);
-            preparedStatement.setString(3,uuid);
+        try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `playtime` SET `time`=? WHERE `name` = ?")) {
+            preparedStatement.setLong(1, 0);
+            preparedStatement.setString(2,uuid);
             preparedStatement.execute();
         }
     }

@@ -41,11 +41,13 @@ public final class Playtime extends JavaPlugin {
         fileConfiguration.addDefault("mysql.password","password");
         fileConfiguration.addDefault("mysql.database","playtime");
         config.copyDefaults(true).save();
+
         if(config.get().getString("database").toLowerCase().equalsIgnoreCase("mysql")){
             storage = new MysqlDatabase();
         }else{
             storage = new YamlDatabase();
         }
+
         config.save();
         storage.setup();
         getCommand("playtime").setExecutor(new PlayTimeCommand());

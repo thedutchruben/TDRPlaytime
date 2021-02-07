@@ -45,26 +45,19 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                     }
                     break;
                 case "reset":
-//                    if(sender.hasPermission("playtime.playtime.reset")) {
-//                        if (args[0].length() <= 16) {
-//                            if (Bukkit.getPlayer(args[0]) != null) {
-//                                Playtime.getInstance().getPlayerOnlineTime().replace(Bukkit.getPlayer(args[0]).getUniqueId(), (long) 0);
-//                                Playtime.getInstance().getLastCheckedTime().replace(Bukkit.getPlayer(args[0]).getUniqueId(), (long) System.currentTimeMillis());
-//                            }
-//                            Playtime.getInstance().getStorage().reset(Bukkit.getPlayer(args[0]).getUniqueId().toString());
-//                        }else{
-//                            if (Bukkit.getPlayer(UUID.fromString(args[0])) != null) {
-//                                Playtime.getInstance().getPlayerOnlineTime().replace(UUID.fromString(args[0]), (long) 0);
-//                                Playtime.getInstance().getLastCheckedTime().replace(UUID.fromString(args[0]), (long) System.currentTimeMillis());
-//
-//                            }
-//
-//                            Playtime.getInstance().getStorage().reset(args[0]);
-//
-//                        }
-//                    }
-//
-//                    break;
+                    if(sender.hasPermission("playtime.playtime.reset")) {
+                        if(args.length == 2){
+                            if (Bukkit.getPlayer(args[1]) != null) {
+                                Playtime.getInstance().getPlayerOnlineTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), (long) 0);
+                                Playtime.getInstance().getLastCheckedTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), (long) System.currentTimeMillis());
+                            }
+                            Playtime.getInstance().getStorage().reset(Bukkit.getPlayer(args[1]).getName());
+                            sender.sendMessage(ChatColor.RED + "User time reset!");
+                        }else{
+                            sender.sendMessage("Use : /playtime reset <username>");
+                        }
+                    }
+                    break;
                 default:
                     if(sender.hasPermission("playtime.playtime.other")) {
                         if (args[0].length() <= 16) {

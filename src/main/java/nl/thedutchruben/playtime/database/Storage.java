@@ -16,5 +16,5 @@ public abstract class Storage {
 
     public abstract Map<String,Long> getTopTenList();
 
-    public abstract void reset(String uuid);
+    public abstract void reset(String name);
 }

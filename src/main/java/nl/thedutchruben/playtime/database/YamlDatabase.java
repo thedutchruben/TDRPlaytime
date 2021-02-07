@@ -50,7 +50,8 @@ public class YamlDatabase extends Storage{
     }
 
     @Override
-    public void reset(String uuid) {
+    public void reset(String name) {
+        String uuid = Bukkit.getPlayer(name).getUniqueId().toString();
         Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().set("onlinetime",0);
         Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").save();
     }
