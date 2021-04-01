@@ -10,7 +10,7 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
-        Playtime.getInstance().update(event.getPlayer().getUniqueId());
+        Playtime.getInstance().update(event.getPlayer().getUniqueId(),true);
         Playtime.getInstance().getPlayerOnlineTime().remove(event.getPlayer().getUniqueId());
         Playtime.getInstance().getLastCheckedTime().remove(event.getPlayer().getUniqueId());
     }

@@ -1,5 +1,6 @@
 package nl.thedutchruben.playtime.command;
 
+import lombok.SneakyThrows;
 import nl.thedutchruben.playtime.Playtime;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,22 +26,23 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
      * @param args    Passed command arguments
      * @return true if a valid command, otherwise false
      */
+    @SneakyThrows
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(!(sender instanceof Player)){
-            sender.sendMessage(ChatColor.RED + "This is a player only command!");
+            sender.sendMessage(Playtime.getInstance().getMessage("only.player.command"));
             return false;
         }
         if(args.length == 0 ){
-            Playtime.getInstance().update(((Player) sender).getUniqueId());
-            sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7Your playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)",Playtime.getInstance().getPlayerOnlineTime().get(((Player) sender).getUniqueId())));
+            Playtime.getInstance().update(((Player) sender).getUniqueId(),true);
+            sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.timemessage"),Playtime.getInstance().getPlayerOnlineTime().get(((Player) sender).getUniqueId())));
         }else{
             switch (args[0]){
                 case "top":
                     if(sender.hasPermission("playtime.playtime.top")) {
-                        Map<String,Long> map = Playtime.getInstance().getStorage().getTopTenList();
-                        sortHashMapByValues((HashMap<String, Long>) map).forEach((s, aLong) -> sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll(
-                                "<NAME>", s)
+                        Map<String,Long> map = Playtime.getInstance().getStorage().getTopTenList().get();
+                        sortHashMapByValues((HashMap<String, Long>) map).forEach((s, aLong) -> sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll(
+                                "%NAME%", s)
                                 ,aLong)));
                     }
                     break;
@@ -52,9 +54,9 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                                 Playtime.getInstance().getLastCheckedTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), (long) System.currentTimeMillis());
                             }
                             Playtime.getInstance().getStorage().reset(Bukkit.getPlayer(args[1]).getName());
-                            sender.sendMessage(ChatColor.RED + "User time reset!");
+                            sender.sendMessage(Playtime.getInstance().getMessage("command.playtime.resettimeconfirm"));
                         }else{
-                            sender.sendMessage("Use : /playtime reset <username>");
+                            sender.sendMessage(Playtime.getInstance().getMessage("command.playtime.resettimeussage"));
                         }
                     }
                     break;
@@ -62,23 +64,24 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                     if(sender.hasPermission("playtime.playtime.other")) {
                         if (args[0].length() <= 16) {
                             if (Bukkit.getPlayer(args[0]) == null) {
-                                sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll(
-                                        "<NAME>", Bukkit.getOfflinePlayer(args[0]).getName())
-                                        , Playtime.getInstance().getStorage().getPlayTimeByName(args[0])));
+
+                                sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll(
+                                        "%NAME%", Bukkit.getOfflinePlayer(args[0]).getName())
+                                        , Playtime.getInstance().getStorage().getPlayTimeByName(args[0]).get()));
 
                             } else {
-                                Playtime.getInstance().update(Bukkit.getPlayer(args[0]).getUniqueId());
-                                sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll("<NAME>", Bukkit.getPlayer(args[0]).getName()), Playtime.getInstance().getPlayerOnlineTime().get((Bukkit.getPlayer(args[0])).getUniqueId())));
+                                Playtime.getInstance().update(Bukkit.getPlayer(args[0]).getUniqueId(),true);
+                                sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll("%NAME%", Bukkit.getPlayer(args[0]).getName()), Playtime.getInstance().getPlayerOnlineTime().get((Bukkit.getPlayer(args[0])).getUniqueId())));
                             }
                         } else {
                             if (Bukkit.getPlayer(UUID.fromString(args[0])) == null) {
-                                sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll(
-                                        "<NAME>", Bukkit.getOfflinePlayer(UUID.fromString(args[0])).getName())
-                                        , Playtime.getInstance().getStorage().getPlayTimeByUUID(args[0])));
+                                sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll(
+                                        "%NAME%", Bukkit.getOfflinePlayer(UUID.fromString(args[0])).getName())
+                                        , Playtime.getInstance().getStorage().getPlayTimeByUUID(args[0]).get()));
 
                             } else {
-                                Playtime.getInstance().update(UUID.fromString(args[0]));
-                                sender.sendMessage(translateMessage("&8[&6PlayTime&8] &7<NAME> 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)".replaceAll("<NAME>", Bukkit.getPlayer(UUID.fromString(args[0])).getName()), Playtime.getInstance().getPlayerOnlineTime().get(UUID.fromString(args[0]))));
+                                Playtime.getInstance().update(UUID.fromString(args[0]),true);
+                                sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll("%NAME%", Bukkit.getPlayer(UUID.fromString(args[0])).getName()), Playtime.getInstance().getPlayerOnlineTime().get(UUID.fromString(args[0]))));
                             }
                         }
                     }
@@ -91,11 +94,11 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
     public String translateMessage(String message, long time) {
         time = time / 1000;
         int days = (int) (time / 86400);
-        time = time - days * 86400;
+        time = time - days * 86400L;
         int hours = (int) (time / 3600);
-        time = time - hours * 3600;
+        time = time - hours * 3600L;
         int minutes = (int) (time / 60);
-        time = time - minutes * 60;
+        time = time - minutes * 60L;
         int seconds = (int) time;
         return ChatColor.translateAlternateColorCodes('&',message.replace("%H%", String.valueOf(hours)).replace("%M%", String.valueOf(minutes)).replace("%S%", String.valueOf(seconds)).replace("%D%", String.valueOf(days)));
     }
@@ -121,9 +124,8 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
             while (keyIt.hasNext()) {
                 String key = keyIt.next();
                 Long comp1 = passedMap.get(key);
-                long comp2 = val;
 
-                if (comp1.equals(comp2)) {
+                if (comp1.equals(val)) {
                     keyIt.remove();
                     sortedMap.put(key, val);
                     break;
@@ -149,13 +151,30 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        final List<String> completions = new ArrayList<>(Arrays.asList("top"));
+        final List<String> completions = new ArrayList<>();
 
         Set<String> COMMANDS = new HashSet<>();
-        if(sender.hasPermission("playtime.playtime.top"))
-            COMMANDS.add("top");
+        if(args.length == 2){
+            if(args[0].equalsIgnoreCase("reset")){
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    COMMANDS.add(onlinePlayer.getName());
+                }
+                StringUtil.copyPartialMatches(args[1], COMMANDS, completions);
+            }
 
-        StringUtil.copyPartialMatches(args[0], COMMANDS, completions);
+        }
+        if(args.length == 1){
+            if(sender.hasPermission("playtime.playtime.top"))
+                COMMANDS.add("top");
+            if(sender.hasPermission("playtime.playtime.reset"))
+                COMMANDS.add("reset");
+            if(sender.hasPermission("playtime.playtime.other"))
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    COMMANDS.add(onlinePlayer.getName());
+                }
+            StringUtil.copyPartialMatches(args[0], COMMANDS, completions);
+        }
+
 
         Collections.sort(completions);
 

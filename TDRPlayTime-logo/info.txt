@@ -1,0 +1,18 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: Dustismo_Roman_Bold
+font link: https://www.fontsquirrel.com/fonts/Dustismo
+font author: Dustin Norlander
+font author site: http://www.cheapskatefonts.com/
+
+
+icon designer: NAS
+icon designer link: /nas.ztu
+        
+
+fontColor: {"hex":"#7E5DFC"}
+bgColor: {"hex":"#261836"}
+iconColor: {"hex":"#7E5DFC"}
+
+      
