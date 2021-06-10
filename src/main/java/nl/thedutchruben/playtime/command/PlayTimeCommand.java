@@ -2,8 +2,7 @@ package nl.thedutchruben.playtime.command;
 
 import lombok.SneakyThrows;
 import nl.thedutchruben.playtime.Playtime;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -58,6 +57,15 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                         }else{
                             sender.sendMessage(Playtime.getInstance().getMessage("command.playtime.resettimeussage"));
                         }
+                    }
+                    break;
+                case "migratefromminecraft":
+                    if(sender.hasPermission("playtime.playtime.migratefromminecraft")) {
+                        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+                            long playtime = offlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE) * 60 * 60 * 1000;
+                            Playtime.getInstance().getStorage().savePlayTime(offlinePlayer.getUniqueId().toString(),playtime);
+                        }
+                        sender.sendMessage(ChatColor.GREEN + "migrated");
                     }
                     break;
                 default:
@@ -168,6 +176,8 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                 COMMANDS.add("top");
             if(sender.hasPermission("playtime.playtime.reset"))
                 COMMANDS.add("reset");
+            if(sender.hasPermission("playtime.playtime.migratefromminecraft"))
+                COMMANDS.add("migratefromminecraft");
             if(sender.hasPermission("playtime.playtime.other"))
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     COMMANDS.add(onlinePlayer.getName());

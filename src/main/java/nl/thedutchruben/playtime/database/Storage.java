@@ -4,14 +4,26 @@ import nl.thedutchruben.playtime.milestone.Milestone;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class Storage {
 
+    /**
+     * Setup the storage such as the database connection
+     */
     public abstract void setup();
 
+    /**
+     * Stops the storage such things as the database connection
+     */
     public abstract void stop();
 
+    /**
+     *
+     * @param uuid The {@link UUID} of the {@link org.bukkit.entity.Player}
+     * @return A {@link CompletableFuture}
+     */
     public abstract CompletableFuture<Long> getPlayTimeByUUID(String uuid);
 
     public abstract CompletableFuture<Long> getPlayTimeByName(String name);

@@ -6,7 +6,7 @@
 
     <groupId>nl.thedutchruben</groupId>
     <artifactId>playtime</artifactId>
-    <version>1.7-dev</version>
+    <version>1.8</version>
     <packaging>jar</packaging>
 
     <name>Playtime</name>
@@ -29,7 +29,11 @@
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <!-- Replace this with your package! -->
-                            <shadedPattern>nl.thedutchruben.playtime</shadedPattern>
+                            <shadedPattern>nl.thedutchruben.playtime.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>de.jeff_media.updatechecker</pattern>
+                            <shadedPattern>nl.thedutchruben.playtime.updatechecker</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -93,6 +97,10 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+        <repository>
+            <id>jeff-media-gbr</id>
+            <url>https://repo.jeff-media.de/maven2/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -120,6 +128,12 @@
             <artifactId>placeholderapi</artifactId>
             <version>2.10.9</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.jeff_media</groupId>
+            <artifactId>SpigotUpdateChecker</artifactId>
+            <version>1.2.4</version> <!-- Check on GitHub for the latest version -->
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

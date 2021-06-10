@@ -1,0 +1,58 @@
+[IMG]https://files.thedutchruben.nl/download/1615723574/cover-smaller.png/raw[/IMG]
+TDRPlaytime is a plugin that keeps track of the playing time of your players.
+The plugin has support to view a top 10, create milestones and use your own language.
+This plugin has support for yml and mysql.
+
+[IMG]https://files.thedutchruben.nl/download/1617195834/commands.png/raw[/IMG]
+/playtime                      :  see your playtime
+/playtime top                  : see the top 10 online time
+/playtime reset <username>     : Reset user's time
+/playtime <playername/uuid>    : see other user's online time
+/playtime migratefromminecraft : Migrates the minecraft playtime to the database WARNING: THE PLAYERS PLAYTIME WIL BE OVERRIDDEN IN THE DATABASE
+
+/milestone create <name> <time in seconds>  : Create a milestone.
+/milestone additem <milestone>              : Add the item in your hand as reward for the milestone
+/milestone addcommand <milestone> <command> : Add a command that will be executed by the console to the milestone
+
+[IMG]https://files.thedutchruben.nl/download/1617195854/permissions.png/raw[/IMG]
+/playtime                      : playtime.playtime
+/playtime top                  : playtime.playtime.top
+/playtime reset <username>     : playtime.playtime.reset
+/playtime <playername/uuid>    : playtime.playtime.other
+/playtime migratefromminecraft : playtime.playtime.migratefromminecraft
+
+/milestone create <name> <time in seconds>  : playtime.milestone
+/milestone additem <milestone>              : playtime.milestone.additem
+/milestone addcommand <milestone> <command> : playtime.milestone.addcommand
+
+[IMG]https://files.thedutchruben.nl/download/1617195872/milestones.png/raw[/IMG]
+Milestones can be made for specific times, these times must be entered in seconds.
+With a milestone you can give rewards in the form of items and commands.
+The commands will be executed in the console for the playername you can use the placeholder %playername% in the command and for the UUID %playeruuid%.
+
+[IMG]https://files.thedutchruben.nl/download/1617195928/Language.png/raw[/IMG]
+TDRPlaytime supports the following languages English, Dutch, German and French.
+It is possible to add your own language and edit the messages via the lang folder.
+
+You can change the language in the config.yml
+language: eng adapt to language: nl_NL/ de_DE / fr_FR /en_GB or your own language
+[IMG]https://files.thedutchruben.nl/download/1617195976/PlaceHolderApi.png/raw[/IMG]
+In TDRPlaytime we added an expantion to PlaceHolderApi.
+
+- %tdrplaytime_time% : Show full time such as / playtime
+- %tdrplaytime_days_number% : Show your online days as a number.
+- %tdrplaytime_hour_number% : Show your online hours as a number.
+- %tdrplaytime_minutes_number% : Show your online minutes as a number.
+- %tdrplaytime_seconds_number% : Show your seconds as a number online.
+- %tdrplaytime_total_hour_number% : Show the total (including days) amount of hours as a number
+
+[IMG]https://files.thedutchruben.nl/download/1623334257/API.png/raw[/IMG]
+
+There are 2 events you can listen to.
+PlayTimeCheckEvent is executed every time there is a check.
+PlayTimeUpdatePlayerEvent Run on every player. When the playtime is updated at this event you can request the old time and the new time of a player.
+
+[IMG]https://bstats.org/signatures/bukkit/TDRPlaytime.svg[/IMG]
+
+[CENTER][B]Todo
+- None if you have a idea let me know[/B][/CENTER]

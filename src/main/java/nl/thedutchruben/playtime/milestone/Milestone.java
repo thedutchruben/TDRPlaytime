@@ -1,7 +1,6 @@
 package nl.thedutchruben.playtime.milestone;
 
 import com.google.gson.annotations.SerializedName;
-import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,15 +11,14 @@ import java.util.Map;
 
 
 public class Milestone {
+    private transient List<ItemStack> itemStackObjects;
+
     @SerializedName("_id")
     private String milestoneName;
     @SerializedName("online_time")
     private long onlineTime;
     @SerializedName("item_stacks")
     private List<Map<String, Object>> itemStacks;
-
-    private transient List<ItemStack> itemStackObjects;
-
     @SerializedName("commands")
     private List<String> commands;
 
@@ -44,7 +42,6 @@ public class Milestone {
         }
 
     }
-
 
     public void setOnlineTime(long onlineTime) {
         this.onlineTime = onlineTime;

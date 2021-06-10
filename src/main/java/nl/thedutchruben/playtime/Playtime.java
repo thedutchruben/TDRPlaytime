@@ -1,18 +1,20 @@
 package nl.thedutchruben.playtime;
 
+import de.jeff_media.updatechecker.UpdateChecker;
+import de.jeff_media.updatechecker.UserAgentBuilder;
 import lombok.SneakyThrows;
 import nl.thedutchruben.playtime.command.MilestoneCommand;
 import nl.thedutchruben.playtime.command.PlayTimeCommand;
-import nl.thedutchruben.playtime.database.LanguageNotFoundException;
 import nl.thedutchruben.playtime.database.MysqlDatabase;
 import nl.thedutchruben.playtime.database.Storage;
 import nl.thedutchruben.playtime.database.YamlDatabase;
+import nl.thedutchruben.playtime.events.PlayTimeCheckEvent;
+import nl.thedutchruben.playtime.events.PlayTimeUpdatePlayerEvent;
 import nl.thedutchruben.playtime.extentions.PlaceholderAPIExpansion;
 import nl.thedutchruben.playtime.listeners.PlayerJoinListener;
 import nl.thedutchruben.playtime.listeners.PlayerQuitListener;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.utils.FileManager;
-import nl.thedutchruben.playtime.utils.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -21,8 +23,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public final class Playtime extends JavaPlugin {
@@ -95,12 +99,15 @@ public final class Playtime extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(),this);
 
-        new UpdateChecker(this, 47894).getVersion(version -> {
-            if (!this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                getLogger().info("There is a new update available of TDRPlaytime.");
-                getLogger().info("Download it here https://www.spigotmc.org/resources/tdrplaytime.47894/");
-            }
-        });
+        UpdateChecker.init(this, "https://thedutchruben.nl/api/projects/version/tdrplaytime") // A link to a URL that contains the latest version as String
+                .setDownloadLink("https://www.spigotmc.org/resources/tdrplaytime-milestones-mysql.47894/") // You can either use a custom URL or the Spigot Resource ID
+                .setDonationLink("https://www.paypal.com/paypalme/RGSYT")
+                .setChangelogLink(47894) // Same as for the Download link: URL or Spigot Resource ID
+                .setNotifyOpsOnJoin(true) // Notify OPs on Join when a new version is found (default)
+                .setNotifyByPermissionOnJoin("thedutchruben.updatechecker") // Also notify people on join with this permission
+                .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
+                .checkEveryXHours(0.5) // Check every 30 minutes
+                .checkNow(); // And check right now
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             long onlineTime = Playtime.getInstance().getStorage().getPlayTimeByUUID(onlinePlayer.getUniqueId().toString()).get();
@@ -109,6 +116,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new PlayTimeCheckEvent(true));
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 update(onlinePlayer.getUniqueId(),true);
             }
@@ -142,7 +150,6 @@ public final class Playtime extends JavaPlugin {
                     @Override
                     public void run() {
                         storage.stop();
-
                         playerOnlineTime.clear();
                         lastCheckedTime.clear();
                         milestoneMap.clear();
@@ -155,14 +162,21 @@ public final class Playtime extends JavaPlugin {
     }
 
     public void update(UUID uuid,boolean save){
+
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid);
         lastCheckedTime.replace(uuid,System.currentTimeMillis());
         long newtime = playerOnlineTime.get(uuid) + extraTime;
+        Bukkit.getScheduler().runTaskAsynchronously(getInstance(),() -> {
+            if(Bukkit.getPlayer(uuid) != null){
+                Bukkit.getPluginManager().callEvent(new PlayTimeUpdatePlayerEvent(Bukkit.getPlayer(uuid),playerOnlineTime.get(uuid),newtime));
+            }
+        });
         checkMileStones(uuid,playerOnlineTime.get(uuid),newtime);
         playerOnlineTime.replace(uuid,newtime);
         if(save){
             storage.savePlayTime(uuid.toString(),playerOnlineTime.get(uuid));
         }
+
     }
 
     private void checkMileStones(UUID uuid, Long oldtime, long newtime) {

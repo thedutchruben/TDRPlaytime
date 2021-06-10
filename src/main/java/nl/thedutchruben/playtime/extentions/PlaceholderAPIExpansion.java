@@ -3,7 +3,6 @@ package nl.thedutchruben.playtime.extentions;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import nl.thedutchruben.playtime.Playtime;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
@@ -49,6 +48,11 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         //%tdrplaytime_hour_number%
         if (params.equals("hour_number")) {
             return String.valueOf(hours);
+        }
+
+        //%tdrplaytime_total_hour_number%
+        if (params.equals("total_hour_number")) {
+            return String.valueOf(hours + days*24);
         }
 
         //%tdrplaytime_minutes_number%

@@ -195,7 +195,6 @@ public class MysqlDatabase extends Storage{
             try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `milestones`")) {
                ResultSet resultSet =  preparedStatement.executeQuery();
                while(resultSet.next()){
-                   System.out.println(resultSet.toString());
                   milestones.add(gson.fromJson(resultSet.getString("data"), Milestone.class));
                }
                 resultSet.close();

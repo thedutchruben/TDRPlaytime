@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
-import nl.thedutchruben.playtime.utils.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
