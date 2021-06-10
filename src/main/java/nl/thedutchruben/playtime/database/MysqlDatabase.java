@@ -27,8 +27,8 @@ public class MysqlDatabase extends Storage{
                     ,config.get().getString("mysql.user"),config.get().getString("mysql.password"));
 
             String ex = "CREATE TABLE IF NOT EXISTS `playtime` (\n" +
-                    "  `uuid` varchar(40),\n" +
-                    "  `name` varchar(20),\n" +
+                    "  `uuid` varchar(32),\n" +
+                    "  `name` varchar(16),\n" +
                     "  `time` BIGINT \n" +
                     ");\n";
 
