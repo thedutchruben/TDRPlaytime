@@ -23,11 +23,11 @@ public class MysqlDatabase extends Storage{
                 .disableHtmlEscaping().setPrettyPrinting().create();
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://"+config.get().getString("mysql.hostname")+":"+config.get().getInt("mysql.port")+"/" + config.get().getString("mysql.database")
+                    "jdbc:mysql://"+config.get().getString("mysql.hostname")+":"+config.get().getInt("mysql.port")+"/" + config.get().getString("mysql.database") + "?autoReconnect=true"
                     ,config.get().getString("mysql.user"),config.get().getString("mysql.password"));
 
             String ex = "CREATE TABLE IF NOT EXISTS `playtime` (\n" +
-                    "  `uuid` varchar(32),\n" +
+                    "  `uuid` varchar(36),\n" +
                     "  `name` varchar(16),\n" +
                     "  `time` BIGINT \n" +
                     ");\n";
@@ -38,6 +38,13 @@ public class MysqlDatabase extends Storage{
                 throwables.printStackTrace();
             }
 
+            String update = "ALTER TABLE playtime MODIFY uuid VARCHAR(36);";
+
+            try(PreparedStatement preparedStatement = connection.prepareStatement(update)) {
+                preparedStatement.execute();
+            }catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
 
             String miletones = "CREATE TABLE IF NOT EXISTS `milestones` (\n" +
                     "  `name` varchar(40),\n" +
@@ -155,6 +162,17 @@ public class MysqlDatabase extends Storage{
 
             return topList;
         });
+    }
+
+    @Override
+    public long getTotalPlayTime() {
+//        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(`time`) AS TotalTime FROM `playtime`")) {
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            return resultSet.getLong(0);
+//        }catch (SQLException sqlException){
+//            sqlException.printStackTrace();
+//        }
+        return 0;
     }
 
     @Override

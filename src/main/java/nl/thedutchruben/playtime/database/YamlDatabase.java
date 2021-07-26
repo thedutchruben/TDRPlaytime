@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
+import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -63,6 +64,11 @@ public class YamlDatabase extends Storage{
     }
 
     @Override
+    public long getTotalPlayTime() {
+        return 0;
+    }
+
+    @Override
     public CompletableFuture<Void> createMilestone(Milestone milestone) {
         return saveMileStone(milestone);
     }
@@ -85,6 +91,34 @@ public class YamlDatabase extends Storage{
                 YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("milestones/" + fileEntry.getName()).get();
                 if(config != null){
                     milestones.add(this.gson.fromJson(config.getString("data"),Milestone.class));
+                }
+            }
+            return milestones;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> createRepeatingMilestone(RepeatingMilestone milestone) {
+        return saveRepeatingMileStone(milestone);
+    }
+
+    @Override
+    public CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone) {
+        return CompletableFuture.supplyAsync(() -> {
+            Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").get().set("data",this.gson.toJson(milestone,Milestone.class));
+            Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").save();
+            return null;
+        });
+    }
+
+    @Override
+    public CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones() {
+        return CompletableFuture.supplyAsync(() -> {
+            List<RepeatingMilestone> milestones = new ArrayList<>();
+            for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "repeatingmilestones/").listFiles())) {
+                YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + fileEntry.getName()).get();
+                if(config != null){
+                    milestones.add(this.gson.fromJson(config.getString("data"),RepeatingMilestone.class));
                 }
             }
             return milestones;

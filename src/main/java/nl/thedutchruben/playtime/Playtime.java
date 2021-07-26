@@ -14,9 +14,11 @@ import nl.thedutchruben.playtime.extentions.PlaceholderAPIExpansion;
 import nl.thedutchruben.playtime.listeners.PlayerJoinListener;
 import nl.thedutchruben.playtime.listeners.PlayerQuitListener;
 import nl.thedutchruben.playtime.milestone.Milestone;
+import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 import nl.thedutchruben.playtime.utils.FileManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,6 +35,7 @@ public final class Playtime extends JavaPlugin {
     private Map<UUID,Long> playerOnlineTime = new HashMap<>();
     private Map<UUID,Long> lastCheckedTime = new HashMap<>();
     private Map<Long, Milestone> milestoneMap = new HashMap<>();
+    private Map<Long, RepeatingMilestone> repeatedMilestoneMap = new HashMap<>();
     private Map<String,String> keyMessageMap = new HashMap<>();
 
     private static Playtime instance;
@@ -95,6 +98,12 @@ public final class Playtime extends JavaPlugin {
             getLogger().log(Level.INFO,milestoneMap.size() + " milestones loaded");
         });
 
+        storage.getRepeatingMilestones().whenComplete((repeatingMilestones, throwable) -> {
+            for (RepeatingMilestone repeatingMilestone : repeatingMilestones) {
+                repeatedMilestoneMap.put(repeatingMilestone.getOnlineTime() * 1000, repeatingMilestone);
+            }
+            getLogger().log(Level.INFO,repeatedMilestoneMap.size() + " repeating milestones loaded");
+        });
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(),this);
@@ -133,7 +142,7 @@ public final class Playtime extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("database_type",() -> config.get().getString("database").toLowerCase()));
         metrics.addCustomChart(new SimplePie("uses_milestones",() -> String.valueOf(milestoneMap.size() >1)));
         metrics.addCustomChart(new SimplePie("language",() -> config.get().getString("language")));
-
+        metrics.addCustomChart(new SingleLineChart("total_play_time",() -> Math.toIntExact(storage.getTotalPlayTime())));
     }
 
 
@@ -142,7 +151,7 @@ public final class Playtime extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            update(onlinePlayer.getUniqueId(),true);
+            forceSave(onlinePlayer.getUniqueId());
         }
 
         new java.util.Timer().schedule(
@@ -176,6 +185,20 @@ public final class Playtime extends JavaPlugin {
         if(save){
             storage.savePlayTime(uuid.toString(),playerOnlineTime.get(uuid));
         }
+
+    }
+
+    public void forceSave(UUID uuid){
+
+        long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid);
+        lastCheckedTime.replace(uuid,System.currentTimeMillis());
+        long newtime = playerOnlineTime.get(uuid) + extraTime;
+        if(Bukkit.getPlayer(uuid) != null){
+            Bukkit.getPluginManager().callEvent(new PlayTimeUpdatePlayerEvent(Bukkit.getPlayer(uuid),playerOnlineTime.get(uuid),newtime));
+        }
+        checkMileStones(uuid,playerOnlineTime.get(uuid),newtime);
+        playerOnlineTime.replace(uuid,newtime);
+        storage.savePlayTime(uuid.toString(),playerOnlineTime.get(uuid));
 
     }
 

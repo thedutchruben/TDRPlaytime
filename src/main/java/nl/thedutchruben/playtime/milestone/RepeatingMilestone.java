@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class Milestone {
+public class RepeatingMilestone {
     private transient List<ItemStack> itemStackObjects;
 
     @SerializedName("_id")
@@ -25,8 +25,8 @@ public class Milestone {
     private boolean fireworkShow;
     @SerializedName("firework_show_amount")
     private int fireworkShowAmount;
-    @SerializedName("firework_show_seconds_between_firework")
-    private int fireworkShowSecondsBetween;
+    @SerializedName("normal_milestone_override_me")
+    private boolean overrideMe;
 
     public void apply(Player player){
         if(itemStacks != null){

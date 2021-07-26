@@ -1,6 +1,7 @@
 package nl.thedutchruben.playtime.database;
 
 import nl.thedutchruben.playtime.milestone.Milestone;
+import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 
 import java.util.List;
 import java.util.Map;
@@ -32,11 +33,19 @@ public abstract class Storage {
 
     public abstract CompletableFuture< Map<String,Long>> getTopTenList();
 
+    public abstract long getTotalPlayTime();
+
     public abstract CompletableFuture<Void> createMilestone(Milestone milestone);
 
     public abstract CompletableFuture<Void> saveMileStone(Milestone milestone);
 
     public abstract CompletableFuture<List<Milestone>> getMilestones();
+
+    public abstract CompletableFuture<Void> createRepeatingMilestone(RepeatingMilestone milestone);
+
+    public abstract CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone);
+
+    public abstract CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones();
 
     public abstract CompletableFuture<Void> reset(String name);
 }
