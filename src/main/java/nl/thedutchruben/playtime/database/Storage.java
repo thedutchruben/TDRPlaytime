@@ -10,6 +10,8 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class Storage {
 
+    public abstract String getName();
+
     /**
      * Setup the storage such as the database connection
      */

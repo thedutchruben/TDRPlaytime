@@ -116,6 +116,7 @@ public final class Playtime extends JavaPlugin {
                 .setNotifyByPermissionOnJoin("thedutchruben.updatechecker") // Also notify people on join with this permission
                 .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
                 .checkEveryXHours(0.5) // Check every 30 minutes
+                .suppressUpToDateMessage(true)
                 .checkNow(); // And check right now
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -135,12 +136,13 @@ public final class Playtime extends JavaPlugin {
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
             getLogger().log(Level.INFO,"PlaceholderAPI expansion implemented");
             metrics.addCustomChart(new SimplePie("addons_use",() -> "PlaceholderAPI"));
-
             new PlaceholderAPIExpansion().register();
         }
 
-        metrics.addCustomChart(new SimplePie("database_type",() -> config.get().getString("database").toLowerCase()));
+        metrics.addCustomChart(new SimplePie("database_type",() -> storage.getName()));
         metrics.addCustomChart(new SimplePie("uses_milestones",() -> String.valueOf(milestoneMap.size() >1)));
+        metrics.addCustomChart(new SimplePie("uses_repeating_milestones",() -> String.valueOf(repeatedMilestoneMap.size() >1)));
+
         metrics.addCustomChart(new SimplePie("language",() -> config.get().getString("language")));
         metrics.addCustomChart(new SingleLineChart("total_play_time",() -> Math.toIntExact(storage.getTotalPlayTime())));
     }
@@ -154,19 +156,12 @@ public final class Playtime extends JavaPlugin {
             forceSave(onlinePlayer.getUniqueId());
         }
 
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        storage.stop();
-                        playerOnlineTime.clear();
-                        lastCheckedTime.clear();
-                        milestoneMap.clear();
-                        keyMessageMap.clear();
-                    }
-                },
-                50
-        );
+        storage.stop();
+        playerOnlineTime.clear();
+        lastCheckedTime.clear();
+        milestoneMap.clear();
+        repeatedMilestoneMap.clear();
+        keyMessageMap.clear();
 
     }
 

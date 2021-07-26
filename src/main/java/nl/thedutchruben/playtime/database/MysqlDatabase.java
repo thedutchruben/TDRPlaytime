@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import lombok.SneakyThrows;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
+import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 import nl.thedutchruben.playtime.utils.FileManager;
 import org.bukkit.Bukkit;
 
@@ -16,6 +17,11 @@ public class MysqlDatabase extends Storage{
     private Connection connection;
     private FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("database.yml");
     private Gson gson;
+
+    @Override
+    public String getName() {
+        return "mysql";
+    }
 
     @Override
     public void setup() {
@@ -221,6 +227,21 @@ public class MysqlDatabase extends Storage{
             }
             return milestones;
         });
+    }
+
+    @Override
+    public CompletableFuture<Void> createRepeatingMilestone(RepeatingMilestone milestone) {
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone) {
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones() {
+        return null;
     }
 
     @SneakyThrows

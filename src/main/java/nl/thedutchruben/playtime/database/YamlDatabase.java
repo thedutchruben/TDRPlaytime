@@ -14,6 +14,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class YamlDatabase extends Storage{
     private Gson gson;
+
+    @Override
+    public String getName() {
+        return "yaml";
+    }
+
     @Override
     public void setup() {
         this.gson = new GsonBuilder()
