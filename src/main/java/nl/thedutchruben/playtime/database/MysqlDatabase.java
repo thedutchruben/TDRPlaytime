@@ -62,6 +62,17 @@ public class MysqlDatabase extends Storage{
             }catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+
+            String repmiletones = "CREATE TABLE IF NOT EXISTS `repeating_milestones` (\n" +
+                    "  `name` varchar(40),\n" +
+                    "  `data` TEXT \n" +
+                    ");\n";
+
+            try(PreparedStatement preparedStatement = connection.prepareStatement(repmiletones)) {
+                preparedStatement.execute();
+            }catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -172,12 +183,29 @@ public class MysqlDatabase extends Storage{
 
     @Override
     public long getTotalPlayTime() {
-//        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(`time`) AS TotalTime FROM `playtime`")) {
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            return resultSet.getLong(0);
-//        }catch (SQLException sqlException){
-//            sqlException.printStackTrace();
-//        }
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(`time`) AS TotalTime FROM `playtime`")) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()){
+                if(resultSet.next()){
+                    return resultSet.getLong("TotalTime");
+                }
+            }
+        }catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int getTotalPlayers() {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS TotalPlayers from `playtime`")) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()){
+                if(resultSet.next()){
+                    return resultSet.getInt("TotalPlayers");
+                }
+            }
+        }catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
         return 0;
     }
 
@@ -231,17 +259,48 @@ public class MysqlDatabase extends Storage{
 
     @Override
     public CompletableFuture<Void> createRepeatingMilestone(RepeatingMilestone milestone) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `repeating_milestones`(`name`, `data`) VALUES (?,?)")) {
+                preparedStatement.setString(1, milestone.getMilestoneName());
+                preparedStatement.setString(2,gson.toJson(milestone, RepeatingMilestone.class));
+                preparedStatement.execute();
+            }catch (SQLException sqlException){
+                sqlException.printStackTrace();
+            }
+            return null;
+        });
     }
 
     @Override
     public CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `repeating_milestones` SET `data`=? WHERE `name`=?")) {
+                preparedStatement.setString(1,gson.toJson(milestone, RepeatingMilestone.class));
+                preparedStatement.setString(2, milestone.getMilestoneName());
+
+                preparedStatement.execute();
+            }catch (SQLException sqlException){
+                sqlException.printStackTrace();
+            }
+            return null;
+        });
     }
 
     @Override
     public CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones() {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            List<RepeatingMilestone> milestones = new ArrayList<>();
+            try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `repeating_milestones`")) {
+                ResultSet resultSet =  preparedStatement.executeQuery();
+                while(resultSet.next()){
+                    milestones.add(gson.fromJson(resultSet.getString("data"), RepeatingMilestone.class));
+                }
+                resultSet.close();
+            }catch (SQLException sqlException){
+                sqlException.printStackTrace();
+            }
+            return milestones;
+        });
     }
 
     @SneakyThrows

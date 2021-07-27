@@ -139,12 +139,23 @@ public final class Playtime extends JavaPlugin {
             new PlaceholderAPIExpansion().register();
         }
 
+        if(Bukkit.getPluginManager().getPlugin("Multiverse-Core") != null){
+            metrics.addCustomChart(new SimplePie("addons_use",() -> "Multiverse-Core"));
+        }
+
+        if(Bukkit.getPluginManager().getPlugin("MultiWorld") != null){
+            metrics.addCustomChart(new SimplePie("addons_use",() -> "MultiWorld"));
+        }
+
+        metrics.addCustomChart(new SimplePie("bungeecord",() -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
         metrics.addCustomChart(new SimplePie("database_type",() -> storage.getName()));
         metrics.addCustomChart(new SimplePie("uses_milestones",() -> String.valueOf(milestoneMap.size() >1)));
         metrics.addCustomChart(new SimplePie("uses_repeating_milestones",() -> String.valueOf(repeatedMilestoneMap.size() >1)));
 
         metrics.addCustomChart(new SimplePie("language",() -> config.get().getString("language")));
         metrics.addCustomChart(new SingleLineChart("total_play_time",() -> Math.toIntExact(storage.getTotalPlayTime())));
+        metrics.addCustomChart(new SingleLineChart("total_players",() -> Math.toIntExact(storage.getTotalPlayers())));
+
     }
 
 

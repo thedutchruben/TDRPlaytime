@@ -71,7 +71,21 @@ public class YamlDatabase extends Storage{
 
     @Override
     public long getTotalPlayTime() {
-        return 0;
+        long time = 0;
+        for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "players/").listFiles())) {
+            YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml","") + ".yaml").get();
+            if(config != null){
+                if(config.contains("onlinetime")){
+                    time =+ config.getLong("onlinetime");
+                }
+            }
+        }
+        return time;
+    }
+
+    @Override
+    public int getTotalPlayers() {
+        return Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "players/").listFiles()).length;
     }
 
     @Override

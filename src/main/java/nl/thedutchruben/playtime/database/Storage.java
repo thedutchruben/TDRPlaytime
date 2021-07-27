@@ -37,6 +37,8 @@ public abstract class Storage {
 
     public abstract long getTotalPlayTime();
 
+    public abstract int getTotalPlayers();
+
     public abstract CompletableFuture<Void> createMilestone(Milestone milestone);
 
     public abstract CompletableFuture<Void> saveMileStone(Milestone milestone);
@@ -50,4 +52,6 @@ public abstract class Storage {
     public abstract CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones();
 
     public abstract CompletableFuture<Void> reset(String name);
+
+
 }
