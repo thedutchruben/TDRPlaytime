@@ -5,8 +5,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class PlayTimeUpdatePlayerEvent extends Event {
+    private static final HandlerList HANDLERS = new HandlerList();
     private Player player;
-    private long oldTime,newTime;
+    private long oldTime, newTime;
+
 
     /**
      * The default constructor is defined for cleaner code. This constructor
@@ -19,7 +21,9 @@ public class PlayTimeUpdatePlayerEvent extends Event {
         this.newTime = newTime;
     }
 
-
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
+    }
 
     public long getNewTime() {
         return newTime;
@@ -33,14 +37,8 @@ public class PlayTimeUpdatePlayerEvent extends Event {
         return player;
     }
 
-    private static final HandlerList HANDLERS = new HandlerList();
-
     @Override
     public HandlerList getHandlers() {
-        return HANDLERS;
-    }
-
-    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 }

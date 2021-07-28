@@ -23,7 +23,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player p, String params) {
-        Playtime.getInstance().update(p.getUniqueId(),false);
+        Playtime.getInstance().update(p.getUniqueId(), false);
         long time = Playtime.getInstance().getPlayerOnlineTime().get(p.getUniqueId());
         time = time / 1000;
         int days = (int) (time / 86400);
@@ -36,7 +36,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         //%tdrplaytime_time%
         if (params.equals("time")) {
-            return translateMessage(Playtime.getInstance().getMessage("command.playtime.timemessage"),(Playtime.getInstance().getPlayerOnlineTime().get(p.getUniqueId())));
+            return translateMessage(Playtime.getInstance().getMessage("command.playtime.timemessage"), (Playtime.getInstance().getPlayerOnlineTime().get(p.getUniqueId())));
         }
 
 
@@ -52,7 +52,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         //%tdrplaytime_total_hour_number%
         if (params.equals("total_hour_number")) {
-            return String.valueOf(hours + days*24);
+            return String.valueOf(hours + days * 24);
         }
 
         //%tdrplaytime_minutes_number%
@@ -77,6 +77,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         int minutes = (int) (time / 60);
         time = time - minutes * 60L;
         int seconds = (int) time;
-        return ChatColor.translateAlternateColorCodes('&',message.replace("%H%", String.valueOf(hours)).replace("%M%", String.valueOf(minutes)).replace("%S%", String.valueOf(seconds)).replace("%D%", String.valueOf(days)));
+        return ChatColor.translateAlternateColorCodes('&', message.replace("%H%", String.valueOf(hours)).replace("%M%", String.valueOf(minutes)).replace("%S%", String.valueOf(seconds)).replace("%D%", String.valueOf(days)));
     }
 }

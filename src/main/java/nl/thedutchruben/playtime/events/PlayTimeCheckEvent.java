@@ -25,12 +25,12 @@ public class PlayTimeCheckEvent extends Event {
         super(isAsync);
     }
 
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
-    public static HandlerList getHandlerList() {
+    @Override
+    public HandlerList getHandlers() {
         return HANDLERS;
     }
 }

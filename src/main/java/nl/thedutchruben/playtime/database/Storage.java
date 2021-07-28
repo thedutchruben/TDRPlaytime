@@ -23,7 +23,6 @@ public abstract class Storage {
     public abstract void stop();
 
     /**
-     *
      * @param uuid The {@link UUID} of the {@link org.bukkit.entity.Player}
      * @return A {@link CompletableFuture}
      */
@@ -31,9 +30,9 @@ public abstract class Storage {
 
     public abstract CompletableFuture<Long> getPlayTimeByName(String name);
 
-    public abstract CompletableFuture<Void> savePlayTime(String uuid,long playtime);
+    public abstract CompletableFuture<Void> savePlayTime(String uuid, long playtime);
 
-    public abstract CompletableFuture< Map<String,Long>> getTopTenList();
+    public abstract CompletableFuture<Map<String, Long>> getTopTenList();
 
     public abstract long getTotalPlayTime();
 

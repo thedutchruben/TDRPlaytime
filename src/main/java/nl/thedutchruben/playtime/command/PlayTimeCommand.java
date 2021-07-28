@@ -2,7 +2,10 @@ package nl.thedutchruben.playtime.command;
 
 import lombok.SneakyThrows;
 import nl.thedutchruben.playtime.Playtime;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Statistic;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,48 +31,48 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
     @SneakyThrows
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(!(sender instanceof Player)){
+        if (!(sender instanceof Player)) {
             sender.sendMessage(Playtime.getInstance().getMessage("only.player.command"));
             return false;
         }
-        if(args.length == 0 ){
-            Playtime.getInstance().update(((Player) sender).getUniqueId(),true);
-            sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.timemessage"),Playtime.getInstance().getPlayerOnlineTime().get(((Player) sender).getUniqueId())));
-        }else{
-            switch (args[0]){
+        if (args.length == 0) {
+            Playtime.getInstance().update(((Player) sender).getUniqueId(), true);
+            sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.timemessage"), Playtime.getInstance().getPlayerOnlineTime().get(((Player) sender).getUniqueId())));
+        } else {
+            switch (args[0]) {
                 case "top":
-                    if(sender.hasPermission("playtime.playtime.top")) {
-                        Map<String,Long> map = Playtime.getInstance().getStorage().getTopTenList().get();
+                    if (sender.hasPermission("playtime.playtime.top")) {
+                        Map<String, Long> map = Playtime.getInstance().getStorage().getTopTenList().get();
                         sortHashMapByValues((HashMap<String, Long>) map).forEach((s, aLong) -> sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll(
                                 "%NAME%", s)
-                                ,aLong)));
+                                , aLong)));
                     }
                     break;
                 case "reset":
-                    if(sender.hasPermission("playtime.playtime.reset")) {
-                        if(args.length == 2){
+                    if (sender.hasPermission("playtime.playtime.reset")) {
+                        if (args.length == 2) {
                             if (Bukkit.getPlayer(args[1]) != null) {
                                 Playtime.getInstance().getPlayerOnlineTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), (long) 0);
                                 Playtime.getInstance().getLastCheckedTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), (long) System.currentTimeMillis());
                             }
                             Playtime.getInstance().getStorage().reset(Bukkit.getPlayer(args[1]).getName());
                             sender.sendMessage(Playtime.getInstance().getMessage("command.playtime.resettimeconfirm"));
-                        }else{
+                        } else {
                             sender.sendMessage(Playtime.getInstance().getMessage("command.playtime.resettimeussage"));
                         }
                     }
                     break;
                 case "migratefromminecraft":
-                    if(sender.hasPermission("playtime.playtime.migratefromminecraft")) {
+                    if (sender.hasPermission("playtime.playtime.migratefromminecraft")) {
                         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
                             long playtime = offlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE) * 60 * 60 * 1000;
-                            Playtime.getInstance().getStorage().savePlayTime(offlinePlayer.getUniqueId().toString(),playtime);
+                            Playtime.getInstance().getStorage().savePlayTime(offlinePlayer.getUniqueId().toString(), playtime);
                         }
                         sender.sendMessage(ChatColor.GREEN + "migrated");
                     }
                     break;
                 default:
-                    if(sender.hasPermission("playtime.playtime.other")) {
+                    if (sender.hasPermission("playtime.playtime.other")) {
                         if (args[0].length() <= 16) {
                             if (Bukkit.getPlayer(args[0]) == null) {
 
@@ -78,7 +81,7 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                                         , Playtime.getInstance().getStorage().getPlayTimeByName(args[0]).get()));
 
                             } else {
-                                Playtime.getInstance().update(Bukkit.getPlayer(args[0]).getUniqueId(),true);
+                                Playtime.getInstance().update(Bukkit.getPlayer(args[0]).getUniqueId(), true);
                                 sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll("%NAME%", Bukkit.getPlayer(args[0]).getName()), Playtime.getInstance().getPlayerOnlineTime().get((Bukkit.getPlayer(args[0])).getUniqueId())));
                             }
                         } else {
@@ -88,7 +91,7 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                                         , Playtime.getInstance().getStorage().getPlayTimeByUUID(args[0]).get()));
 
                             } else {
-                                Playtime.getInstance().update(UUID.fromString(args[0]),true);
+                                Playtime.getInstance().update(UUID.fromString(args[0]), true);
                                 sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll("%NAME%", Bukkit.getPlayer(UUID.fromString(args[0])).getName()), Playtime.getInstance().getPlayerOnlineTime().get(UUID.fromString(args[0]))));
                             }
                         }
@@ -108,7 +111,7 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
         int minutes = (int) (time / 60);
         time = time - minutes * 60L;
         int seconds = (int) time;
-        return ChatColor.translateAlternateColorCodes('&',message.replace("%H%", String.valueOf(hours)).replace("%M%", String.valueOf(minutes)).replace("%S%", String.valueOf(seconds)).replace("%D%", String.valueOf(days)));
+        return ChatColor.translateAlternateColorCodes('&', message.replace("%H%", String.valueOf(hours)).replace("%M%", String.valueOf(minutes)).replace("%S%", String.valueOf(seconds)).replace("%D%", String.valueOf(days)));
     }
 
 
@@ -162,8 +165,8 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
         final List<String> completions = new ArrayList<>();
 
         Set<String> COMMANDS = new HashSet<>();
-        if(args.length == 2){
-            if(args[0].equalsIgnoreCase("reset")){
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("reset")) {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     COMMANDS.add(onlinePlayer.getName());
                 }
@@ -171,14 +174,14 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
             }
 
         }
-        if(args.length == 1){
-            if(sender.hasPermission("playtime.playtime.top"))
+        if (args.length == 1) {
+            if (sender.hasPermission("playtime.playtime.top"))
                 COMMANDS.add("top");
-            if(sender.hasPermission("playtime.playtime.reset"))
+            if (sender.hasPermission("playtime.playtime.reset"))
                 COMMANDS.add("reset");
-            if(sender.hasPermission("playtime.playtime.migratefromminecraft"))
+            if (sender.hasPermission("playtime.playtime.migratefromminecraft"))
                 COMMANDS.add("migratefromminecraft");
-            if(sender.hasPermission("playtime.playtime.other"))
+            if (sender.hasPermission("playtime.playtime.other"))
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     COMMANDS.add(onlinePlayer.getName());
                 }

@@ -10,8 +10,7 @@ public class FileManager {
     private final JavaPlugin plugin;
     private final HashMap<String, Config> configs = new HashMap<>();
 
-    public FileManager(JavaPlugin plugin)
-    {
+    public FileManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -54,8 +53,7 @@ public class FileManager {
         private File file;
         private YamlConfiguration config;
 
-        public Config(String name)
-        {
+        public Config(String name) {
             this.name = name;
         }
 
@@ -67,13 +65,10 @@ public class FileManager {
         public Config save() {
             if ((this.config == null) || (this.file == null))
                 return this;
-            try
-            {
+            try {
                 if (config.getConfigurationSection("").getKeys(true).size() != 0)
                     config.save(this.file);
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
             return this;
@@ -118,18 +113,14 @@ public class FileManager {
             this.config = YamlConfiguration.loadConfiguration(file);
 
             Reader defConfigStream;
-            try
-            {
+            try {
                 defConfigStream = new InputStreamReader(plugin.getResource(this.name), "UTF8");
 
-                if (defConfigStream != null)
-                {
+                if (defConfigStream != null) {
                     YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
                     this.config.setDefaults(defConfig);
                 }
-            }
-            catch (UnsupportedEncodingException | NullPointerException e)
-            {
+            } catch (UnsupportedEncodingException | NullPointerException e) {
 
             }
             return this;

@@ -1,7 +1,7 @@
 name: TDRPlaytime
 version: ${project.version}
 main: nl.thedutchruben.playtime.Playtime
-authors: [TheDutchRuben]
+authors: [ TheDutchRuben ]
 softdepend:
   - PlaceholderApi
 description: Playtime plugin with milestone support
@@ -20,6 +20,12 @@ commands:
       - miliestone
     description: Setup the milestones of the playtime plugin
     permission: playtime.milestone
+  repeatingmilestone:
+    aliases:
+      - rmstone
+      - rmiliestone
+    description: Setup the repeating milestones of the playtime plugin
+    permission: playtime.repeatingmilestone
 permissions:
   playtime.playtime:
     default: true

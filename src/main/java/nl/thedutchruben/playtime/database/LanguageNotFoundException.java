@@ -2,7 +2,7 @@ package nl.thedutchruben.playtime.database;
 
 import java.security.PrivilegedActionException;
 
-public class LanguageNotFoundException extends Exception{
+public class LanguageNotFoundException extends Exception {
     private String language;
 
     /**

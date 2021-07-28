@@ -10,10 +10,10 @@ public class PlayerJoinListener implements Listener {
 
     @SneakyThrows
     @EventHandler
-    public void onJoin(PlayerJoinEvent event){
+    public void onJoin(PlayerJoinEvent event) {
         Playtime.getInstance().getStorage().getPlayTimeByUUID(event.getPlayer().getUniqueId().toString()).whenCompleteAsync((aLong, throwable) -> {
-            Playtime.getInstance().getPlayerOnlineTime().put(event.getPlayer().getUniqueId(),aLong);
-            Playtime.getInstance().getLastCheckedTime().put(event.getPlayer().getUniqueId(),System.currentTimeMillis());
+            Playtime.getInstance().getPlayerOnlineTime().put(event.getPlayer().getUniqueId(), aLong);
+            Playtime.getInstance().getLastCheckedTime().put(event.getPlayer().getUniqueId(), System.currentTimeMillis());
         });
 
     }

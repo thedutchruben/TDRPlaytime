@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class YamlDatabase extends Storage{
+public class YamlDatabase extends Storage {
     private Gson gson;
 
     @Override
@@ -33,18 +33,18 @@ public class YamlDatabase extends Storage{
 
     @Override
     public CompletableFuture<Long> getPlayTimeByUUID(String uuid) {
-        return CompletableFuture.supplyAsync(() -> Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().getLong("onlinetime",0));
+        return CompletableFuture.supplyAsync(() -> Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().getLong("onlinetime", 0));
     }
 
     @Override
     public CompletableFuture<Long> getPlayTimeByName(String name) {
-        return CompletableFuture.supplyAsync(() -> Playtime.getInstance().getFileManager().getConfig("players/" + Bukkit.getOfflinePlayer(name).getUniqueId().toString() + ".yaml").get().getLong("onlinetime",0));
+        return CompletableFuture.supplyAsync(() -> Playtime.getInstance().getFileManager().getConfig("players/" + Bukkit.getOfflinePlayer(name).getUniqueId().toString() + ".yaml").get().getLong("onlinetime", 0));
     }
 
     @Override
     public CompletableFuture savePlayTime(String uuid, long playtime) {
         return CompletableFuture.supplyAsync(() -> {
-            Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().set("onlinetime",playtime);
+            Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().set("onlinetime", playtime);
             Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").save();
             return this;
         });
@@ -54,13 +54,13 @@ public class YamlDatabase extends Storage{
     @Override
     public CompletableFuture<Map<String, Long>> getTopTenList() {
         return CompletableFuture.supplyAsync(() -> {
-            Map<String,Long> hashMap = new HashMap<>();
+            Map<String, Long> hashMap = new HashMap<>();
             for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "players/").listFiles())) {
-                YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml","") + ".yaml").get();
-                if(config != null){
-                    if(config.contains("onlinetime")){
+                YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml", "") + ".yaml").get();
+                if (config != null) {
+                    if (config.contains("onlinetime")) {
                         hashMap.put(Bukkit.getPlayer
-                                        (UUID.fromString(fileEntry.getName().replace(".yaml",""))).getName(),
+                                        (UUID.fromString(fileEntry.getName().replace(".yaml", ""))).getName(),
                                 config.getLong("onlinetime"));
                     }
                 }
@@ -73,10 +73,10 @@ public class YamlDatabase extends Storage{
     public long getTotalPlayTime() {
         long time = 0;
         for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "players/").listFiles())) {
-            YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml","") + ".yaml").get();
-            if(config != null){
-                if(config.contains("onlinetime")){
-                    time =+ config.getLong("onlinetime");
+            YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml", "") + ".yaml").get();
+            if (config != null) {
+                if (config.contains("onlinetime")) {
+                    time = +config.getLong("onlinetime");
                 }
             }
         }
@@ -96,7 +96,7 @@ public class YamlDatabase extends Storage{
     @Override
     public CompletableFuture<Void> saveMileStone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
-            Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml").get().set("data",this.gson.toJson(milestone,Milestone.class));
+            Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml").get().set("data", this.gson.toJson(milestone, Milestone.class));
             Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml").save();
             return null;
         });
@@ -109,8 +109,8 @@ public class YamlDatabase extends Storage{
             List<Milestone> milestones = new ArrayList<>();
             for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "milestones/").listFiles())) {
                 YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("milestones/" + fileEntry.getName()).get();
-                if(config != null){
-                    milestones.add(this.gson.fromJson(config.getString("data"),Milestone.class));
+                if (config != null) {
+                    milestones.add(this.gson.fromJson(config.getString("data"), Milestone.class));
                 }
             }
             return milestones;
@@ -125,7 +125,7 @@ public class YamlDatabase extends Storage{
     @Override
     public CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
-            Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").get().set("data",this.gson.toJson(milestone,Milestone.class));
+            Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").get().set("data", this.gson.toJson(milestone, Milestone.class));
             Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").save();
             return null;
         });
@@ -137,8 +137,8 @@ public class YamlDatabase extends Storage{
             List<RepeatingMilestone> milestones = new ArrayList<>();
             for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "repeatingmilestones/").listFiles())) {
                 YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + fileEntry.getName()).get();
-                if(config != null){
-                    milestones.add(this.gson.fromJson(config.getString("data"),RepeatingMilestone.class));
+                if (config != null) {
+                    milestones.add(this.gson.fromJson(config.getString("data"), RepeatingMilestone.class));
                 }
             }
             return milestones;
@@ -149,7 +149,7 @@ public class YamlDatabase extends Storage{
     public CompletableFuture<Void> reset(String name) {
         return CompletableFuture.supplyAsync(() -> {
             String uuid = Bukkit.getPlayer(name).getUniqueId().toString();
-            Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().set("onlinetime",0);
+            Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().set("onlinetime", 0);
             Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").save();
             return null;
         });

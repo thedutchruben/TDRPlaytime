@@ -1,6 +1,8 @@
 package nl.thedutchruben.playtime.milestone;
 
 import com.google.gson.annotations.SerializedName;
+import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.utils.FireworkUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,15 +24,17 @@ public class RepeatingMilestone {
     @SerializedName("commands")
     private List<String> commands;
     @SerializedName("firework_show")
-    private boolean fireworkShow;
+    private boolean fireworkShow = false;
     @SerializedName("firework_show_amount")
-    private int fireworkShowAmount;
+    private int fireworkShowAmount = 1;
+    @SerializedName("firework_show_seconds_between_firework")
+    private int fireworkShowSecondsBetween = 0;
     @SerializedName("normal_milestone_override_me")
-    private boolean overrideMe;
+    private boolean overrideMe = false;
 
-    public void apply(Player player){
-        if(itemStacks != null){
-            if(itemStackObjects == null){
+    public void apply(Player player) {
+        if (itemStacks != null) {
+            if (itemStackObjects == null) {
                 itemStackObjects = new ArrayList<>();
                 for (Map<String, Object> itemStack : itemStacks) {
                     itemStackObjects.add(ItemStack.deserialize(itemStack));
@@ -41,41 +45,104 @@ public class RepeatingMilestone {
             }
         }
 
-        if(commands != null){
+        if (commands != null) {
             for (String command : commands) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),command.replace("%playername%", player.getName()).replace("%playeruuid%", player.getUniqueId().toString()));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%playername%", player.getName()).replace("%playeruuid%", player.getUniqueId().toString()));
             }
         }
 
-    }
+        if (fireworkShow) {
+            Bukkit.getScheduler().runTaskAsynchronously(Playtime.getInstance(), () -> {
+                for (int i = 0; i < fireworkShowAmount; i++) {
+                    Bukkit.getScheduler().runTask(Playtime.getInstance(), () -> {
+                        FireworkUtil.spawn(player.getLocation());
+                    });
+                    try {
+                        Thread.sleep(fireworkShowSecondsBetween * 1000L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
 
-    public void setOnlineTime(long onlineTime) {
-        this.onlineTime = onlineTime;
-    }
-
-    public void setMilestoneName(String milestoneName) {
-        this.milestoneName = milestoneName;
+        }
     }
 
     public List<Map<String, Object>> getItemStacks() {
-        if(itemStacks == null){
+        if (itemStacks == null) {
             itemStacks = new ArrayList<>();
         }
         return itemStacks;
     }
 
+    public void setItemStacks(List<Map<String, Object>> itemStacks) {
+        this.itemStacks = itemStacks;
+    }
+
     public List<String> getCommands() {
-        if(commands == null){
+        if (commands == null) {
             commands = new ArrayList<>();
         }
         return commands;
+    }
+
+    public void setCommands(List<String> commands) {
+        this.commands = commands;
     }
 
     public String getMilestoneName() {
         return milestoneName;
     }
 
+    public void setMilestoneName(String milestoneName) {
+        this.milestoneName = milestoneName;
+    }
+
     public long getOnlineTime() {
         return onlineTime;
+    }
+
+    public void setOnlineTime(long onlineTime) {
+        this.onlineTime = onlineTime;
+    }
+
+    public List<ItemStack> getItemStackObjects() {
+        return itemStackObjects;
+    }
+
+    public void setItemStackObjects(List<ItemStack> itemStackObjects) {
+        this.itemStackObjects = itemStackObjects;
+    }
+
+    public boolean isFireworkShow() {
+        return fireworkShow;
+    }
+
+    public void setFireworkShow(boolean fireworkShow) {
+        this.fireworkShow = fireworkShow;
+    }
+
+    public int getFireworkShowAmount() {
+        return fireworkShowAmount;
+    }
+
+    public void setFireworkShowAmount(int fireworkShowAmount) {
+        this.fireworkShowAmount = fireworkShowAmount;
+    }
+
+    public int getFireworkShowSecondsBetween() {
+        return fireworkShowSecondsBetween;
+    }
+
+    public void setFireworkShowSecondsBetween(int fireworkShowSecondsBetween) {
+        this.fireworkShowSecondsBetween = fireworkShowSecondsBetween;
+    }
+
+    public boolean isOverrideMe() {
+        return overrideMe;
+    }
+
+    public void setOverrideMe(boolean overrideMe) {
+        this.overrideMe = overrideMe;
     }
 }
