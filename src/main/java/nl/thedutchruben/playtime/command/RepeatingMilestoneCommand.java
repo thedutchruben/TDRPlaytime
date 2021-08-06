@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter {
     /**
@@ -98,9 +99,48 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
                             }
                         }
                     } else {
-                        sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.additemusage"));
+                        sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.togglefireworkusage"));
 
                     }
+                    break;
+                case "setfireworkamount":
+                    if (args[1] != null && args[2] != null && isNumeric(args[2])) {
+                        Optional<RepeatingMilestone> milestoneOptional = Playtime.getInstance().getRepeatedMilestoneList().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1].replace("_", " "))).findFirst();
+                        if (milestoneOptional.isPresent()) {
+                            setFireworkAmount((Player) sender, milestoneOptional.get(), Integer.parseInt(args[2]));
+                        } else {
+                            Optional<RepeatingMilestone> milestoneOptional2 = Playtime.getInstance().getRepeatedMilestoneList().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1])).findFirst();
+                            if (milestoneOptional2.isPresent()) {
+                                setFireworkAmount((Player) sender, milestoneOptional2.get(), Integer.parseInt(args[2]));
+                            } else {
+                                sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestonenotexist").replace("<name>", args[1]));
+
+                            }
+                        }
+                    } else {
+                        sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamountusage"));
+
+                    }
+                    break;
+                case "setfireworkdelay":
+                    if (args[1] != null && args[2] != null && isNumeric(args[2])) {
+                        Optional<RepeatingMilestone> milestoneOptional = Playtime.getInstance().getRepeatedMilestoneList().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1].replace("_", " "))).findFirst();
+                        if (milestoneOptional.isPresent()) {
+                            setFireworkDelay((Player) sender, milestoneOptional.get(), Integer.parseInt(args[2]));
+                        } else {
+                            Optional<RepeatingMilestone> milestoneOptional2 = Playtime.getInstance().getRepeatedMilestoneList().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1])).findFirst();
+                            if (milestoneOptional2.isPresent()) {
+                                setFireworkDelay((Player) sender, milestoneOptional2.get(), Integer.parseInt(args[2]));
+                            } else {
+                                sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestonenotexist").replace("<name>", args[1]));
+
+                            }
+                        }
+                    } else {
+                        sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelayusage"));
+
+                    }
+                    break;
                 default:
                     sendHelp(sender);
 
@@ -139,12 +179,30 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
     public void toggleFirework(Player player, RepeatingMilestone milestone) {
         milestone.setFireworkShow(!milestone.isFireworkShow());
         Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
-            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.commandadded"));
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.togglefirework").replaceAll("<state>",getState(milestone.isFireworkShow())));
+        });
+    }
+
+    public void setFireworkAmount(Player player, RepeatingMilestone milestone,int amount) {
+        milestone.setFireworkShowAmount(amount);
+        Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount").replaceAll("<amount>",amount + ""));
+        });
+    }
+
+    public void setFireworkDelay(Player player, RepeatingMilestone milestone,int delay) {
+        milestone.setFireworkShowSecondsBetween(delay);
+        Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay").replaceAll("<delay>",delay + ""));
         });
     }
 
     public void sendHelp(CommandSender commandSender) {
 //        commandSender.sendMessage("");
+    }
+
+    public String getState(boolean b){
+        return b ? "Enabled" : "Disabled";
     }
 
     /**
@@ -166,7 +224,8 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
 
         Set<String> COMMANDS = new HashSet<>();
         if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("additem") || args[0].equalsIgnoreCase("addcommand") || args[0].equalsIgnoreCase("togglefirework")) {
+            if (args[0].equalsIgnoreCase("additem") || args[0].equalsIgnoreCase("addcommand") || args[0].equalsIgnoreCase("togglefirework")
+            || args[0].equalsIgnoreCase("setfireworkamount") || args[0].equalsIgnoreCase("setfireworkdelay") || args[0].equalsIgnoreCase("overridable")) {
                 for (RepeatingMilestone value : Playtime.getInstance().getRepeatedMilestoneList()) {
                     COMMANDS.add(value.getMilestoneName().replace(" ", "_"));
                 }
@@ -182,7 +241,7 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
             COMMANDS.add("help");
             COMMANDS.add("togglefirework");
             COMMANDS.add("setfireworkamount");
-            COMMANDS.add("setfireworktime");
+            COMMANDS.add("setfireworkdelay");
             COMMANDS.add("overridable");
 
             StringUtil.copyPartialMatches(args[0], COMMANDS, completions);
@@ -192,5 +251,14 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
         Collections.sort(completions);
 
         return completions;
+    }
+
+    private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+
+    public boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return pattern.matcher(strNum).matches();
     }
 }

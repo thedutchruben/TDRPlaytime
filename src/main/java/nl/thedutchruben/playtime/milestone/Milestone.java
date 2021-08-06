@@ -97,4 +97,28 @@ public class Milestone {
     public void setOnlineTime(long onlineTime) {
         this.onlineTime = onlineTime;
     }
+
+    public boolean isFireworkShow() {
+        return fireworkShow;
+    }
+
+    public void setFireworkShow(boolean fireworkShow) {
+        this.fireworkShow = fireworkShow;
+    }
+
+    public int getFireworkShowAmount() {
+        return fireworkShowAmount;
+    }
+
+    public void setFireworkShowAmount(int fireworkShowAmount) {
+        this.fireworkShowAmount = fireworkShowAmount;
+    }
+
+    public int getFireworkShowSecondsBetween() {
+        return fireworkShowSecondsBetween;
+    }
+
+    public void setFireworkShowSecondsBetween(int fireworkShowSecondsBetween) {
+        this.fireworkShowSecondsBetween = fireworkShowSecondsBetween;
+    }
 }

@@ -2,6 +2,7 @@ package nl.thedutchruben.playtime.command;
 
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
+import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class MilestoneCommand implements CommandExecutor, TabCompleter {
     /**
@@ -83,12 +85,78 @@ public class MilestoneCommand implements CommandExecutor, TabCompleter {
                         sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.addcommandusage"));
                     }
                     break;
+                case "togglefirework":
+                    if (args[1] != null) {
+                        Optional<Milestone> milestoneOptional = Playtime.getInstance().getMilestoneMap().values().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1].replace("_", " "))).findFirst();
+                        if (milestoneOptional.isPresent()) {
+                            toggleFirework((Player) sender, milestoneOptional.get());
+                        } else {
+                            Optional<Milestone> milestoneOptional2 = Playtime.getInstance().getMilestoneMap().values().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1])).findFirst();
+                            if (milestoneOptional2.isPresent()) {
+                                toggleFirework((Player) sender, milestoneOptional2.get());
+                            } else {
+                                sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestonenotexist").replace("<name>", args[1]));
+
+                            }
+                        }
+                    } else {
+                        sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.togglefirework"));
+
+                    }
+                    break;
+                case "setfireworkamount":
+                    if (args[1] != null && args[2] != null && isNumeric(args[2])) {
+                        Optional<Milestone> milestoneOptional = Playtime.getInstance().getMilestoneMap().values().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1].replace("_", " "))).findFirst();
+                        if (milestoneOptional.isPresent()) {
+                            setFireworkAmount((Player) sender, milestoneOptional.get(), Integer.parseInt(args[2]));
+                        } else {
+                            Optional<Milestone> milestoneOptional2 = Playtime.getInstance().getMilestoneMap().values().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1])).findFirst();
+                            if (milestoneOptional2.isPresent()) {
+                                setFireworkAmount((Player) sender, milestoneOptional2.get(), Integer.parseInt(args[2]));
+                            } else {
+                                sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestonenotexist").replace("<name>", args[1]));
+
+                            }
+                        }
+                    } else {
+                        sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamountusage"));
+
+                    }
+                    break;
+                case "setfireworkdelay":
+                    if (args[1] != null && args[2] != null && isNumeric(args[2])) {
+                        Optional<Milestone> milestoneOptional = Playtime.getInstance().getMilestoneMap().values().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1].replace("_", " "))).findFirst();
+                        if (milestoneOptional.isPresent()) {
+                            setFireworkDelay((Player) sender, milestoneOptional.get(), Integer.parseInt(args[2]));
+                        } else {
+                            Optional<Milestone> milestoneOptional2 = Playtime.getInstance().getMilestoneMap().values().stream().filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(args[1])).findFirst();
+                            if (milestoneOptional2.isPresent()) {
+                                setFireworkDelay((Player) sender, milestoneOptional2.get(), Integer.parseInt(args[2]));
+                            } else {
+                                sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestonenotexist").replace("<name>", args[1]));
+
+                            }
+                        }
+                    } else {
+                        sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelayusage"));
+
+                    }
+                    break;
                 default:
                     sendHelp(sender);
 
             }
         }
         return false;
+    }
+
+    private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+
+    public boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return pattern.matcher(strNum).matches();
     }
 
     public void createMilestone(CommandSender sender, String name, int timeInSeconds) {
@@ -118,8 +186,33 @@ public class MilestoneCommand implements CommandExecutor, TabCompleter {
 
     }
 
+    public void toggleFirework(Player player, Milestone milestone) {
+        milestone.setFireworkShow(!milestone.isFireworkShow());
+        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.fireworktoggled").replaceAll("<state>",getState(milestone.isFireworkShow())));
+        });
+    }
+
+    public void setFireworkAmount(Player player, Milestone milestone,int amount) {
+        milestone.setFireworkShowAmount(amount);
+        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount").replaceAll("<amount>",amount + ""));
+        });
+    }
+
+    public void setFireworkDelay(Player player, Milestone milestone,int delay) {
+        milestone.setFireworkShowSecondsBetween(delay);
+        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay").replaceAll("<delay>",delay + ""));
+        });
+    }
+
     public void sendHelp(CommandSender commandSender) {
 //        commandSender.sendMessage("");
+    }
+
+    public String getState(boolean b){
+        return b ? "Enabled" : "Disabled";
     }
 
     /**
