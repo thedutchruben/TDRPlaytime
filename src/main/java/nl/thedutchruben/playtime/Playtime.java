@@ -33,15 +33,16 @@ import java.util.logging.Level;
 
 public final class Playtime extends JavaPlugin {
     private static Playtime instance;
-    private Map<UUID, Long> playerOnlineTime = new HashMap<>();
-    private Map<UUID, Long> lastCheckedTime = new HashMap<>();
-    private Map<Long, Milestone> milestoneMap = new HashMap<>();
-    private List<RepeatingMilestone> repeatedMilestoneList = new ArrayList<>();
-    private Map<String, String> keyMessageMap = new HashMap<>();
+    private final Map<UUID, Long> playerOnlineTime = new HashMap<>();
+    private final Map<UUID, Long> lastCheckedTime = new HashMap<>();
+    private final Map<Long, Milestone> milestoneMap = new HashMap<>();
+    private final List<RepeatingMilestone> repeatedMilestoneList = new ArrayList<>();
+    private final Map<String, String> keyMessageMap = new HashMap<>();
     private Storage storage;
-    private FileManager fileManager = new FileManager(this);
+    private final FileManager fileManager = new FileManager(this);
     private FileManager.Config langFile;
     private BukkitTask checkTask;
+
     public static Playtime getInstance() {
         return instance;
     }
@@ -106,6 +107,8 @@ public final class Playtime extends JavaPlugin {
             }
             getLogger().log(Level.INFO, milestoneMap.size() + " milestones loaded");
         });
+
+        getLogger().log(Level.INFO, "Loading repeating milestones");
 
         storage.getRepeatingMilestones().whenComplete((repeatingMilestones, throwable) -> {
             for (RepeatingMilestone repeatingMilestone : repeatingMilestones) {
@@ -283,9 +286,9 @@ public final class Playtime extends JavaPlugin {
 
 
     public void generateEnglishTranslations() {
-        getLogger().info("Generate English translations");
         FileManager.Config config = fileManager.getConfig("lang/en_GB.yml");
-        if(!config.get().contains("version")){
+        if (!config.get().contains("version")) {
+            getLogger().info("Generate English translations");
             config.get().addDefault("version", 1.0);
             config.get().addDefault("only.player.command", "&cThis is a player only command!");
             //playtime command messages
@@ -308,7 +311,8 @@ public final class Playtime extends JavaPlugin {
             config.save();
         }
 
-        if(config.get().getDouble("version") < 1.1){
+        if (config.get().getDouble("version") < 1.1) {
+            getLogger().info("Updating English translations");
             config.get().set("version", 1.1);
             config.get().addDefault("command.milestone.togglefireworkusage", "&cUse : /milestone togglefirework <milestone>!");
             config.get().addDefault("command.milestone.setfireworkamountusage", "&cUse : /milestone setfireworkamount <milestone> <amount>!");

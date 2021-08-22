@@ -13,6 +13,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter {
+    private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+
     /**
      * Executes the given command, returning its success.
      * <br>
@@ -179,21 +181,21 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
     public void toggleFirework(Player player, RepeatingMilestone milestone) {
         milestone.setFireworkShow(!milestone.isFireworkShow());
         Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
-            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.togglefirework").replaceAll("<state>",getState(milestone.isFireworkShow())));
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.togglefirework").replaceAll("<state>", getState(milestone.isFireworkShow())));
         });
     }
 
-    public void setFireworkAmount(Player player, RepeatingMilestone milestone,int amount) {
+    public void setFireworkAmount(Player player, RepeatingMilestone milestone, int amount) {
         milestone.setFireworkShowAmount(amount);
         Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
-            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount").replaceAll("<amount>",amount + ""));
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount").replaceAll("<amount>", amount + ""));
         });
     }
 
-    public void setFireworkDelay(Player player, RepeatingMilestone milestone,int delay) {
+    public void setFireworkDelay(Player player, RepeatingMilestone milestone, int delay) {
         milestone.setFireworkShowSecondsBetween(delay);
         Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
-            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay").replaceAll("<delay>",delay + ""));
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay").replaceAll("<delay>", delay + ""));
         });
     }
 
@@ -201,7 +203,7 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
 //        commandSender.sendMessage("");
     }
 
-    public String getState(boolean b){
+    public String getState(boolean b) {
         return b ? "Enabled" : "Disabled";
     }
 
@@ -225,7 +227,7 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
         Set<String> COMMANDS = new HashSet<>();
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("additem") || args[0].equalsIgnoreCase("addcommand") || args[0].equalsIgnoreCase("togglefirework")
-            || args[0].equalsIgnoreCase("setfireworkamount") || args[0].equalsIgnoreCase("setfireworkdelay") || args[0].equalsIgnoreCase("overridable")) {
+                    || args[0].equalsIgnoreCase("setfireworkamount") || args[0].equalsIgnoreCase("setfireworkdelay") || args[0].equalsIgnoreCase("overridable")) {
                 for (RepeatingMilestone value : Playtime.getInstance().getRepeatedMilestoneList()) {
                     COMMANDS.add(value.getMilestoneName().replace(" ", "_"));
                 }
@@ -252,8 +254,6 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
 
         return completions;
     }
-
-    private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
     public boolean isNumeric(String strNum) {
         if (strNum == null) {

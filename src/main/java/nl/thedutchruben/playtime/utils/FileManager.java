@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class FileManager {
@@ -114,13 +115,13 @@ public class FileManager {
 
             Reader defConfigStream;
             try {
-                defConfigStream = new InputStreamReader(plugin.getResource(this.name), "UTF8");
+                defConfigStream = new InputStreamReader(plugin.getResource(this.name), StandardCharsets.UTF_8);
 
                 if (defConfigStream != null) {
                     YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
                     this.config.setDefaults(defConfig);
                 }
-            } catch (UnsupportedEncodingException | NullPointerException e) {
+            } catch (NullPointerException e) {
 
             }
             return this;

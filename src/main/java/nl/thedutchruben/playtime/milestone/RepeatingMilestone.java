@@ -32,6 +32,11 @@ public class RepeatingMilestone {
     @SerializedName("normal_milestone_override_me")
     private boolean overrideMe = false;
 
+    /**
+     * Aplly the milestone on the player
+     *
+     * @param player The player to apply the milestone to
+     */
     public void apply(Player player) {
         if (itemStacks != null) {
             if (itemStackObjects == null) {
@@ -40,6 +45,7 @@ public class RepeatingMilestone {
                     itemStackObjects.add(ItemStack.deserialize(itemStack));
                 }
             }
+
             for (ItemStack itemStack : itemStackObjects) {
                 player.getInventory().addItem(itemStack);
             }

@@ -38,7 +38,7 @@ public class YamlDatabase extends Storage {
 
     @Override
     public CompletableFuture<Long> getPlayTimeByName(String name) {
-        return CompletableFuture.supplyAsync(() -> Playtime.getInstance().getFileManager().getConfig("players/" + Bukkit.getOfflinePlayer(name).getUniqueId().toString() + ".yaml").get().getLong("onlinetime", 0));
+        return CompletableFuture.supplyAsync(() -> Playtime.getInstance().getFileManager().getConfig("players/" + Bukkit.getOfflinePlayer(name).getUniqueId() + ".yaml").get().getLong("onlinetime", 0));
     }
 
     @Override
@@ -59,9 +59,14 @@ public class YamlDatabase extends Storage {
                 YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml", "") + ".yaml").get();
                 if (config != null) {
                     if (config.contains("onlinetime")) {
-                        hashMap.put(Bukkit.getPlayer
-                                        (UUID.fromString(fileEntry.getName().replace(".yaml", ""))).getName(),
-                                config.getLong("onlinetime"));
+                        if (Bukkit.getOfflinePlayer(UUID.fromString(fileEntry.getName().replace(".yaml", ""))).getName() != null) {
+                            hashMap.put(Bukkit.getOfflinePlayer(UUID.fromString(fileEntry.getName().replace(".yaml", ""))).getName(),
+                                    config.getLong("onlinetime"));
+                        } else {
+                            hashMap.put("",
+                                    config.getLong("onlinetime"));
+                        }
+
                     }
                 }
             }
@@ -76,7 +81,7 @@ public class YamlDatabase extends Storage {
             YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml", "") + ".yaml").get();
             if (config != null) {
                 if (config.contains("onlinetime")) {
-                    time = +config.getLong("onlinetime");
+                    time = config.getLong("onlinetime");
                 }
             }
         }

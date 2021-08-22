@@ -42,10 +42,11 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
             switch (args[0]) {
                 case "top":
                     if (sender.hasPermission("playtime.playtime.top")) {
-                        Map<String, Long> map = Playtime.getInstance().getStorage().getTopTenList().get();
-                        sortHashMapByValues((HashMap<String, Long>) map).forEach((s, aLong) -> sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll(
-                                "%NAME%", s)
-                                , aLong)));
+                        Playtime.getInstance().getStorage().getTopTenList().whenCompleteAsync((stringLongMap, throwable) -> {
+                            sortHashMapByValues((HashMap<String, Long>) stringLongMap).forEach((s, aLong) -> sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll(
+                                    "%NAME%", s), aLong)));
+                        });
+
                     }
                     break;
                 case "reset":
@@ -53,7 +54,7 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                         if (args.length == 2) {
                             if (Bukkit.getPlayer(args[1]) != null) {
                                 Playtime.getInstance().getPlayerOnlineTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), (long) 0);
-                                Playtime.getInstance().getLastCheckedTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), (long) System.currentTimeMillis());
+                                Playtime.getInstance().getLastCheckedTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), System.currentTimeMillis());
                             }
                             Playtime.getInstance().getStorage().reset(Bukkit.getPlayer(args[1]).getName());
                             sender.sendMessage(Playtime.getInstance().getMessage("command.playtime.resettimeconfirm"));
@@ -65,7 +66,7 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                 case "migratefromminecraft":
                     if (sender.hasPermission("playtime.playtime.migratefromminecraft")) {
                         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-                            long playtime = offlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE) * 60 * 60 * 1000;
+                            long playtime = (long) offlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE) * 60 * 60 * 1000;
                             Playtime.getInstance().getStorage().savePlayTime(offlinePlayer.getUniqueId().toString(), playtime);
                         }
                         sender.sendMessage(ChatColor.GREEN + "migrated");
@@ -77,7 +78,7 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                             if (Bukkit.getPlayer(args[0]) == null) {
 
                                 sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll(
-                                        "%NAME%", Bukkit.getOfflinePlayer(args[0]).getName())
+                                                "%NAME%", Bukkit.getOfflinePlayer(args[0]).getName())
                                         , Playtime.getInstance().getStorage().getPlayTimeByName(args[0]).get()));
 
                             } else {
@@ -87,7 +88,7 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                         } else {
                             if (Bukkit.getPlayer(UUID.fromString(args[0])) == null) {
                                 sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.usertimemessage").replaceAll(
-                                        "%NAME%", Bukkit.getOfflinePlayer(UUID.fromString(args[0])).getName())
+                                                "%NAME%", Bukkit.getOfflinePlayer(UUID.fromString(args[0])).getName())
                                         , Playtime.getInstance().getStorage().getPlayTimeByUUID(args[0]).get()));
 
                             } else {

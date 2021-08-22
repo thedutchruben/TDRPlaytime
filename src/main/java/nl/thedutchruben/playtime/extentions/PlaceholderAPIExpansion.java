@@ -4,20 +4,21 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import nl.thedutchruben.playtime.Playtime;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return "tdrplaytime";
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return "TheDutchRuben";
     }
 
     @Override
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return Playtime.getInstance().getDescription().getVersion();
     }
 

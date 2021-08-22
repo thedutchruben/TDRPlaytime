@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class MysqlDatabase extends Storage {
     private Connection connection;
-    private FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("database.yml");
+    private final FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("database.yml");
     private Gson gson;
 
     @Override

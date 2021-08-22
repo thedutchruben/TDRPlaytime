@@ -24,13 +24,27 @@ public abstract class Storage {
 
     /**
      * @param uuid The {@link UUID} of the {@link org.bukkit.entity.Player}
-     * @return A {@link CompletableFuture}
+     * @return A {@link CompletableFuture} with the time of the {@link org.bukkit.entity.Player}
      */
     public abstract CompletableFuture<Long> getPlayTimeByUUID(String uuid);
 
+    /**
+     * @param name The name as an {@link String} of the {@link org.bukkit.entity.Player}
+     * @return A {@link CompletableFuture} with the time of the {@link org.bukkit.entity.Player}
+     */
     public abstract CompletableFuture<Long> getPlayTimeByName(String name);
 
+    /**
+     * Save the players online time
+     * @param uuid The {@link UUID} of the {@link org.bukkit.entity.Player}
+     * @param playtime the players online time
+     * @return Empty CompletableFuture
+     */
     public abstract CompletableFuture<Void> savePlayTime(String uuid, long playtime);
+
+    public CompletableFuture<Void> savePlayTime(UUID uuid, long playtime){
+        return savePlayTime(uuid.toString(),playtime);
+    }
 
     public abstract CompletableFuture<Map<String, Long>> getTopTenList();
 

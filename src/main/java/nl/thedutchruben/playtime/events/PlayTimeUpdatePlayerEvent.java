@@ -6,8 +6,9 @@ import org.bukkit.event.HandlerList;
 
 public class PlayTimeUpdatePlayerEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private Player player;
-    private long oldTime, newTime;
+    private final Player player;
+    private final long oldTime;
+    private final long newTime;
 
 
     /**

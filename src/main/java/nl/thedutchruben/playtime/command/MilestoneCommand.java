@@ -2,7 +2,6 @@ package nl.thedutchruben.playtime.command;
 
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
-import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +13,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class MilestoneCommand implements CommandExecutor, TabCompleter {
+    private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+
     /**
      * Executes the given command, returning its success.
      * <br>
@@ -150,8 +151,6 @@ public class MilestoneCommand implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
-
     public boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -189,21 +188,21 @@ public class MilestoneCommand implements CommandExecutor, TabCompleter {
     public void toggleFirework(Player player, Milestone milestone) {
         milestone.setFireworkShow(!milestone.isFireworkShow());
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
-            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.fireworktoggled").replaceAll("<state>",getState(milestone.isFireworkShow())));
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.fireworktoggled").replaceAll("<state>", getState(milestone.isFireworkShow())));
         });
     }
 
-    public void setFireworkAmount(Player player, Milestone milestone,int amount) {
+    public void setFireworkAmount(Player player, Milestone milestone, int amount) {
         milestone.setFireworkShowAmount(amount);
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
-            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount").replaceAll("<amount>",amount + ""));
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount").replaceAll("<amount>", amount + ""));
         });
     }
 
-    public void setFireworkDelay(Player player, Milestone milestone,int delay) {
+    public void setFireworkDelay(Player player, Milestone milestone, int delay) {
         milestone.setFireworkShowSecondsBetween(delay);
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
-            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay").replaceAll("<delay>",delay + ""));
+            player.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay").replaceAll("<delay>", delay + ""));
         });
     }
 
@@ -211,7 +210,7 @@ public class MilestoneCommand implements CommandExecutor, TabCompleter {
 //        commandSender.sendMessage("");
     }
 
-    public String getState(boolean b){
+    public String getState(boolean b) {
         return b ? "Enabled" : "Disabled";
     }
 
