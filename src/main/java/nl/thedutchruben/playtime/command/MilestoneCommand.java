@@ -233,7 +233,8 @@ public class MilestoneCommand implements CommandExecutor, TabCompleter {
 
         Set<String> COMMANDS = new HashSet<>();
         if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("additem") || args[0].equalsIgnoreCase("addcommand")) {
+            if (args[0].equalsIgnoreCase("additem") || args[0].equalsIgnoreCase("addcommand") || args[0].equalsIgnoreCase("togglefirework")
+                    || args[0].equalsIgnoreCase("setfireworkamount") || args[0].equalsIgnoreCase("setfireworkdelay")) {
                 for (Milestone value : Playtime.getInstance().getMilestoneMap().values()) {
                     COMMANDS.add(value.getMilestoneName().replace(" ", "_"));
                 }
@@ -249,7 +250,7 @@ public class MilestoneCommand implements CommandExecutor, TabCompleter {
             COMMANDS.add("help");
             COMMANDS.add("togglefirework");
             COMMANDS.add("setfireworkamount");
-            COMMANDS.add("setfireworktime");
+            COMMANDS.add("setfireworkdelay");
             StringUtil.copyPartialMatches(args[0], COMMANDS, completions);
         }
 

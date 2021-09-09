@@ -96,7 +96,6 @@ public final class Playtime extends JavaPlugin {
         generateEnglishTranslations();
         generateDutchTranslations();
         generateGermanTranslations();
-        generateFrenchTranslations();
 
         langFile = fileManager.getConfig("lang/" + configfileConfiguration.getString("language") + ".yml");
 
@@ -224,9 +223,9 @@ public final class Playtime extends JavaPlugin {
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid);
         lastCheckedTime.replace(uuid, System.currentTimeMillis());
         long newtime = playerOnlineTime.get(uuid) + extraTime;
-        if (Bukkit.getPlayer(uuid) != null) {
-            Bukkit.getPluginManager().callEvent(new PlayTimeUpdatePlayerEvent(Bukkit.getPlayer(uuid), playerOnlineTime.get(uuid), newtime));
-        }
+//        if (Bukkit.getPlayer(uuid) != null) {
+//            Bukkit.getPluginManager().callEvent(new PlayTimeUpdatePlayerEvent(Bukkit.getPlayer(uuid), playerOnlineTime.get(uuid), newtime));
+//        }
         checkMileStones(uuid, playerOnlineTime.get(uuid), newtime);
         playerOnlineTime.replace(uuid, newtime);
         storage.savePlayTime(uuid.toString(), playerOnlineTime.get(uuid));
@@ -318,7 +317,7 @@ public final class Playtime extends JavaPlugin {
             config.get().addDefault("command.milestone.setfireworkamountusage", "&cUse : /milestone setfireworkamount <milestone> <amount>!");
             config.get().addDefault("command.milestone.setfireworkdelayusage", "&cUse : /milestone setfireworkdelay <milestone> <delay in seconds>!");
 
-            config.get().addDefault("command.milestone.togglefirework", "&aYou <state> the firework for the milestone");
+            config.get().addDefault("command.milestone.fireworktoggled", "&aYou <state> the firework for the milestone");
             config.get().addDefault("command.milestone.setfireworkamount", "&aYou set the firework amount to <amount>");
             config.get().addDefault("command.milestone.setfireworkdelay", "&aYou set the firework amount to <amount>");
 
@@ -332,79 +331,89 @@ public final class Playtime extends JavaPlugin {
     public void generateDutchTranslations() {
         getLogger().info("Generate Dutch translations");
         FileManager.Config config = fileManager.getConfig("lang/nl_NL.yml");
-        config.get().addDefault("version", 1.0);
-        config.get().addDefault("only.player.command", "&cDit is een command die alleen een speler kan gebruiken!");
-        //playtime command messages
-        config.get().addDefault("command.playtime.timemessage", "&8[&6PlayTime&8] &7Jouw speeltijd is &6%D% &7dag(en) &6%H% &7uur &6%M% &7minuut(en) &6%S% &7seconde(n)");
-        config.get().addDefault("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% ''s speeltijd is &6%D% &7dag(en) &6%H% &7uur &6%M% &7minuut(en) &6%S% &7seconde(n)");
-        config.get().addDefault("command.playtime.resettimeconfirm", "&cDe tijd van de speler is gereset!");
-        config.get().addDefault("command.playtime.resettimeussage", "&cGebruik : /playtime reset <username>!");
-        //milestone command messages
-        config.get().addDefault("command.milestone.mustbenumber", "&cDe tijd parameter moet een nummer zijn!");
-        config.get().addDefault("command.milestone.createusage", "&cGebruik : /milestone create <name> <time in seconds>!");
-        config.get().addDefault("command.milestone.milestonenotexist", "&cDe mijlpaal <name> bestaat niet!");
+        if (!config.get().contains("version")) {
+            config.get().addDefault("version", 1.0);
+            config.get().addDefault("only.player.command", "&cDit is een command die alleen een speler kan gebruiken!");
+            //playtime command messages
+            config.get().addDefault("command.playtime.timemessage", "&8[&6PlayTime&8] &7Jouw speeltijd is &6%D% &7dag(en) &6%H% &7uur &6%M% &7minuut(en) &6%S% &7seconde(n)");
+            config.get().addDefault("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% ''s speeltijd is &6%D% &7dag(en) &6%H% &7uur &6%M% &7minuut(en) &6%S% &7seconde(n)");
+            config.get().addDefault("command.playtime.resettimeconfirm", "&cDe tijd van de speler is gereset!");
+            config.get().addDefault("command.playtime.resettimeussage", "&cGebruik : /playtime reset <username>!");
+            //milestone command messages
+            config.get().addDefault("command.milestone.mustbenumber", "&cDe tijd parameter moet een nummer zijn!");
+            config.get().addDefault("command.milestone.createusage", "&cGebruik : /milestone create <name> <time in seconds>!");
+            config.get().addDefault("command.milestone.milestonenotexist", "&cDe mijlpaal <name> bestaat niet!");
 
-        config.get().addDefault("command.milestone.additemusage", "&cGebruik : /milestone additem <milestone>! Het item in je hand wordt dan toegevoegd!");
-        config.get().addDefault("command.milestone.addcommandusage", "&cGebruik : /milestone addcommand <milestone> <command>!");
+            config.get().addDefault("command.milestone.additemusage", "&cGebruik : /milestone additem <milestone>! Het item in je hand wordt dan toegevoegd!");
+            config.get().addDefault("command.milestone.addcommandusage", "&cGebruik : /milestone addcommand <milestone> <command>!");
 
-        config.get().addDefault("command.milestone.milestonecreated", "&aDe mijlpaal is aangemaakt!");
-        config.get().addDefault("command.milestone.itemadded", "&aJe hebt succesvol een item toegevoegd aan de mijlpaal!");
-        config.get().addDefault("command.milestone.commandadded", "&aJe hebt succesvol een command toegevoegd aan de mijlpaal!");
+            config.get().addDefault("command.milestone.milestonecreated", "&aDe mijlpaal is aangemaakt!");
+            config.get().addDefault("command.milestone.itemadded", "&aJe hebt succesvol een item toegevoegd aan de mijlpaal!");
+            config.get().addDefault("command.milestone.commandadded", "&aJe hebt succesvol een command toegevoegd aan de mijlpaal!");
+            config.copyDefaults(true).save();
+            config.save();
+        }
 
-        config.copyDefaults(true).save();
-        config.save();
+        if (config.get().getDouble("version") < 1.1) {
+            getLogger().info("Updating Dutch translations");
+            config.get().set("version", 1.1);
+            config.get().addDefault("command.milestone.togglefireworkusage", "&cGebruik : /milestone togglefirework <mijlpaal>!");
+            config.get().addDefault("command.milestone.setfireworkamountusage", "&cGebruik : /milestone setfireworkamount <milestone> <aantal>!");
+            config.get().addDefault("command.milestone.setfireworkdelayusage", "&cGebruik : /milestone setfireworkdelay <mijlpaal> <vertraging in seconden>!");
+
+            config.get().addDefault("command.milestone.fireworktoggled", "&aJe <state> het vuurwerk voor de mijlpaal");
+            config.get().addDefault("command.milestone.setfireworkamount", "&aJe stelt het vuurwerk aantal in op <amount>");
+            config.get().addDefault("command.milestone.setfireworkdelay", "&aJe stelt het vuurwerk vertraging in op <amount>");
+
+
+            config.copyDefaults(true).save();
+            config.save();
+        }
+
     }
 
     public void generateGermanTranslations() {
         getLogger().info("Generate German translations");
         FileManager.Config config = fileManager.getConfig("lang/de_DE.yml");
-        config.get().addDefault("version", 1.0);
-        config.get().addDefault("only.player.command", "&cDies ist ein Kommando nur für Spieler!");
-        //playtime command messages
-        config.get().addDefault("command.playtime.timemessage", "&8[&6PlayTime&8] &7Deine Spielzeit ist &6%D% &7Tag(e) &6%H% &7Stunde(n) &6%M% &7Minute(n) &6%S% &7Sekunde(n)");
-        config.get().addDefault("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% ''s Spielzeit ist &6%D% &7Tag(e) &6%H% &7Stunde(n) &6%M% &7Minute(n) &6%S% &7Sekunde(n)");
-        config.get().addDefault("command.playtime.resettimeconfirm", "&cDie Zeit des Spielers ist zurückgesetzt!");
-        config.get().addDefault("command.playtime.resettimeussage", "&cBenutz : /playtime reset <username>!");
-        //milestone command messages
-        config.get().addDefault("command.milestone.mustbenumber", "&cDer Zeitparameter muss eine Anzahl sein!");
-        config.get().addDefault("command.milestone.createusage", "&cBenutz: /milestone create <name> <time in seconds>!");
-        config.get().addDefault("command.milestone.milestonenotexist", "&cDer Meilenstein <name> existiert nicht!");
+        if (!config.get().contains("version")) {
+            config.get().addDefault("version", 1.0);
+            config.get().addDefault("only.player.command", "&cDies ist ein Kommando nur für Spieler!");
+            //playtime command messages
+            config.get().addDefault("command.playtime.timemessage", "&8[&6PlayTime&8] &7Deine Spielzeit ist &6%D% &7Tag(e) &6%H% &7Stunde(n) &6%M% &7Minute(n) &6%S% &7Sekunde(n)");
+            config.get().addDefault("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% ''s Spielzeit ist &6%D% &7Tag(e) &6%H% &7Stunde(n) &6%M% &7Minute(n) &6%S% &7Sekunde(n)");
+            config.get().addDefault("command.playtime.resettimeconfirm", "&cDie Zeit des Spielers ist zurückgesetzt!");
+            config.get().addDefault("command.playtime.resettimeussage", "&cBenutz : /playtime reset <username>!");
+            //milestone command messages
+            config.get().addDefault("command.milestone.mustbenumber", "&cDer Zeitparameter muss eine Anzahl sein!");
+            config.get().addDefault("command.milestone.createusage", "&cBenutz: /milestone create <name> <time in seconds>!");
+            config.get().addDefault("command.milestone.milestonenotexist", "&cDer Meilenstein <name> existiert nicht!");
 
-        config.get().addDefault("command.milestone.additemusage", "&cBenutz : /milestone additem <milestone>! Der Item in Ihrer Hand wird dann hinzugefügt werden!");
-        config.get().addDefault("command.milestone.addcommandusage", "&cBenutz : /milestone addcommand <milestone> <command>!");
+            config.get().addDefault("command.milestone.additemusage", "&cBenutz : /milestone additem <milestone>! Der Item in Ihrer Hand wird dann hinzugefügt werden!");
+            config.get().addDefault("command.milestone.addcommandusage", "&cBenutz : /milestone addcommand <milestone> <command>!");
 
-        config.get().addDefault("command.milestone.milestonecreated", "&aDer Meilenstein ist geschaffen!");
-        config.get().addDefault("command.milestone.itemadded", "&aSie haben dem Meilenstein erfolgreich einen Artikel hinzugefügt!");
-        config.get().addDefault("command.milestone.commandadded", "&aSie haben dem Meilenstein erfolgreich einen Kommando hinzugefügt!");
+            config.get().addDefault("command.milestone.milestonecreated", "&aDer Meilenstein ist geschaffen!");
+            config.get().addDefault("command.milestone.itemadded", "&aSie haben dem Meilenstein erfolgreich einen Artikel hinzugefügt!");
+            config.get().addDefault("command.milestone.commandadded", "&aSie haben dem Meilenstein erfolgreich einen Kommando hinzugefügt!");
 
-        config.copyDefaults(true).save();
-        config.save();
+            config.copyDefaults(true).save();
+            config.save();
+        }
+        if (config.get().getDouble("version") < 1.1) {
+            getLogger().info("Updating German translations");
+            config.get().set("version", 1.1);
+            config.get().addDefault("command.milestone.togglefireworkusage", "&cVerwendung : /milestone togglefirework <Meilenstein>!");
+            config.get().addDefault("command.milestone.setfireworkamountusage", "&cVerwenden Sie : /milestone setfireworkamount <Meilenstein> <Nummer>!");
+            config.get().addDefault("command.milestone.setfireworkdelayusage", "&cVerwendung: /milestone setfireworkdelay <Meilenstein> <Verzögerung in Sekunden>!");
+
+            config.get().addDefault("command.milestone.fireworktoggled", "&aSie <state> das Feuerwerk für den Meilenstein");
+            config.get().addDefault("command.milestone.setfireworkamount", "&aSie stellen die Feuerwerksnummer auf <amount>");
+            config.get().addDefault("command.milestone.setfireworkdelay", "&aDu hast die Feuerwerksverzögerung auf <amount> eingestellt");
+
+
+            config.copyDefaults(true).save();
+            config.save();
+        }
     }
 
-    public void generateFrenchTranslations() {
-        getLogger().info("Generate French translations");
-        FileManager.Config config = fileManager.getConfig("lang/fr_FR.yml");
-        config.get().addDefault("version", 1.0);
-        config.get().addDefault("only.player.command", "&cCeci est une commande réservée au joueur!");
-        //playtime command messages
-        config.get().addDefault("command.playtime.timemessage", "&8[&6PlayTime&8] &7Votre temps de jeu est &6%D% &7jour(s) &6%H% &7heure(s) &6%M% &7minute(s) &6%S% &7second(s)");
-        config.get().addDefault("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% ''s récréation est &6%D% &7jour(s) &6%H% &7heure(s) &6%M% &7minute(s) &6%S% &7second(s)");
-        config.get().addDefault("command.playtime.resettimeconfirm", "&cRéinitialisation de l'heure de l'utilisateur!");
-        config.get().addDefault("command.playtime.resettimeussage", "&cUtilisez : /playtime reset <username>!");
-        //milestone command messages
-        config.get().addDefault("command.milestone.mustbenumber", "&cLe paramètre de temps doit être un nombre!");
-        config.get().addDefault("command.milestone.createusage", "&cUtilisez : /milestone create <name> <time in seconds>!");
-        config.get().addDefault("command.milestone.milestonenotexist", "&cLe jalon <name> n'existe pas!");
-
-        config.get().addDefault("command.milestone.additemusage", "&cUtilisez: /milestone additem <milestone>! L'article que vous avez en main sera alors ajouté!");
-        config.get().addDefault("command.milestone.addcommandusage", "&cUtilisez : /milestone addcommand <milestone> <command>!");
-
-        config.get().addDefault("command.milestone.milestonecreated", "&aLe jalon est créé!");
-        config.get().addDefault("command.milestone.itemadded", "&aVous avez ajouté avec succès un élément au jalon!");
-        config.get().addDefault("command.milestone.commandadded", "&aVous avez ajouté avec succès une commande au jalon!");
-
-        config.copyDefaults(true).save();
-        config.save();
-    }
 }
 

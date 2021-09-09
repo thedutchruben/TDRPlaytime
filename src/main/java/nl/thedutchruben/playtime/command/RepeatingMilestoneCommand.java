@@ -244,7 +244,6 @@ public class RepeatingMilestoneCommand implements CommandExecutor, TabCompleter 
             COMMANDS.add("togglefirework");
             COMMANDS.add("setfireworkamount");
             COMMANDS.add("setfireworkdelay");
-            COMMANDS.add("overridable");
 
             StringUtil.copyPartialMatches(args[0], COMMANDS, completions);
         }
