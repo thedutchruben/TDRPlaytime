@@ -18,6 +18,8 @@ public class MysqlDatabase extends Storage {
     private final FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("database.yml");
     private Gson gson;
 
+    private String tablePrefix = "";
+
     @Override
     public String getName() {
         return "mysql";
@@ -32,7 +34,9 @@ public class MysqlDatabase extends Storage {
                     "jdbc:mysql://" + config.get().getString("mysql.hostname") + ":" + config.get().getInt("mysql.port") + "/" + config.get().getString("mysql.database") + "?autoReconnect=true"
                     , config.get().getString("mysql.user"), config.get().getString("mysql.password"));
 
-            String ex = "CREATE TABLE IF NOT EXISTS `playtime` (\n" +
+            tablePrefix = config.get().getString("mysql.table_prefix");
+
+            String ex = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "playtime` (\n" +
                     "  `uuid` varchar(36),\n" +
                     "  `name` varchar(16),\n" +
                     "  `time` BIGINT \n" +
@@ -44,7 +48,7 @@ public class MysqlDatabase extends Storage {
                 throwables.printStackTrace();
             }
 
-            String update = "ALTER TABLE playtime MODIFY uuid VARCHAR(36);";
+            String update = "ALTER TABLE " + tablePrefix + "playtime MODIFY uuid VARCHAR(36);";
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(update)) {
                 preparedStatement.execute();
@@ -52,7 +56,7 @@ public class MysqlDatabase extends Storage {
                 throwables.printStackTrace();
             }
 
-            String miletones = "CREATE TABLE IF NOT EXISTS `milestones` (\n" +
+            String miletones = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "milestones` (\n" +
                     "  `name` varchar(40),\n" +
                     "  `data` TEXT \n" +
                     ");\n";
@@ -63,7 +67,7 @@ public class MysqlDatabase extends Storage {
                 throwables.printStackTrace();
             }
 
-            String repmiletones = "CREATE TABLE IF NOT EXISTS `repeating_milestones` (\n" +
+            String repmiletones = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "repeating_milestones` (\n" +
                     "  `name` varchar(40),\n" +
                     "  `data` TEXT \n" +
                     ");\n";
@@ -93,7 +97,7 @@ public class MysqlDatabase extends Storage {
     @Override
     public CompletableFuture<Long> getPlayTimeByUUID(String uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `time` FROM `playtime` WHERE `uuid` = ?")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `time` FROM `" + tablePrefix + "playtime` WHERE `uuid` = ?")) {
                 preparedStatement.setString(1, uuid);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
@@ -104,7 +108,7 @@ public class MysqlDatabase extends Storage {
                 sqlException.printStackTrace();
             }
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `playtime`(`uuid`, `name`, `time`) VALUES (?,?,?)")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `" + tablePrefix + "playtime`(`uuid`, `name`, `time`) VALUES (?,?,?)")) {
                 preparedStatement.setString(1, uuid);
                 preparedStatement.setString(2, Bukkit.getPlayer(UUID.fromString(uuid)).getName());
                 preparedStatement.setLong(3, 0L);
@@ -121,7 +125,7 @@ public class MysqlDatabase extends Storage {
     @Override
     public CompletableFuture<Long> getPlayTimeByName(String name) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `time` FROM `playtime` WHERE `name` = ?")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `time` FROM `" + tablePrefix + "playtime` WHERE `name` = ?")) {
                 preparedStatement.setString(1, name);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
@@ -132,7 +136,7 @@ public class MysqlDatabase extends Storage {
                 sqlException.printStackTrace();
             }
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `playtime`(`uuid`, `name`, `time`) VALUES (?,?,?)")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `" + tablePrefix + "playtime`(`uuid`, `name`, `time`) VALUES (?,?,?)")) {
                 preparedStatement.setString(1, Bukkit.getOfflinePlayer(name).getUniqueId().toString());
                 preparedStatement.setString(2, name);
                 preparedStatement.setLong(3, 0L);
@@ -149,7 +153,7 @@ public class MysqlDatabase extends Storage {
     @Override
     public CompletableFuture savePlayTime(String uuid, long playtime) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `playtime` SET `uuid`=?,`time`=? WHERE `uuid` = ?")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `" + tablePrefix + "playtime` SET `uuid`=?,`time`=? WHERE `uuid` = ?")) {
                 preparedStatement.setString(1, uuid);
                 preparedStatement.setLong(2, playtime);
                 preparedStatement.setString(3, uuid);
@@ -167,7 +171,7 @@ public class MysqlDatabase extends Storage {
     public CompletableFuture<Map<String, Long>> getTopTenList() {
         return CompletableFuture.supplyAsync(() -> {
             Map<String, Long> topList = new HashMap<>();
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `playtime`ORDER BY `time` DESC  LIMIT 10 ")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `" + tablePrefix + "playtime`ORDER BY `time` DESC  LIMIT 10 ")) {
 
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
@@ -183,7 +187,7 @@ public class MysqlDatabase extends Storage {
 
     @Override
     public long getTotalPlayTime() {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(`time`) AS TotalTime FROM `playtime`")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(`time`) AS TotalTime FROM `" + tablePrefix + "playtime`")) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getLong("TotalTime");
@@ -197,7 +201,7 @@ public class MysqlDatabase extends Storage {
 
     @Override
     public int getTotalPlayers() {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS TotalPlayers from `playtime`")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS TotalPlayers from `" + tablePrefix + "playtime`")) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt("TotalPlayers");
@@ -212,7 +216,7 @@ public class MysqlDatabase extends Storage {
     @Override
     public CompletableFuture<Void> createMilestone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `milestones`(`name`, `data`) VALUES (?,?)")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `" + tablePrefix + "milestones`(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
                 preparedStatement.setString(2, gson.toJson(milestone, Milestone.class));
                 preparedStatement.execute();
@@ -228,7 +232,7 @@ public class MysqlDatabase extends Storage {
     public CompletableFuture<Void> saveMileStone(Milestone milestone) {
 
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `milestones` SET `data`=? WHERE `name`=?")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `" + tablePrefix + "milestones` SET `data`=? WHERE `name`=?")) {
                 preparedStatement.setString(1, gson.toJson(milestone, Milestone.class));
                 preparedStatement.setString(2, milestone.getMilestoneName());
 
@@ -244,7 +248,7 @@ public class MysqlDatabase extends Storage {
     public CompletableFuture<List<Milestone>> getMilestones() {
         return CompletableFuture.supplyAsync(() -> {
             List<Milestone> milestones = new ArrayList<>();
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `milestones`")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `" + tablePrefix + "milestones`")) {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     milestones.add(gson.fromJson(resultSet.getString("data"), Milestone.class));
@@ -260,7 +264,7 @@ public class MysqlDatabase extends Storage {
     @Override
     public CompletableFuture<Void> createRepeatingMilestone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `repeating_milestones`(`name`, `data`) VALUES (?,?)")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `" + tablePrefix + "repeating_milestones`(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
                 preparedStatement.setString(2, gson.toJson(milestone, RepeatingMilestone.class));
                 preparedStatement.execute();
@@ -274,7 +278,7 @@ public class MysqlDatabase extends Storage {
     @Override
     public CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `repeating_milestones` SET `data`=? WHERE `name`=?")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `" + tablePrefix + "repeating_milestones` SET `data`=? WHERE `name`=?")) {
                 preparedStatement.setString(1, gson.toJson(milestone, RepeatingMilestone.class));
                 preparedStatement.setString(2, milestone.getMilestoneName());
 
@@ -290,7 +294,7 @@ public class MysqlDatabase extends Storage {
     public CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones() {
         return CompletableFuture.supplyAsync(() -> {
             List<RepeatingMilestone> milestones = new ArrayList<>();
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `repeating_milestones`")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `" + tablePrefix + "repeating_milestones`")) {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     milestones.add(gson.fromJson(resultSet.getString("data"), RepeatingMilestone.class));
@@ -307,7 +311,7 @@ public class MysqlDatabase extends Storage {
     @Override
     public CompletableFuture<Void> reset(String uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `playtime` SET `time`=? WHERE `name` = ?")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `" + tablePrefix + "playtime` SET `time`=? WHERE `name` = ?")) {
                 preparedStatement.setLong(1, 0);
                 preparedStatement.setString(2, uuid);
                 preparedStatement.execute();
