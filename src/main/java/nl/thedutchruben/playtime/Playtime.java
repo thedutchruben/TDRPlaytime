@@ -3,6 +3,7 @@ package nl.thedutchruben.playtime;
 import de.jeff_media.updatechecker.UpdateChecker;
 import de.jeff_media.updatechecker.UserAgentBuilder;
 import lombok.SneakyThrows;
+import me.clip.placeholderapi.PlaceholderAPI;
 import nl.thedutchruben.playtime.command.MilestoneCommand;
 import nl.thedutchruben.playtime.command.PlayTimeCommand;
 import nl.thedutchruben.playtime.command.RepeatingMilestoneCommand;
@@ -35,9 +36,9 @@ public final class Playtime extends JavaPlugin {
     private static Playtime instance;
     private final Map<UUID, Long> playerOnlineTime = new HashMap<>();
     private final Map<UUID, Long> lastCheckedTime = new HashMap<>();
-    private final Map<Long, Milestone> milestoneMap = new HashMap<>();
-    private final List<RepeatingMilestone> repeatedMilestoneList = new ArrayList<>();
-    private final Map<String, String> keyMessageMap = new HashMap<>();
+    private Map<Long, Milestone> milestoneMap = new HashMap<>();
+    private List<RepeatingMilestone> repeatedMilestoneList = new ArrayList<>();
+    private Map<String, String> keyMessageMap = new HashMap<>();
     private Storage storage;
     private final FileManager fileManager = new FileManager(this);
     private FileManager.Config langFile;
@@ -201,7 +202,7 @@ public final class Playtime extends JavaPlugin {
     }
 
     public void update(UUID uuid, boolean save) {
-
+        if(lastCheckedTime.get(uuid) == null) return;
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid);
         lastCheckedTime.replace(uuid, System.currentTimeMillis());
         long newtime = playerOnlineTime.get(uuid) + extraTime;
@@ -223,9 +224,6 @@ public final class Playtime extends JavaPlugin {
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid);
         lastCheckedTime.replace(uuid, System.currentTimeMillis());
         long newtime = playerOnlineTime.get(uuid) + extraTime;
-//        if (Bukkit.getPlayer(uuid) != null) {
-//            Bukkit.getPluginManager().callEvent(new PlayTimeUpdatePlayerEvent(Bukkit.getPlayer(uuid), playerOnlineTime.get(uuid), newtime));
-//        }
         checkMileStones(uuid, playerOnlineTime.get(uuid), newtime);
         playerOnlineTime.replace(uuid, newtime);
         storage.savePlayTime(uuid.toString(), playerOnlineTime.get(uuid));
@@ -355,7 +353,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.1) {
-            getLogger().info("Updating Dutch translations");
+            getLogger().info("Updating Dutch translations");i
             config.get().set("version", 1.1);
             config.get().addDefault("command.milestone.togglefireworkusage", "&cGebruik : /milestone togglefirework <mijlpaal>!");
             config.get().addDefault("command.milestone.setfireworkamountusage", "&cGebruik : /milestone setfireworkamount <milestone> <aantal>!");
@@ -415,5 +413,16 @@ public final class Playtime extends JavaPlugin {
         }
     }
 
+    public void setMilestoneMap(Map<Long, Milestone> milestoneMap) {
+        this.milestoneMap = milestoneMap;
+    }
+
+    public void setRepeatedMilestoneList(List<RepeatingMilestone> repeatedMilestoneList) {
+        this.repeatedMilestoneList = repeatedMilestoneList;
+    }
+
+    public Map<String, String> getKeyMessageMap() {
+        return keyMessageMap;
+    }
 }
 

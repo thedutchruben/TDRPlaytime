@@ -2,6 +2,7 @@ package nl.thedutchruben.playtime.command;
 
 import lombok.SneakyThrows;
 import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.milestone.Milestone;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -70,6 +71,35 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                             Playtime.getInstance().getStorage().savePlayTime(offlinePlayer.getUniqueId().toString(), playtime);
                         }
                         sender.sendMessage(ChatColor.GREEN + "migrated");
+                    }
+                    break;
+                case "reload":
+                    if (sender.hasPermission("playtime.playtime.reload")) {
+                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                            Playtime.getInstance().forceSave(onlinePlayer.getUniqueId());
+                        }
+                        Playtime.getInstance().getMilestoneMap().clear();
+                        Playtime.getInstance().getRepeatedMilestoneList().clear();
+                        Playtime.getInstance().getPlayerOnlineTime().clear();
+                        Playtime.getInstance().getLastCheckedTime().clear();
+                        Playtime.getInstance().getStorage().getMilestones().whenComplete((milestones, throwable) -> {
+                            for (Milestone milestone : milestones) {
+                                Playtime.getInstance().getMilestoneMap().put(milestone.getOnlineTime()* 1000L,milestone);
+                            }
+                        });
+
+                        Playtime.getInstance().getStorage().getRepeatingMilestones().whenComplete((milestones, throwable) -> {
+                            Playtime.getInstance().getRepeatedMilestoneList().addAll(milestones);
+                        });
+
+                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                            long onlineTime = Playtime.getInstance().getStorage().getPlayTimeByUUID(onlinePlayer.getUniqueId().toString()).get();
+                            Playtime.getInstance().getPlayerOnlineTime().put(onlinePlayer.getUniqueId(), onlineTime);
+                            Playtime.getInstance().getLastCheckedTime().put(onlinePlayer.getUniqueId(), System.currentTimeMillis());
+                        }
+
+                        Playtime.getInstance().getKeyMessageMap().clear();
+                        sender.sendMessage(ChatColor.GREEN + "Reloaded");
                     }
                     break;
                 default:
@@ -182,6 +212,8 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                 COMMANDS.add("reset");
             if (sender.hasPermission("playtime.playtime.migratefromminecraft"))
                 COMMANDS.add("migratefromminecraft");
+            if (sender.hasPermission("playtime.playtime.reload"))
+                COMMANDS.add("reload");
             if (sender.hasPermission("playtime.playtime.other"))
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     COMMANDS.add(onlinePlayer.getName());

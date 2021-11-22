@@ -1,10 +1,16 @@
 package nl.thedutchruben.playtime.extentions;
 
+import jdk.internal.jline.internal.Log;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import nl.thedutchruben.playtime.Playtime;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
     @Override
@@ -64,6 +70,31 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         //%tdrplaytime_minutes_number%
         if (params.equals("seconds_number")) {
             return String.valueOf(seconds);
+        }
+
+        //%tdrplaytime_top_names_{1-10}%
+        if (params.contains("top_names_")) {
+            int placeNumber = 1;
+            String place =params.split("_")[params.split("_").length -1];
+            try {
+                placeNumber = Integer.parseInt(place);
+                if(placeNumber <= 1){
+                    placeNumber = 1;
+                }
+
+                if(placeNumber >= 10){
+                    placeNumber = 10;
+                }
+            }catch (NumberFormatException exception){
+                Bukkit.getLogger().log(Level.WARNING,"Wrong number format");
+            }
+            List<String> top10 = new ArrayList<>();
+            Playtime.getInstance().getStorage().getTopTenList().whenComplete((stringLongMap, throwable) -> {
+                stringLongMap.forEach((s, aLong) -> {
+                    top10.add(s);
+                });
+            });
+            return String.valueOf(top10.get(placeNumber));
         }
 
         return null;
