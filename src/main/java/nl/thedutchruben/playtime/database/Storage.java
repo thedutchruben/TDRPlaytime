@@ -3,9 +3,7 @@ package nl.thedutchruben.playtime.database;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class Storage {
@@ -52,6 +50,8 @@ public abstract class Storage {
 
     public abstract int getTotalPlayers();
 
+    public abstract String getTopPlace(int place);
+
     public abstract CompletableFuture<Void> createMilestone(Milestone milestone);
 
     public abstract CompletableFuture<Void> saveMileStone(Milestone milestone);
@@ -66,5 +66,35 @@ public abstract class Storage {
 
     public abstract CompletableFuture<Void> reset(String name);
 
+    public Set<String> sortHashMapByValues(
+            Map<String, Long> passedMap) {
+        List<String> mapKeys = new ArrayList<>(passedMap.keySet());
+        List<Long> mapValues = new ArrayList<>(passedMap.values());
+        Collections.sort(mapValues);
+        Collections.sort(mapKeys);
+        Collections.reverse(mapValues);
+        Collections.reverse(mapKeys);
+
+        LinkedHashMap<String, Long> sortedMap =
+                new LinkedHashMap<>();
+
+        Iterator<Long> valueIt = mapValues.iterator();
+        while (valueIt.hasNext()) {
+            long val = valueIt.next();
+            Iterator<String> keyIt = mapKeys.iterator();
+
+            while (keyIt.hasNext()) {
+                String key = keyIt.next();
+                Long comp1 = passedMap.get(key);
+
+                if (comp1.equals(val)) {
+                    keyIt.remove();
+                    sortedMap.put(key, val);
+                    break;
+                }
+            }
+        }
+        return sortedMap.keySet();
+    }
 
 }

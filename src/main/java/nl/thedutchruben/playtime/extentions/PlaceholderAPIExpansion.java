@@ -1,6 +1,7 @@
 package nl.thedutchruben.playtime.extentions;
 
 import jdk.internal.jline.internal.Log;
+import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import nl.thedutchruben.playtime.Playtime;
 import org.bukkit.Bukkit;
@@ -8,8 +9,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
@@ -28,6 +29,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         return Playtime.getInstance().getDescription().getVersion();
     }
 
+    @SneakyThrows
     @Override
     public String onPlaceholderRequest(Player p, String params) {
         Playtime.getInstance().update(p.getUniqueId(), false);
@@ -88,17 +90,12 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             }catch (NumberFormatException exception){
                 Bukkit.getLogger().log(Level.WARNING,"Wrong number format");
             }
-            List<String> top10 = new ArrayList<>();
-            Playtime.getInstance().getStorage().getTopTenList().whenComplete((stringLongMap, throwable) -> {
-                stringLongMap.forEach((s, aLong) -> {
-                    top10.add(s);
-                });
-            });
-            return String.valueOf(top10.get(placeNumber));
+            return Playtime.getInstance().getStorage().getTopPlace(placeNumber - 1);
         }
 
         return null;
     }
+
 
     public String translateMessage(String message, long time) {
         time = time / 1000;
@@ -111,4 +108,5 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         int seconds = (int) time;
         return ChatColor.translateAlternateColorCodes('&', message.replace("%H%", String.valueOf(hours)).replace("%M%", String.valueOf(minutes)).replace("%S%", String.valueOf(seconds)).replace("%D%", String.valueOf(days)));
     }
+
 }

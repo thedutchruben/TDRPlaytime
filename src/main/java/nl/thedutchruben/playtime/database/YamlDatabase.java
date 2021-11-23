@@ -94,6 +94,31 @@ public class YamlDatabase extends Storage {
     }
 
     @Override
+    public String getTopPlace(int place) {
+        Map<String, Long> hashMap = new HashMap<>();
+        for (final File fileEntry : Objects.requireNonNull(new File(Playtime.getInstance().getDataFolder(), "players/").listFiles())) {
+            YamlConfiguration config = Playtime.getInstance().getFileManager().getConfig("players/" + fileEntry.getName().replace(".yaml", "") + ".yaml").get();
+            if (config != null) {
+                if (config.contains("onlinetime")) {
+                    if (Bukkit.getOfflinePlayer(UUID.fromString(fileEntry.getName().replace(".yaml", ""))).getName() != null) {
+                        hashMap.put(Bukkit.getOfflinePlayer(UUID.fromString(fileEntry.getName().replace(".yaml", ""))).getName(),
+                                config.getLong("onlinetime"));
+                    } else {
+                        hashMap.put("",
+                                config.getLong("onlinetime"));
+                    }
+
+                }
+            }
+        }
+        String name = "";
+        if(sortHashMapByValues(hashMap).toArray()[place] != null){
+            name = (String) sortHashMapByValues(hashMap).toArray()[place];
+        }
+        return name;
+    }
+
+    @Override
     public CompletableFuture<Void> createMilestone(Milestone milestone) {
         return saveMileStone(milestone);
     }

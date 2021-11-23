@@ -73,6 +73,16 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                         sender.sendMessage(ChatColor.GREEN + "migrated");
                     }
                     break;
+                case "settime":
+                    if (sender.hasPermission("playtime.playtime.settime")) {
+                        if (args.length == 3) {
+                            setTime(sender,args[1],args[2]);
+                        }else{
+                            sender.sendMessage("Use /playtime settime <name> <time in seconds>");
+                        }
+
+                    }
+                    break;
                 case "reload":
                     if (sender.hasPermission("playtime.playtime.reload")) {
                         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -130,6 +140,26 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
             }
         }
         return true;
+    }
+
+    private void setTime(CommandSender sender, String name, String arg1) {
+        Player player = Bukkit.getPlayer(name);
+        long oldTime = Playtime.getInstance().getPlayerOnlineTime().get(player.getUniqueId());
+        Playtime.getInstance().getPlayerOnlineTime().remove(player.getUniqueId());
+        try {
+            Playtime.getInstance().getPlayerOnlineTime().put(player.getUniqueId(),Long.parseLong(arg1) * 1000);
+            Playtime.getInstance().getStorage().savePlayTime(player.getUniqueId(),Long.parseLong(arg1) * 1000).whenCompleteAsync((unused, throwable) ->{
+                if(throwable != null){
+                    throwable.printStackTrace();
+                    return;
+                }
+                sender.sendMessage("Playtime updated");
+            });
+        }catch (NumberFormatException ex){
+            Playtime.getInstance().getPlayerOnlineTime().put(player.getUniqueId(),oldTime);
+            sender.sendMessage("Use /playtime settime <name> <time in seconds>");
+        }
+
     }
 
 
@@ -212,6 +242,8 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                 COMMANDS.add("reset");
             if (sender.hasPermission("playtime.playtime.migratefromminecraft"))
                 COMMANDS.add("migratefromminecraft");
+            if (sender.hasPermission("playtime.playtime.settime"))
+                COMMANDS.add("settime");
             if (sender.hasPermission("playtime.playtime.reload"))
                 COMMANDS.add("reload");
             if (sender.hasPermission("playtime.playtime.other"))

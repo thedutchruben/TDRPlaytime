@@ -353,7 +353,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.1) {
-            getLogger().info("Updating Dutch translations");i
+            getLogger().info("Updating Dutch translations");
             config.get().set("version", 1.1);
             config.get().addDefault("command.milestone.togglefireworkusage", "&cGebruik : /milestone togglefirework <mijlpaal>!");
             config.get().addDefault("command.milestone.setfireworkamountusage", "&cGebruik : /milestone setfireworkamount <milestone> <aantal>!");
