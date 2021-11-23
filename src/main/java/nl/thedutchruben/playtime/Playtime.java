@@ -76,6 +76,7 @@ public final class Playtime extends JavaPlugin {
         fileConfiguration.addDefault("mysql.user", "root");
         fileConfiguration.addDefault("mysql.password", "password");
         fileConfiguration.addDefault("mysql.database", "playtime");
+        fileConfiguration.addDefault("mysql.table_prefix", "playtime_");
 
         database.copyDefaults(true).save();
 
