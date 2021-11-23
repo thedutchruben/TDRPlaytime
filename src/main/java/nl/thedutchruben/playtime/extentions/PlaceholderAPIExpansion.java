@@ -1,6 +1,5 @@
 package nl.thedutchruben.playtime.extentions;
 
-import jdk.internal.jline.internal.Log;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import nl.thedutchruben.playtime.Playtime;
@@ -9,8 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {

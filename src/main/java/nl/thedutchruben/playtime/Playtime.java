@@ -3,7 +3,6 @@ package nl.thedutchruben.playtime;
 import de.jeff_media.updatechecker.UpdateChecker;
 import de.jeff_media.updatechecker.UserAgentBuilder;
 import lombok.SneakyThrows;
-import me.clip.placeholderapi.PlaceholderAPI;
 import nl.thedutchruben.playtime.command.MilestoneCommand;
 import nl.thedutchruben.playtime.command.PlayTimeCommand;
 import nl.thedutchruben.playtime.command.RepeatingMilestoneCommand;
