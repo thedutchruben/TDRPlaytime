@@ -52,9 +52,12 @@ public class RepeatingMilestone {
         }
 
         if (commands != null) {
-            for (String command : commands) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%playername%", player.getName()).replace("%playeruuid%", player.getUniqueId().toString()));
-            }
+            Bukkit.getScheduler().runTask(Playtime.getInstance(),() -> {
+                for (String command : commands) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%playername%", player.getName()).replace("%playeruuid%", player.getUniqueId().toString()));
+                }
+            });
+
         }
 
         if (fireworkShow) {
