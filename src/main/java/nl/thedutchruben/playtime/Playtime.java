@@ -117,10 +117,6 @@ public final class Playtime extends JavaPlugin {
             getLogger().log(Level.INFO, repeatedMilestoneList.size() + " repeating milestones loaded");
         });
 
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(), this);
-        Bukkit.getPluginManager().registerEvents(new EntityDamageListener(), this);
-
         if (configfileConfiguration.getBoolean("settings.update_check", true)) {
             UpdateChecker.init(this, "https://thedutchruben.nl/api/projects/version/tdrplaytime") // A link to a URL that contains the latest version as String
                     .setDownloadLink("https://www.spigotmc.org/resources/tdrplaytime-milestones-mysql.47894/") // You can either use a custom URL or the Spigot Resource ID
