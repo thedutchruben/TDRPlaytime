@@ -3,6 +3,8 @@ package nl.thedutchruben.playtime;
 import de.jeff_media.updatechecker.UpdateChecker;
 import de.jeff_media.updatechecker.UserAgentBuilder;
 import lombok.SneakyThrows;
+import nl.thedutchruben.mccore.Mccore;
+import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.command.MilestoneCommand;
 import nl.thedutchruben.playtime.command.PlayTimeCommand;
 import nl.thedutchruben.playtime.command.RepeatingMilestoneCommand;
@@ -12,12 +14,8 @@ import nl.thedutchruben.playtime.database.YamlDatabase;
 import nl.thedutchruben.playtime.events.PlayTimeCheckEvent;
 import nl.thedutchruben.playtime.events.PlayTimeUpdatePlayerEvent;
 import nl.thedutchruben.playtime.extentions.PlaceholderAPIExpansion;
-import nl.thedutchruben.playtime.listeners.EntityDamageListener;
-import nl.thedutchruben.playtime.listeners.PlayerJoinListener;
-import nl.thedutchruben.playtime.listeners.PlayerQuitListener;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
-import nl.thedutchruben.playtime.utils.FileManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -29,6 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public final class Playtime extends JavaPlugin {
@@ -86,119 +85,130 @@ public final class Playtime extends JavaPlugin {
         }
         config.save();
         database.save();
-        storage.setup();
-        getCommand("playtime").setExecutor(new PlayTimeCommand());
-        getCommand("playtime").setTabCompleter(new PlayTimeCommand());
-        getCommand("milestone").setExecutor(new MilestoneCommand());
-        getCommand("milestone").setTabCompleter(new MilestoneCommand());
-        getCommand("repeatingmilestone").setExecutor(new RepeatingMilestoneCommand());
-        getCommand("repeatingmilestone").setTabCompleter(new RepeatingMilestoneCommand());
+        boolean data = storage.setup();
+        if(data){
+            new Mccore(this);
+            getCommand("playtime").setExecutor(new PlayTimeCommand());
+            getCommand("playtime").setTabCompleter(new PlayTimeCommand());
+            getCommand("milestone").setExecutor(new MilestoneCommand());
+            getCommand("milestone").setTabCompleter(new MilestoneCommand());
+            getCommand("repeatingmilestone").setExecutor(new RepeatingMilestoneCommand());
+            getCommand("repeatingmilestone").setTabCompleter(new RepeatingMilestoneCommand());
 
-        generateEnglishTranslations();
-        generateDutchTranslations();
-        generateGermanTranslations();
+            generateEnglishTranslations();
+            generateDutchTranslations();
+            generateGermanTranslations();
 
-        langFile = fileManager.getConfig("lang/" + configfileConfiguration.getString("language") + ".yml");
+            langFile = fileManager.getConfig("lang/" + configfileConfiguration.getString("language") + ".yml");
 
-        getLogger().log(Level.INFO, "Loading milestones");
-        storage.getMilestones().whenComplete((milestones, throwable) -> {
-            for (Milestone storageMilestone : milestones) {
-                milestoneMap.put(storageMilestone.getOnlineTime() * 1000L, storageMilestone);
+            getLogger().log(Level.INFO, "Loading milestones");
+            storage.getMilestones().whenComplete((milestones, throwable) -> {
+                for (Milestone storageMilestone : milestones) {
+                    milestoneMap.put(storageMilestone.getOnlineTime() * 1000L, storageMilestone);
+                }
+                getLogger().log(Level.INFO, milestoneMap.size() + " milestones loaded");
+            });
+
+            getLogger().log(Level.INFO, "Loading repeating milestones");
+
+            storage.getRepeatingMilestones().whenComplete((repeatingMilestones, throwable) -> {
+                for (RepeatingMilestone repeatingMilestone : repeatingMilestones) {
+                    repeatedMilestoneList.add(repeatingMilestone);
+                }
+                getLogger().log(Level.INFO, repeatedMilestoneList.size() + " repeating milestones loaded");
+            });
+
+            if (configfileConfiguration.getBoolean("settings.update_check", true)) {
+                UpdateChecker.init(this, "https://thedutchruben.nl/api/projects/version/tdrplaytime") // A link to a URL that contains the latest version as String
+                        .setDownloadLink("https://www.spigotmc.org/resources/tdrplaytime-milestones-mysql.47894/") // You can either use a custom URL or the Spigot Resource ID
+                        .setDonationLink("https://www.paypal.com/paypalme/RGSYT")
+                        .setChangelogLink(47894) // Same as for the Download link: URL or Spigot Resource ID
+                        .setNotifyOpsOnJoin(true) // Notify OPs on Join when a new version is found (default)
+                        .setNotifyByPermissionOnJoin("thedutchruben.updatechecker") // Also notify people on join with this permission
+                        .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
+                        .checkEveryXHours(configfileConfiguration.getDouble("settings.update_checktime", 0.5)) // Check every 30 minutes
+                        .suppressUpToDateMessage(true)
+                        .checkNow(); // And check right now
             }
-            getLogger().log(Level.INFO, milestoneMap.size() + " milestones loaded");
-        });
-
-        getLogger().log(Level.INFO, "Loading repeating milestones");
-
-        storage.getRepeatingMilestones().whenComplete((repeatingMilestones, throwable) -> {
-            for (RepeatingMilestone repeatingMilestone : repeatingMilestones) {
-                repeatedMilestoneList.add(repeatingMilestone);
-            }
-            getLogger().log(Level.INFO, repeatedMilestoneList.size() + " repeating milestones loaded");
-        });
-
-        if (configfileConfiguration.getBoolean("settings.update_check", true)) {
-            UpdateChecker.init(this, "https://thedutchruben.nl/api/projects/version/tdrplaytime") // A link to a URL that contains the latest version as String
-                    .setDownloadLink("https://www.spigotmc.org/resources/tdrplaytime-milestones-mysql.47894/") // You can either use a custom URL or the Spigot Resource ID
-                    .setDonationLink("https://www.paypal.com/paypalme/RGSYT")
-                    .setChangelogLink(47894) // Same as for the Download link: URL or Spigot Resource ID
-                    .setNotifyOpsOnJoin(true) // Notify OPs on Join when a new version is found (default)
-                    .setNotifyByPermissionOnJoin("thedutchruben.updatechecker") // Also notify people on join with this permission
-                    .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
-                    .checkEveryXHours(configfileConfiguration.getDouble("settings.update_checktime", 0.5)) // Check every 30 minutes
-                    .suppressUpToDateMessage(true)
-                    .checkNow(); // And check right now
-        }
 
 
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            long onlineTime = Playtime.getInstance().getStorage().getPlayTimeByUUID(onlinePlayer.getUniqueId().toString()).get();
-            Playtime.getInstance().getPlayerOnlineTime().put(onlinePlayer.getUniqueId(), onlineTime);
-            Playtime.getInstance().getLastCheckedTime().put(onlinePlayer.getUniqueId(), System.currentTimeMillis());
-        }
-
-        checkTask = Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new PlayTimeCheckEvent(true));
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                update(onlinePlayer.getUniqueId(), true);
+                long onlineTime = 0;
+                try {
+                    onlineTime = Playtime.getInstance().getStorage().getPlayTimeByUUID(onlinePlayer.getUniqueId().toString()).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+                Playtime.getInstance().getPlayerOnlineTime().put(onlinePlayer.getUniqueId(), onlineTime);
+                Playtime.getInstance().getLastCheckedTime().put(onlinePlayer.getUniqueId(), System.currentTimeMillis());
             }
-        }, 0, 20);
+
+            checkTask = Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new PlayTimeCheckEvent(true));
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    update(onlinePlayer.getUniqueId(), true);
+                }
+            }, 0, 20);
 
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            getLogger().log(Level.INFO, "PlaceholderAPI expansion implemented");
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "PlaceholderAPI"));
-            new PlaceholderAPIExpansion().register();
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                getLogger().log(Level.INFO, "PlaceholderAPI expansion implemented");
+                metrics.addCustomChart(new SimplePie("addons_use", () -> "PlaceholderAPI"));
+                new PlaceholderAPIExpansion().register();
+            }
+
+            if (Bukkit.getPluginManager().getPlugin("Multiverse-Core") != null) {
+                metrics.addCustomChart(new SimplePie("addons_use", () -> "Multiverse-Core"));
+            }
+
+            if (Bukkit.getPluginManager().getPlugin("MultiWorld") != null) {
+                metrics.addCustomChart(new SimplePie("addons_use", () -> "MultiWorld"));
+            }
+
+            if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
+                metrics.addCustomChart(new SimplePie("addons_use", () -> "mcMMO"));
+            }
+
+            if (Bukkit.getPluginManager().getPlugin("HolographicDisplay") != null) {
+                metrics.addCustomChart(new SimplePie("addons_use", () -> "HolographicDisplay"));
+            }
+
+
+            metrics.addCustomChart(new SimplePie("bungeecord", () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
+            metrics.addCustomChart(new SimplePie("database_type", () -> storage.getName()));
+            metrics.addCustomChart(new SimplePie("update_checker", () -> String.valueOf(configfileConfiguration.getBoolean("settings.update_check", true))));
+            metrics.addCustomChart(new SimplePie("uses_milestones", () -> String.valueOf(milestoneMap.size() > 1)));
+            metrics.addCustomChart(new SimplePie("uses_repeating_milestones", () -> String.valueOf(repeatedMilestoneList.size() > 1)));
+
+            metrics.addCustomChart(new SimplePie("language", () -> config.get().getString("language")));
+            metrics.addCustomChart(new SingleLineChart("total_play_time", () -> Math.toIntExact(storage.getTotalPlayTime() / 1000 / 60 / 60)));
+            metrics.addCustomChart(new SingleLineChart("total_players", () -> Math.toIntExact(storage.getTotalPlayers())));
+
         }
-
-        if (Bukkit.getPluginManager().getPlugin("Multiverse-Core") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "Multiverse-Core"));
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("MultiWorld") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "MultiWorld"));
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "mcMMO"));
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("HolographicDisplay") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "HolographicDisplay"));
-        }
-
-
-        metrics.addCustomChart(new SimplePie("bungeecord", () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
-        metrics.addCustomChart(new SimplePie("database_type", () -> storage.getName()));
-        metrics.addCustomChart(new SimplePie("update_checker", () -> String.valueOf(configfileConfiguration.getBoolean("settings.update_check", true))));
-        metrics.addCustomChart(new SimplePie("uses_milestones", () -> String.valueOf(milestoneMap.size() > 1)));
-        metrics.addCustomChart(new SimplePie("uses_repeating_milestones", () -> String.valueOf(repeatedMilestoneList.size() > 1)));
-
-        metrics.addCustomChart(new SimplePie("language", () -> config.get().getString("language")));
-        metrics.addCustomChart(new SingleLineChart("total_play_time", () -> Math.toIntExact(storage.getTotalPlayTime() / 1000 / 60 / 60)));
-        metrics.addCustomChart(new SingleLineChart("total_players", () -> Math.toIntExact(storage.getTotalPlayers())));
-
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        checkTask.cancel();
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            forceSave(onlinePlayer.getUniqueId());
-        }
+        if(checkTask != null){
+            checkTask.cancel();
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                forceSave(onlinePlayer.getUniqueId());
+            }
 
-        storage.stop();
-        playerOnlineTime.clear();
-        lastCheckedTime.clear();
-        milestoneMap.clear();
-        repeatedMilestoneList.clear();
-        keyMessageMap.clear();
+            storage.stop();
+            playerOnlineTime.clear();
+            lastCheckedTime.clear();
+            milestoneMap.clear();
+            repeatedMilestoneList.clear();
+            keyMessageMap.clear();
+        }
 
     }
 
     public void update(UUID uuid, boolean save) {
         if(lastCheckedTime.get(uuid) == null) return;
+        playerOnlineTime.putIfAbsent(uuid, 0L);
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid);
         lastCheckedTime.replace(uuid, System.currentTimeMillis());
         long newtime = playerOnlineTime.get(uuid) + extraTime;

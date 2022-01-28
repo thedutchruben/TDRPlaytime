@@ -21,9 +21,10 @@ public class YamlDatabase extends Storage {
     }
 
     @Override
-    public void setup() {
+    public boolean setup() {
         this.gson = new GsonBuilder()
                 .disableHtmlEscaping().setPrettyPrinting().create();
+        return true;
     }
 
     @Override

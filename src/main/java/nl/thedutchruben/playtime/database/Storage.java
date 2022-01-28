@@ -13,7 +13,7 @@ public abstract class Storage {
     /**
      * Setup the storage such as the database connection
      */
-    public abstract void setup();
+    public abstract boolean setup();
 
     /**
      * Stops the storage such things as the database connection

@@ -3,15 +3,16 @@ package nl.thedutchruben.playtime.database;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.SneakyThrows;
+import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
-import nl.thedutchruben.playtime.utils.FileManager;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public class MysqlDatabase extends Storage {
     private Connection connection;
@@ -26,7 +27,7 @@ public class MysqlDatabase extends Storage {
     }
 
     @Override
-    public void setup() {
+    public boolean setup() {
         this.gson = new GsonBuilder()
                 .disableHtmlEscaping().setPrettyPrinting().create();
         try {
@@ -34,54 +35,60 @@ public class MysqlDatabase extends Storage {
                     "jdbc:mysql://" + config.get().getString("mysql.hostname") + ":" + config.get().getInt("mysql.port") + "/" + config.get().getString("mysql.database") + "?autoReconnect=true"
                     , config.get().getString("mysql.user"), config.get().getString("mysql.password"));
 
-            tablePrefix = config.get().getString("mysql.table_prefix");
-
-            String ex = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "playtime` (\n" +
-                    "  `uuid` varchar(36),\n" +
-                    "  `name` varchar(16),\n" +
-                    "  `time` BIGINT \n" +
-                    ");\n";
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(ex)) {
-                preparedStatement.execute();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-
-            String update = "ALTER TABLE " + tablePrefix + "playtime MODIFY uuid VARCHAR(36);";
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(update)) {
-                preparedStatement.execute();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-
-            String miletones = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "milestones` (\n" +
-                    "  `name` varchar(40),\n" +
-                    "  `data` TEXT \n" +
-                    ");\n";
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(miletones)) {
-                preparedStatement.execute();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-
-            String repmiletones = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "repeating_milestones` (\n" +
-                    "  `name` varchar(40),\n" +
-                    "  `data` TEXT \n" +
-                    ");\n";
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(repmiletones)) {
-                preparedStatement.execute();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        }catch (Exception exception){
+            Bukkit.getLogger().log(Level.WARNING,"Sql not connected plugin shutting down");
+            Playtime.getInstance().getServer().getPluginManager().disablePlugin(Playtime.getInstance());
+            return false;
         }
 
+        tablePrefix = config.get().getString("mysql.table_prefix");
 
+        String ex = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "playtime` (\n" +
+                "  `uuid` varchar(36),\n" +
+                "  `name` varchar(16),\n" +
+                "  `time` BIGINT \n" +
+                ");\n";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ex)) {
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+
+        String update = "ALTER TABLE " + tablePrefix + "playtime MODIFY uuid VARCHAR(36);";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(update)) {
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+
+        String miletones = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "milestones` (\n" +
+                "  `name` varchar(40),\n" +
+                "  `data` TEXT \n" +
+                ");\n";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(miletones)) {
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+
+        String repmiletones = "CREATE TABLE IF NOT EXISTS `" + tablePrefix + "repeating_milestones` (\n" +
+                "  `name` varchar(40),\n" +
+                "  `data` TEXT \n" +
+                ");\n";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(repmiletones)) {
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     @Override
