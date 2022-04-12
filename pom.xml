@@ -142,7 +142,7 @@
         <dependency>
             <groupId>com.github.thedutchruben</groupId>
             <artifactId>tdr-mc-core</artifactId>
-            <version>c420f66c2f</version>
+            <version>1.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
