@@ -1,13 +1,9 @@
 package nl.thedutchruben.playtime;
 
-import de.jeff_media.updatechecker.UpdateChecker;
-import de.jeff_media.updatechecker.UserAgentBuilder;
 import lombok.SneakyThrows;
 import nl.thedutchruben.mccore.Mccore;
+import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
 import nl.thedutchruben.mccore.utils.config.FileManager;
-import nl.thedutchruben.playtime.command.MilestoneCommand;
-import nl.thedutchruben.playtime.command.PlayTimeCommand;
-import nl.thedutchruben.playtime.command.RepeatingMilestoneCommand;
 import nl.thedutchruben.playtime.database.MysqlDatabase;
 import nl.thedutchruben.playtime.database.Storage;
 import nl.thedutchruben.playtime.database.YamlDatabase;
@@ -87,13 +83,14 @@ public final class Playtime extends JavaPlugin {
         database.save();
         boolean data = storage.setup();
         if(data){
-            new Mccore(this);
-            getCommand("playtime").setExecutor(new PlayTimeCommand());
-            getCommand("playtime").setTabCompleter(new PlayTimeCommand());
-            getCommand("milestone").setExecutor(new MilestoneCommand());
-            getCommand("milestone").setTabCompleter(new MilestoneCommand());
-            getCommand("repeatingmilestone").setExecutor(new RepeatingMilestoneCommand());
-            getCommand("repeatingmilestone").setTabCompleter(new RepeatingMilestoneCommand());
+            Mccore mccore = new Mccore(this,"tdrplaytime");
+
+//            getCommand("playtime").setExecutor(new PlayTimeCommand());
+//            getCommand("playtime").setTabCompleter(new PlayTimeCommand());
+//            getCommand("milestone").setExecutor(new MilestoneCommand());
+//            getCommand("milestone").setTabCompleter(new MilestoneCommand());
+//            getCommand("repeatingmilestone").setExecutor(new RepeatingMilestoneCommand());
+//            getCommand("repeatingmilestone").setTabCompleter(new RepeatingMilestoneCommand());
 
             generateEnglishTranslations();
             generateDutchTranslations();
@@ -112,23 +109,12 @@ public final class Playtime extends JavaPlugin {
             getLogger().log(Level.INFO, "Loading repeating milestones");
 
             storage.getRepeatingMilestones().whenComplete((repeatingMilestones, throwable) -> {
-                for (RepeatingMilestone repeatingMilestone : repeatingMilestones) {
-                    repeatedMilestoneList.add(repeatingMilestone);
-                }
+                repeatedMilestoneList.addAll(repeatingMilestones);
                 getLogger().log(Level.INFO, repeatedMilestoneList.size() + " repeating milestones loaded");
             });
 
             if (configfileConfiguration.getBoolean("settings.update_check", true)) {
-                UpdateChecker.init(this, "https://thedutchruben.nl/api/projects/version/tdrplaytime") // A link to a URL that contains the latest version as String
-                        .setDownloadLink("https://www.spigotmc.org/resources/tdrplaytime-milestones-mysql.47894/") // You can either use a custom URL or the Spigot Resource ID
-                        .setDonationLink("https://www.paypal.com/paypalme/RGSYT")
-                        .setChangelogLink(47894) // Same as for the Download link: URL or Spigot Resource ID
-                        .setNotifyOpsOnJoin(true) // Notify OPs on Join when a new version is found (default)
-                        .setNotifyByPermissionOnJoin("thedutchruben.updatechecker") // Also notify people on join with this permission
-                        .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
-                        .checkEveryXHours(configfileConfiguration.getDouble("settings.update_checktime", 0.5)) // Check every 30 minutes
-                        .suppressUpToDateMessage(true)
-                        .checkNow(); // And check right now
+                mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.checkupdate",(int)(configfileConfiguration.getDouble("settings.update_checktime") * 20*60*60)));
             }
 
 

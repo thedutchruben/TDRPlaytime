@@ -1,4 +1,4 @@
-package nl.thedutchruben.playtime.command;
+package nl.thedutchruben.playtime.command.old;
 
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
