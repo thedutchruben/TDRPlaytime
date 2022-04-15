@@ -37,8 +37,6 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (args.length == 0) {
-            Playtime.getInstance().update(((Player) sender).getUniqueId(), true);
-            sender.sendMessage(translateMessage(Playtime.getInstance().getMessage("command.playtime.timemessage"), Playtime.getInstance().getPlayerOnlineTime().get(((Player) sender).getUniqueId())));
         } else {
             switch (args[0]) {
                 case "top":
@@ -53,12 +51,7 @@ public class PlayTimeCommand implements CommandExecutor, TabCompleter {
                 case "reset":
                     if (sender.hasPermission("playtime.playtime.reset")) {
                         if (args.length == 2) {
-                            if (Bukkit.getPlayer(args[1]) != null) {
-                                Playtime.getInstance().getPlayerOnlineTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), (long) 0);
-                                Playtime.getInstance().getLastCheckedTime().replace(Bukkit.getPlayer(args[1]).getUniqueId(), System.currentTimeMillis());
-                            }
-                            Playtime.getInstance().getStorage().reset(Bukkit.getPlayer(args[1]).getName());
-                            sender.sendMessage(Playtime.getInstance().getMessage("command.playtime.resettimeconfirm"));
+
                         } else {
                             sender.sendMessage(Playtime.getInstance().getMessage("command.playtime.resettimeussage"));
                         }
