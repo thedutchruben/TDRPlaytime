@@ -1,6 +1,6 @@
 package nl.thedutchruben.playtime.listeners;
 
-import nl.thedutchruben.mccore.listeners.TDRListener;
+import nl.thedutchruben.mccore.spigot.listeners.TDRListener;
 import nl.thedutchruben.playtime.Playtime;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -32,7 +32,7 @@ public class MysqlDatabase extends Storage {
                 .disableHtmlEscaping().setPrettyPrinting().create();
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + config.get().getString("mysql.hostname") + ":" + config.get().getInt("mysql.port") + "/" + config.get().getString("mysql.database") + "?autoReconnect=true"
+                    "jdbc:mysql://" + config.get().getString("mysql.hostname") + ":" + config.get().getInt("mysql.port") + "/" + config.get().getString("mysql.database") + "?autoReconnect=true&ssl=" + config.get().getString("mysql.ssl", "false")
                     , config.get().getString("mysql.user"), config.get().getString("mysql.password"));
 
         }catch (Exception exception){

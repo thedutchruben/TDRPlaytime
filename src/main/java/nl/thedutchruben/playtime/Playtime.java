@@ -2,6 +2,7 @@ package nl.thedutchruben.playtime;
 
 import lombok.SneakyThrows;
 import nl.thedutchruben.mccore.Mccore;
+import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
 import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.database.MysqlDatabase;
@@ -17,6 +18,7 @@ import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,9 +29,28 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public final class Playtime extends JavaPlugin {
+
+    public static class LastCheckedData{
+        private long time;
+
+        private Location location;
+
+        public LastCheckedData(long time, Location location) {
+            this.time = time;
+            this.location = location;
+        }
+
+        public long getTime() {
+            return time;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+    }
     private static Playtime instance;
     private final Map<UUID, Long> playerOnlineTime = new HashMap<>();
-    private final Map<UUID, Long> lastCheckedTime = new HashMap<>();
+    private final Map<UUID, LastCheckedData> lastCheckedTime = new HashMap<>();
     private Map<Long, Milestone> milestoneMap = new HashMap<>();
     private List<RepeatingMilestone> repeatedMilestoneList = new ArrayList<>();
     private Map<String, String> keyMessageMap = new HashMap<>();
@@ -38,6 +59,7 @@ public final class Playtime extends JavaPlugin {
     private FileManager.Config langFile;
     private BukkitTask checkTask;
 
+    private boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("count-afk-time",true);;
     public static Playtime getInstance() {
         return instance;
     }
@@ -51,25 +73,27 @@ public final class Playtime extends JavaPlugin {
 
         FileManager.Config config = fileManager.getConfig("config.yml");
         FileConfiguration configfileConfiguration = config.get();
-        configfileConfiguration.options().header("TDR Playtime Plugin " +
-                "\nhttps://www.spigotmc.org/resources/tdrplaytime.47894/ \n" +
-                "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, " +
-                "you can create your own language file");
+        configfileConfiguration.options().setHeader(Arrays.asList("TDR Playtime Plugin " ,
+                "https://www.spigotmc.org/resources/tdrplaytime.47894/ " ,
+                "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, " ,
+                "you can create your own language file"));
         configfileConfiguration.addDefault("language", "en_GB");
         configfileConfiguration.addDefault("settings.update_check", true);
+        configfileConfiguration.addDefault("settings.countAfkTime", true);
         configfileConfiguration.addDefault("settings.update_checktime", 0.5);
         config.copyDefaults(true).save();
 
         FileManager.Config database = fileManager.getConfig("database.yml");
         FileConfiguration fileConfiguration = database.get();
-        fileConfiguration.options().header("TDR Playtime Plugin Database\n" +
-                "You can use the following database types : yaml/mysql");
+        fileConfiguration.options().setHeader(Arrays.asList("TDR Playtime Plugin Database" ,
+                "You can use the following database types : yaml/mysql"));
         fileConfiguration.addDefault("database", "yaml");
         fileConfiguration.addDefault("mysql.hostname", "localhost");
         fileConfiguration.addDefault("mysql.port", 3306);
         fileConfiguration.addDefault("mysql.user", "root");
         fileConfiguration.addDefault("mysql.password", "password");
         fileConfiguration.addDefault("mysql.database", "playtime");
+        fileConfiguration.addDefault("mysql.ssl", "false");
         fileConfiguration.addDefault("mysql.table_prefix", "");
 
         database.copyDefaults(true).save();
@@ -83,14 +107,7 @@ public final class Playtime extends JavaPlugin {
         database.save();
         boolean data = storage.setup();
         if(data){
-            Mccore mccore = new Mccore(this,"tdrplaytime");
-
-//            getCommand("playtime").setExecutor(new PlayTimeCommand());
-//            getCommand("playtime").setTabCompleter(new PlayTimeCommand());
-//            getCommand("milestone").setExecutor(new MilestoneCommand());
-//            getCommand("milestone").setTabCompleter(new MilestoneCommand());
-//            getCommand("repeatingmilestone").setExecutor(new RepeatingMilestoneCommand());
-//            getCommand("repeatingmilestone").setTabCompleter(new RepeatingMilestoneCommand());
+            Mccore mccore = new Mccore(this,"tdrplaytime","623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
 
             generateEnglishTranslations();
             generateDutchTranslations();
@@ -126,7 +143,7 @@ public final class Playtime extends JavaPlugin {
                     e.printStackTrace();
                 }
                 Playtime.getInstance().getPlayerOnlineTime().put(onlinePlayer.getUniqueId(), onlineTime);
-                Playtime.getInstance().getLastCheckedTime().put(onlinePlayer.getUniqueId(), System.currentTimeMillis());
+                Playtime.getInstance().getLastCheckedTime().put(onlinePlayer.getUniqueId(), new LastCheckedData(System.currentTimeMillis(), onlinePlayer.getLocation()));
             }
 
             checkTask = Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), () -> {
@@ -136,6 +153,21 @@ public final class Playtime extends JavaPlugin {
                 }
             }, 0, 20);
 
+            CommandRegistry.getTabCompletable().put("milestone", commandSender -> {
+                Set<String> events = new HashSet<>();
+                for (Milestone milestone : getMilestoneMap().values()) {
+                    events.add(milestone.getMilestoneName());
+                }
+                return events;
+            });
+
+            CommandRegistry.getTabCompletable().put("repeatingmilestone", commandSender -> {
+                Set<String> events = new HashSet<>();
+                for (RepeatingMilestone milestone : getRepeatedMilestoneList()) {
+                    events.add(milestone.getMilestoneName());
+                }
+                return events;
+            });
 
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 getLogger().log(Level.INFO, "PlaceholderAPI expansion implemented");
@@ -159,17 +191,18 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "HolographicDisplay"));
             }
 
-
+            if (Bukkit.getPluginManager().getPlugin("JoinAndQuitMessages") != null) {
+                metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
+            }
             metrics.addCustomChart(new SimplePie("bungeecord", () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
             metrics.addCustomChart(new SimplePie("database_type", () -> storage.getName()));
             metrics.addCustomChart(new SimplePie("update_checker", () -> String.valueOf(configfileConfiguration.getBoolean("settings.update_check", true))));
             metrics.addCustomChart(new SimplePie("uses_milestones", () -> String.valueOf(milestoneMap.size() > 1)));
             metrics.addCustomChart(new SimplePie("uses_repeating_milestones", () -> String.valueOf(repeatedMilestoneList.size() > 1)));
-
+            metrics.addCustomChart(new SimplePie("count_afk_time", () -> String.valueOf(configfileConfiguration.getBoolean("settings.count_afk_time", true))));
             metrics.addCustomChart(new SimplePie("language", () -> config.get().getString("language")));
             metrics.addCustomChart(new SingleLineChart("total_play_time", () -> Math.toIntExact(storage.getTotalPlayTime() / 1000 / 60 / 60)));
             metrics.addCustomChart(new SingleLineChart("total_players", () -> Math.toIntExact(storage.getTotalPlayers())));
-
         }
     }
 
@@ -195,8 +228,8 @@ public final class Playtime extends JavaPlugin {
     public void update(UUID uuid, boolean save) {
         if(lastCheckedTime.get(uuid) == null) return;
         playerOnlineTime.putIfAbsent(uuid, 0L);
-        long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid);
-        lastCheckedTime.replace(uuid, System.currentTimeMillis());
+        long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid).getTime();
+        lastCheckedTime.replace(uuid, new LastCheckedData(System.currentTimeMillis(), Bukkit.getPlayer(uuid).getLocation()));
         long newtime = playerOnlineTime.get(uuid) + extraTime;
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
             if (Bukkit.getPlayer(uuid) != null) {
@@ -213,8 +246,8 @@ public final class Playtime extends JavaPlugin {
 
     public void forceSave(UUID uuid) {
 
-        long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid);
-        lastCheckedTime.replace(uuid, System.currentTimeMillis());
+        long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid).getTime();
+        lastCheckedTime.replace(uuid, new LastCheckedData(System.currentTimeMillis(), Bukkit.getPlayer(uuid).getLocation()));
         long newtime = playerOnlineTime.get(uuid) + extraTime;
         checkMileStones(uuid, playerOnlineTime.get(uuid), newtime);
         playerOnlineTime.replace(uuid, newtime);
@@ -253,7 +286,7 @@ public final class Playtime extends JavaPlugin {
         return storage;
     }
 
-    public Map<UUID, Long> getLastCheckedTime() {
+    public Map<UUID, LastCheckedData> getLastCheckedTime() {
         return lastCheckedTime;
     }
 
@@ -284,14 +317,9 @@ public final class Playtime extends JavaPlugin {
             config.get().addDefault("command.playtime.timemessage", "&8[&6PlayTime&8] &7Your playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)");
             config.get().addDefault("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)");
             config.get().addDefault("command.playtime.resettimeconfirm", "&cUser time reset!");
-            config.get().addDefault("command.playtime.resettimeussage", "&cUse : /playtime reset <username>!");
             //milestone command messages
             config.get().addDefault("command.milestone.mustbenumber", "&cThe time parameter must be a number!");
-            config.get().addDefault("command.milestone.createusage", "&cUse : /milestone create <name> <time in seconds>!");
             config.get().addDefault("command.milestone.milestonenotexist", "&cThe milestone <name> doesn't exist!");
-
-            config.get().addDefault("command.milestone.additemusage", "&cUse : /milestone additem <milestone>! The item in your hand wil be added!");
-            config.get().addDefault("command.milestone.addcommandusage", "&cUse : /milestone addcommand <milestone> <command>!");
 
             config.get().addDefault("command.milestone.milestonecreated", "&aThe milestone is created!");
             config.get().addDefault("command.milestone.itemadded", "&aYou added succesfull a item to the milestone!");
@@ -301,15 +329,24 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.1) {
-            getLogger().info("Updating English translations");
+            getLogger().info("Updating English translations to version 1.1");
             config.get().set("version", 1.1);
-            config.get().addDefault("command.milestone.togglefireworkusage", "&cUse : /milestone togglefirework <milestone>!");
-            config.get().addDefault("command.milestone.setfireworkamountusage", "&cUse : /milestone setfireworkamount <milestone> <amount>!");
-            config.get().addDefault("command.milestone.setfireworkdelayusage", "&cUse : /milestone setfireworkdelay <milestone> <delay in seconds>!");
 
             config.get().addDefault("command.milestone.fireworktoggled", "&aYou <state> the firework for the milestone");
             config.get().addDefault("command.milestone.setfireworkamount", "&aYou set the firework amount to <amount>");
             config.get().addDefault("command.milestone.setfireworkdelay", "&aYou set the firework amount to <amount>");
+
+
+            config.copyDefaults(true).save();
+            config.save();
+        }
+
+        if (config.get().getDouble("version") < 1.2) {
+            getLogger().info("Updating English translations to version 1.2");
+//            config.get().set("version", 1.2);
+
+            config.get().addDefault("command.playtime.timeadded", "&aYou have successfully added playtime to <player>");
+            config.get().addDefault("command.playtime.timeremoved", "&aYou have successfully removed playtime from <player>");
 
 
             config.copyDefaults(true).save();
@@ -328,14 +365,9 @@ public final class Playtime extends JavaPlugin {
             config.get().addDefault("command.playtime.timemessage", "&8[&6PlayTime&8] &7Jouw speeltijd is &6%D% &7dag(en) &6%H% &7uur &6%M% &7minuut(en) &6%S% &7seconde(n)");
             config.get().addDefault("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% ''s speeltijd is &6%D% &7dag(en) &6%H% &7uur &6%M% &7minuut(en) &6%S% &7seconde(n)");
             config.get().addDefault("command.playtime.resettimeconfirm", "&cDe tijd van de speler is gereset!");
-            config.get().addDefault("command.playtime.resettimeussage", "&cGebruik : /playtime reset <username>!");
             //milestone command messages
             config.get().addDefault("command.milestone.mustbenumber", "&cDe tijd parameter moet een nummer zijn!");
-            config.get().addDefault("command.milestone.createusage", "&cGebruik : /milestone create <name> <time in seconds>!");
             config.get().addDefault("command.milestone.milestonenotexist", "&cDe mijlpaal <name> bestaat niet!");
-
-            config.get().addDefault("command.milestone.additemusage", "&cGebruik : /milestone additem <milestone>! Het item in je hand wordt dan toegevoegd!");
-            config.get().addDefault("command.milestone.addcommandusage", "&cGebruik : /milestone addcommand <milestone> <command>!");
 
             config.get().addDefault("command.milestone.milestonecreated", "&aDe mijlpaal is aangemaakt!");
             config.get().addDefault("command.milestone.itemadded", "&aJe hebt succesvol een item toegevoegd aan de mijlpaal!");
@@ -345,11 +377,8 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.1) {
-            getLogger().info("Updating Dutch translations");
+            getLogger().info("Updating Dutch translations to 1.1");
             config.get().set("version", 1.1);
-            config.get().addDefault("command.milestone.togglefireworkusage", "&cGebruik : /milestone togglefirework <mijlpaal>!");
-            config.get().addDefault("command.milestone.setfireworkamountusage", "&cGebruik : /milestone setfireworkamount <milestone> <aantal>!");
-            config.get().addDefault("command.milestone.setfireworkdelayusage", "&cGebruik : /milestone setfireworkdelay <mijlpaal> <vertraging in seconden>!");
 
             config.get().addDefault("command.milestone.fireworktoggled", "&aJe <state> het vuurwerk voor de mijlpaal");
             config.get().addDefault("command.milestone.setfireworkamount", "&aJe stelt het vuurwerk aantal in op <amount>");
@@ -372,14 +401,9 @@ public final class Playtime extends JavaPlugin {
             config.get().addDefault("command.playtime.timemessage", "&8[&6PlayTime&8] &7Deine Spielzeit ist &6%D% &7Tag(e) &6%H% &7Stunde(n) &6%M% &7Minute(n) &6%S% &7Sekunde(n)");
             config.get().addDefault("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% ''s Spielzeit ist &6%D% &7Tag(e) &6%H% &7Stunde(n) &6%M% &7Minute(n) &6%S% &7Sekunde(n)");
             config.get().addDefault("command.playtime.resettimeconfirm", "&cDie Zeit des Spielers ist zurückgesetzt!");
-            config.get().addDefault("command.playtime.resettimeussage", "&cBenutz : /playtime reset <username>!");
             //milestone command messages
             config.get().addDefault("command.milestone.mustbenumber", "&cDer Zeitparameter muss eine Anzahl sein!");
-            config.get().addDefault("command.milestone.createusage", "&cBenutz: /milestone create <name> <time in seconds>!");
             config.get().addDefault("command.milestone.milestonenotexist", "&cDer Meilenstein <name> existiert nicht!");
-
-            config.get().addDefault("command.milestone.additemusage", "&cBenutz : /milestone additem <milestone>! Der Item in Ihrer Hand wird dann hinzugefügt werden!");
-            config.get().addDefault("command.milestone.addcommandusage", "&cBenutz : /milestone addcommand <milestone> <command>!");
 
             config.get().addDefault("command.milestone.milestonecreated", "&aDer Meilenstein ist geschaffen!");
             config.get().addDefault("command.milestone.itemadded", "&aSie haben dem Meilenstein erfolgreich einen Artikel hinzugefügt!");
@@ -389,11 +413,8 @@ public final class Playtime extends JavaPlugin {
             config.save();
         }
         if (config.get().getDouble("version") < 1.1) {
-            getLogger().info("Updating German translations");
+            getLogger().info("Updating German translations to 1.1");
             config.get().set("version", 1.1);
-            config.get().addDefault("command.milestone.togglefireworkusage", "&cVerwendung : /milestone togglefirework <Meilenstein>!");
-            config.get().addDefault("command.milestone.setfireworkamountusage", "&cVerwenden Sie : /milestone setfireworkamount <Meilenstein> <Nummer>!");
-            config.get().addDefault("command.milestone.setfireworkdelayusage", "&cVerwendung: /milestone setfireworkdelay <Meilenstein> <Verzögerung in Sekunden>!");
 
             config.get().addDefault("command.milestone.fireworktoggled", "&aSie <state> das Feuerwerk für den Meilenstein");
             config.get().addDefault("command.milestone.setfireworkamount", "&aSie stellen die Feuerwerksnummer auf <amount>");
