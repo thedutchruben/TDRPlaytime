@@ -156,6 +156,15 @@ public class PlayTimeCommand {
                 }
             }
         }
-        return sortedMap;
+        LinkedHashMap<String, Long> sortedMap2 = new LinkedHashMap<>();
+        final int[] i = {0};
+        sortedMap.forEach((key, value) -> {
+            if (i[0] < 10) {
+                sortedMap2.put(key, value);
+                i[0]++;
+            }
+        });
+
+        return sortedMap2;
     }
 }

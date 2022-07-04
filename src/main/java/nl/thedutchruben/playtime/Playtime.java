@@ -30,36 +30,97 @@ import java.util.logging.Level;
 
 public final class Playtime extends JavaPlugin {
 
+    /**
+     * Small simple class to save the temporary data of a player.
+     */
     public static class LastCheckedData{
+        /**
+         * The last time the player was checked.
+         */
         private long time;
 
+        /**
+         * The last location of the player
+         */
         private Location location;
 
+        /**
+         * Creates a new instance of LastCheckedData.
+         * @param time The last time the player was checked.
+         * @param location The last location of the player.
+         */
         public LastCheckedData(long time, Location location) {
             this.time = time;
             this.location = location;
         }
 
+        /**
+         * Gets the last time the player was checked.
+         * @return The last time the player was checked.
+         */
         public long getTime() {
             return time;
         }
 
+        /**
+         * Gets the last location of the player.
+         * @return The last location of the player.
+         */
         public Location getLocation() {
             return location;
         }
     }
+    /**
+     * The instance of the plugin.
+     */
     private static Playtime instance;
+    /**
+     * The player's playtime
+     */
     private final Map<UUID, Long> playerOnlineTime = new HashMap<>();
+    /**
+     * The player's last checked data.
+     */
     private final Map<UUID, LastCheckedData> lastCheckedTime = new HashMap<>();
+    /**
+     * A map filled with the milestones of the server
+     */
     private Map<Long, Milestone> milestoneMap = new HashMap<>();
+    /**
+     * A list with the repeating milestones.
+     */
     private List<RepeatingMilestone> repeatedMilestoneList = new ArrayList<>();
+    /**
+     * The stores messages of the plugin.
+     */
     private Map<String, String> keyMessageMap = new HashMap<>();
+    /**
+     * The storage of the plugin.
+     */
     private Storage storage;
+    /**
+     * The filemanager of the plugin.
+     */
     private final FileManager fileManager = new FileManager(this);
+    /**
+     * The language file
+     */
     private FileManager.Config langFile;
+
+    /**
+     * The stores task for checking data
+     */
     private BukkitTask checkTask;
 
-    private boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("count-afk-time",true);;
+    /**
+     * The setting for counting afk time
+     */
+    private boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("count-afk-time",true);
+
+    /**
+     * Get the instance of the plugin.
+     * @return The instance of the plugin.
+     */
     public static Playtime getInstance() {
         return instance;
     }
@@ -69,8 +130,10 @@ public final class Playtime extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
+        // Register the metrics of the plugin.
         Metrics metrics = new Metrics(this, 9404);
 
+        // Setup the configs of the plugin.
         FileManager.Config config = fileManager.getConfig("config.yml");
         FileConfiguration configfileConfiguration = config.get();
         configfileConfiguration.options().setHeader(Arrays.asList("TDR Playtime Plugin " ,
@@ -98,6 +161,7 @@ public final class Playtime extends JavaPlugin {
 
         database.copyDefaults(true).save();
 
+        // Select the database type
         if (Objects.requireNonNull(database.get().getString("database")).equalsIgnoreCase("mysql")) {
             storage = new MysqlDatabase();
         } else {
@@ -105,16 +169,22 @@ public final class Playtime extends JavaPlugin {
         }
         config.save();
         database.save();
+        // Setup the database.
         boolean data = storage.setup();
         if(data){
+            // Register the mc core
             Mccore mccore = new Mccore(this,"tdrplaytime","623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
 
+            // Generate the language files.
             generateEnglishTranslations();
             generateDutchTranslations();
             generateGermanTranslations();
 
+            // get the language file
             langFile = fileManager.getConfig("lang/" + configfileConfiguration.getString("language") + ".yml");
 
+
+            // Load all the milestone's
             getLogger().log(Level.INFO, "Loading milestones");
             storage.getMilestones().whenComplete((milestones, throwable) -> {
                 for (Milestone storageMilestone : milestones) {
@@ -123,18 +193,19 @@ public final class Playtime extends JavaPlugin {
                 getLogger().log(Level.INFO, milestoneMap.size() + " milestones loaded");
             });
 
+            // Load all the repeating milestones.
             getLogger().log(Level.INFO, "Loading repeating milestones");
-
             storage.getRepeatingMilestones().whenComplete((repeatingMilestones, throwable) -> {
                 repeatedMilestoneList.addAll(repeatingMilestones);
                 getLogger().log(Level.INFO, repeatedMilestoneList.size() + " repeating milestones loaded");
             });
 
+            // Start the update checker if enabled.
             if (configfileConfiguration.getBoolean("settings.update_check", true)) {
                 mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.checkupdate",(int)(configfileConfiguration.getDouble("settings.update_checktime") * 20*60*60)));
             }
 
-
+            // Load the user data from the database.
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 long onlineTime = 0;
                 try {
@@ -146,6 +217,7 @@ public final class Playtime extends JavaPlugin {
                 Playtime.getInstance().getLastCheckedTime().put(onlinePlayer.getUniqueId(), new LastCheckedData(System.currentTimeMillis(), onlinePlayer.getLocation()));
             }
 
+            // Start the checkTask
             checkTask = Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new PlayTimeCheckEvent(true));
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -153,6 +225,7 @@ public final class Playtime extends JavaPlugin {
                 }
             }, 0, 20);
 
+            // Register tab completion for milestones.
             CommandRegistry.getTabCompletable().put("milestone", commandSender -> {
                 Set<String> events = new HashSet<>();
                 for (Milestone milestone : getMilestoneMap().values()) {
@@ -161,6 +234,7 @@ public final class Playtime extends JavaPlugin {
                 return events;
             });
 
+            // Register tab completion for repeating milestones.
             CommandRegistry.getTabCompletable().put("repeatingmilestone", commandSender -> {
                 Set<String> events = new HashSet<>();
                 for (RepeatingMilestone milestone : getRepeatedMilestoneList()) {
@@ -169,6 +243,7 @@ public final class Playtime extends JavaPlugin {
                 return events;
             });
 
+            // Register placeholder api expansion.
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 getLogger().log(Level.INFO, "PlaceholderAPI expansion implemented");
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "PlaceholderAPI"));
@@ -225,6 +300,11 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+    /**
+     * Update the playtime of a player.
+     * @param uuid The uuid of the player.
+     * @param save Whether or not to save the playtime to the database.
+     */
     public void update(UUID uuid, boolean save) {
         if(lastCheckedTime.get(uuid) == null) return;
         playerOnlineTime.putIfAbsent(uuid, 0L);
@@ -244,6 +324,10 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+    /**
+     * Force save the playtime of a player.
+     * @param uuid The uuid of the player.
+     */
     public void forceSave(UUID uuid) {
 
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid).getTime();
@@ -255,6 +339,12 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+    /**
+     * Check if a player has reached a milestone.
+     * @param uuid The uuid of the player.
+     * @param oldtime The old playtime of the player.
+     * @param newtime The new playtime of the player.
+     */
     private void checkMileStones(UUID uuid, Long oldtime, long newtime) {
         for (Long i = oldtime; i < newtime; i++) {
             for (RepeatingMilestone repeatingMilestone : repeatedMilestoneList) {
@@ -271,6 +361,11 @@ public final class Playtime extends JavaPlugin {
         }
     }
 
+    /**
+     * Get the message from the language file.
+     * @param key The key of the message.
+     * @return The message.
+     */
     public String getMessage(String key) {
         if (keyMessageMap.containsKey(key)) {
             return keyMessageMap.get(key);
@@ -282,10 +377,18 @@ public final class Playtime extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key)));
     }
 
+    /**
+     * The storage of the plugin
+     * @return The storage of the plugin.
+     */
     public Storage getStorage() {
         return storage;
     }
 
+    /**
+     * The last checkec time of a player.
+     * @return The last checked time.
+     */
     public Map<UUID, LastCheckedData> getLastCheckedTime() {
         return lastCheckedTime;
     }
