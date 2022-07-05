@@ -235,6 +235,20 @@ public class MysqlDatabase extends Storage {
     }
 
     @Override
+    public String getTopPlaceTime(int place) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `time` FROM " + tablePrefix + "`playtime`ORDER BY `time` DESC LIMIT "+(place + 1)+","+(place + 1)+"")) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return String.valueOf(resultSet.getLong("time"));
+                }
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return "";
+    }
+
+    @Override
     public CompletableFuture<Void> createMilestone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `" + tablePrefix + "milestones`(`name`, `data`) VALUES (?,?)")) {
