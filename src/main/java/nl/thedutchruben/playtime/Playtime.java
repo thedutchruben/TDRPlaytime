@@ -115,7 +115,7 @@ public final class Playtime extends JavaPlugin {
     /**
      * The setting for counting afk time
      */
-    private boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("count-afk-time",true);
+    private boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",true);
 
     /**
      * Get the instance of the plugin.
@@ -142,7 +142,10 @@ public final class Playtime extends JavaPlugin {
                 "you can create your own language file"));
         configfileConfiguration.addDefault("language", "en_GB");
         configfileConfiguration.addDefault("settings.update_check", true);
-        configfileConfiguration.addDefault("settings.countAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.countAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.chatResetAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.interactResetAfkTime", true);
+
         configfileConfiguration.addDefault("settings.update_checktime", 0.5);
         config.copyDefaults(true).save();
 
