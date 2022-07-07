@@ -269,6 +269,10 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "HolographicDisplay"));
             }
 
+            if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
+                metrics.addCustomChart(new SimplePie("addons_use", () -> "WorldGuard"));
+            }
+
             if (Bukkit.getPluginManager().getPlugin("JoinAndQuitMessages") != null) {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }

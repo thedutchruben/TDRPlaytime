@@ -34,7 +34,7 @@ public class MileStoneCommand {
             sender.sendMessage("----");
             sender.sendMessage(milestone.getMilestoneName());
             sender.sendMessage(" Time:" + translateMessage("Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%",aLong));
-            sender.sendMessage("More info");
+//            sender.spigot().sendMessage(new );
         });
 
     }
