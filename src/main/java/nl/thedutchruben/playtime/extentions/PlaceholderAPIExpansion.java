@@ -90,6 +90,25 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return Playtime.getInstance().getStorage().getTopPlace(placeNumber - 1);
         }
 
+        //%tdrplaytime_top_time_{1-10}%
+        if (params.contains("top_time_")) {
+            int placeNumber = 1;
+            String place =params.split("_")[params.split("_").length -1];
+            try {
+                placeNumber = Integer.parseInt(place);
+                if(placeNumber <= 1){
+                    placeNumber = 1;
+                }
+
+                if(placeNumber >= 10){
+                    placeNumber = 10;
+                }
+            }catch (NumberFormatException exception){
+                Bukkit.getLogger().log(Level.WARNING,"Wrong number format");
+            }
+            return Playtime.getInstance().getStorage().getTopPlaceTime(placeNumber - 1);
+        }
+
         return null;
     }
 
