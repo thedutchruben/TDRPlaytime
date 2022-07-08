@@ -457,6 +457,7 @@ public final class Playtime extends JavaPlugin {
 
             config.get().addDefault("command.playtime.timeadded", "&aYou have successfully added playtime to <player>");
             config.get().addDefault("command.playtime.timeremoved", "&aYou have successfully removed playtime from <player>");
+            config.get().addDefault("command.milestone.list", Arrays.asList("%MILESTONE_NAME%"," Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"));
 
 
             config.copyDefaults(true).save();
