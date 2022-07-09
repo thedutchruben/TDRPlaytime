@@ -13,6 +13,7 @@ import nl.thedutchruben.playtime.events.PlayTimeUpdatePlayerEvent;
 import nl.thedutchruben.playtime.extentions.PlaceholderAPIExpansion;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
+import nl.thedutchruben.playtime.utils.Replacement;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -373,15 +374,21 @@ public final class Playtime extends JavaPlugin {
      * @param key The key of the message.
      * @return The message.
      */
-    public String getMessage(String key) {
-        if (keyMessageMap.containsKey(key)) {
-            return keyMessageMap.get(key);
+    public String getMessage(String key, Replacement... replacements) {
+
+        if (!keyMessageMap.containsKey(key)) {
+            if (langFile.get().getString(key) == null) {
+                return ChatColor.RED + "No translation found for : " + key;
+            }
+            keyMessageMap.put(key, ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key))));
         }
-        if (langFile.get().getString(key) == null) {
-            return ChatColor.RED + "No translation found for : " + key;
+        String message = keyMessageMap.get(key);
+
+        for (Replacement replacement : replacements) {
+            message = message.replace(replacement.getFrom(), replacement.getTo());
         }
-        keyMessageMap.put(key, ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key))));
-        return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key)));
+
+       return message;
     }
 
     /**
@@ -458,6 +465,7 @@ public final class Playtime extends JavaPlugin {
             config.get().addDefault("command.playtime.timeadded", "&aYou have successfully added playtime to <player>");
             config.get().addDefault("command.playtime.timeremoved", "&aYou have successfully removed playtime from <player>");
             config.get().addDefault("command.milestone.list", Arrays.asList("%MILESTONE_NAME%"," Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"));
+            config.get().addDefault("command.milestone.info", Arrays.asList("%MILESTONE_NAME%"," Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"," Rewards:", "    Commands(%REWARD_COMMAND_COUNT%):"));
 
 
             config.copyDefaults(true).save();
