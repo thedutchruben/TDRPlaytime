@@ -6,11 +6,14 @@ import nl.thedutchruben.mccore.spigot.commands.Default;
 import nl.thedutchruben.mccore.spigot.commands.SubCommand;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
+import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Map;
 
 @Command(command = "milestone",description = "Milestones command" ,permission = "playtime.milestones" ,console = true)
 public class MileStoneCommand {
@@ -28,13 +31,12 @@ public class MileStoneCommand {
     }
 
     @Default
-    @SubCommand(subCommand = "list", usage = "" , minParams = 0)
+    @SubCommand(subCommand = "list")
     public void list(CommandSender sender, List<String> args) {
         Playtime.getInstance().getMilestoneMap().forEach((aLong, milestone) -> {
-            sender.sendMessage("----");
-            sender.sendMessage(milestone.getMilestoneName());
-            sender.sendMessage(" Time:" + translateMessage("Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%",aLong));
-//            sender.spigot().sendMessage(new );
+            for (String s : Playtime.getInstance().getLangFile().get().getStringList("command.milestone.list")) {
+                sender.sendMessage(translateMessage(s.replaceAll("%MILESTONE_NAME%",milestone.getMilestoneName()),aLong));
+            }
         });
 
     }
@@ -43,30 +45,43 @@ public class MileStoneCommand {
     public void info(CommandSender sender, List<String> args) {
         Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
-            sender.sendMessage(milestone.getMilestoneName());
-            sender.sendMessage(" Time:" + translateMessage("Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%",milestone.getOnlineTime() * 1000));
-            sender.sendMessage(" Rewards:");
-            sender.sendMessage("    Commands("+milestone.getCommands().size()+"):");
-            if(milestone.getCommands().size() == 0){
-                sender.sendMessage(ChatColor.DARK_RED + "     No commands found");
-            }else{
-                for (String command : milestone.getCommands()) {
-                    sender.sendMessage("     " + command);
+        for (String s : Playtime.getInstance().getLangFile().get().getStringList("command.milestone.info")) {
+            if(s.contains("%REWARD_COMMAND%")){
+                if(milestone.getCommands().size() == 0){
+                    sender.sendMessage(ChatColor.DARK_RED + "     No commands found");
+                }else{
+                    for (String command : milestone.getCommands()) {
+                        sender.sendMessage("     " + command);
+                    }
                 }
-            }
-            sender.sendMessage("    Items("+milestone.getItemStacks().size()+"):");
-        if(milestone.getItemStacks().size() == 0){
-            sender.sendMessage(ChatColor.DARK_RED + "     No items found");
-        }else{
-            for (String command : milestone.getCommands()) {
-                sender.sendMessage("     " + command);
+            }else if(s.contains("%REWARD_ITEMS%")){
+                if(milestone.getItemStacks().size() == 0){
+                    sender.sendMessage(ChatColor.DARK_RED + "     No items found");
+                }else {
+                    for (Map<String, Object> itemStack : milestone.getItemStacks()) {
+                        ItemStack itemStack1 = ItemStack.deserialize(itemStack);
+                        String name = "";
+                        if(itemStack1.hasItemMeta()){
+                            if(itemStack1.getItemMeta().hasDisplayName()){
+                                name = itemStack1.getItemMeta().getDisplayName();
+                            }else{
+                                name = itemStack1.getType().name();
+                            }
+                        }else{
+                            name = itemStack1.getType().name();
+                        }
+                        sender.sendMessage("     " +name + " x " + itemStack1.getAmount());
+                    }
+
+                }
+            }else{
+                sender.sendMessage(translateMessage(s.replaceAll("%REWARD_ITEMS_COUNT%", String.valueOf(milestone.getItemStacks().size())).replaceAll("%REWARD_COMMAND_COUNT%", String.valueOf(milestone.getCommands().size())).replaceAll("%MILESTONE_NAME%",milestone.getMilestoneName()),milestone.getOnlineTime() * 1000));
+
             }
         }
-
-
     }
 
-    @SubCommand(subCommand = "addItemToMilestone", usage = "<milestone>" , minParams = 1 , maxParams = 1)
+    @SubCommand(subCommand = "addItemToMilestone", usage = "<milestone>" , minParams = 2 , maxParams = 2)
     public void addItemToMilestone(CommandSender sender, List<String> args) {
         Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -77,7 +92,7 @@ public class MileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "addCommandToMilestone", usage = "<milestone> <string>" , minParams = 2 , maxParams = 2)
+    @SubCommand(subCommand = "addCommandToMilestone", usage = "<milestone> <string>" , minParams = 3 )
     public void addCommandToMilestone(CommandSender sender, List<String> args) {
         Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -104,7 +119,7 @@ public class MileStoneCommand {
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         milestone.setFireworkShowAmount(Integer.parseInt(args.get(2)));
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
-            sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount").replaceAll("<amount>", args.get(2)));
+            sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount",new Replacement("<amount>", args.get(2))));
         });
     }
 
@@ -114,12 +129,12 @@ public class MileStoneCommand {
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         milestone.setFireworkShowSecondsBetween(Integer.parseInt(args.get(2)));
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
-            sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay").replaceAll("<delay>", args.get(2)));
+            sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay",new Replacement("<delay>", args.get(2))));
         });
     }
 
     public String getState(boolean b) {
-        return b ? "Enabled" : "Disabled";
+        return b ? Playtime.getInstance().getMessage("command.defaults.enabled") : Playtime.getInstance().getMessage("command.defaults.disabled");
     }
 
     public String translateMessage(String message, long time) {

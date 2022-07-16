@@ -8,9 +8,24 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.Random;
 
+/**
+ * @author Ruben
+ * @since 1.0
+ * @version 1.0
+ * <p>
+ *     This class is used to spawn firework
+ * </p>
+ *
+ */
 public class FireworkUtil {
+    /**
+     *
+     */
     private static final Random random = new Random();
 
+    /**
+     * @param location The location to spawn the firework.
+     */
     public static void spawn(Location location) {
         FireworkEffect effect = FireworkEffect.builder().trail(getRandomBoolean()).flicker(getRandomBoolean()).
                 withColor(Color.fromRGB(random.nextInt(255), random.nextInt(255), random.nextInt(255)))
@@ -25,6 +40,9 @@ public class FireworkUtil {
         fw.getScoreboardTags().add("tdrfirework");
     }
 
+    /**
+     * @return A random boolean.
+     */
     private static boolean getRandomBoolean() {
         return Math.random() < 0.5;
     }

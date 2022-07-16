@@ -12,9 +12,23 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * @author Ruben
+ * @version 1.0
+ * @date 24-06-2020
+ * @project Playtime
+ * @package nl.thedutchruben.playtime.milestone
+ *
+ */
 public class RepeatingMilestone {
+    /**
+     * The list of items to give the player.
+     */
     private transient List<ItemStack> itemStackObjects;
 
+    /**
+     * The name of the milestone.
+     */
     @SerializedName("_id")
     private String milestoneName;
     @SerializedName("online_time")
@@ -33,7 +47,7 @@ public class RepeatingMilestone {
     private boolean overrideMe = false;
 
     /**
-     * Aplly the milestone on the player
+     * Apply the milestone on the player
      *
      * @param player The player to apply the milestone to
      */

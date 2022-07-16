@@ -29,6 +29,18 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
+/**
+ * @author Ruben
+ * @version 1.0
+ * @since 1.0
+ * <p>
+ *     This class is the main class of the plugin.
+ *     It is responsible for loading the plugin,
+ *     registering commands, events, and other stuff.
+ *     It also handles the database.
+ * </p>
+ *
+ */
 public final class Playtime extends JavaPlugin {
 
     /**
@@ -385,7 +397,7 @@ public final class Playtime extends JavaPlugin {
         String message = keyMessageMap.get(key);
 
         for (Replacement replacement : replacements) {
-            message = message.replace(replacement.getFrom(), replacement.getTo());
+            message = message.replaceAll(replacement.getFrom(), replacement.getTo());
         }
 
        return message;
@@ -400,13 +412,17 @@ public final class Playtime extends JavaPlugin {
     }
 
     /**
-     * The last checkec time of a player.
+     * The last checked time of a player.
      * @return The last checked time.
      */
     public Map<UUID, LastCheckedData> getLastCheckedTime() {
         return lastCheckedTime;
     }
 
+    /**
+     * The online time of a player.
+     * @return The online time.
+     */
     public Map<UUID, Long> getPlayerOnlineTime() {
         return playerOnlineTime;
     }
@@ -423,6 +439,9 @@ public final class Playtime extends JavaPlugin {
         return milestoneMap;
     }
 
+    public FileManager.Config getLangFile() {
+        return langFile;
+    }
 
     public void generateEnglishTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/en_GB.yml");
@@ -461,11 +480,15 @@ public final class Playtime extends JavaPlugin {
         if (config.get().getDouble("version") < 1.2) {
             getLogger().info("Updating English translations to version 1.2");
 //            config.get().set("version", 1.2);
+            config.get().addDefault("command.defaults.enabled", "Enabled");
+            config.get().addDefault("command.defaults.disabled", "Disabled");
 
             config.get().addDefault("command.playtime.timeadded", "&aYou have successfully added playtime to <player>");
             config.get().addDefault("command.playtime.timeremoved", "&aYou have successfully removed playtime from <player>");
             config.get().addDefault("command.milestone.list", Arrays.asList("%MILESTONE_NAME%"," Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"));
-            config.get().addDefault("command.milestone.info", Arrays.asList("%MILESTONE_NAME%"," Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"," Rewards:", "    Commands(%REWARD_COMMAND_COUNT%):"));
+            config.get().addDefault("command.milestone.info", Arrays.asList("%MILESTONE_NAME%"," Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"," Rewards:"
+                    , "    Commands(%REWARD_COMMAND_COUNT%):", "%REWARD_COMMAND%"
+                    , "    Items(%REWARD_ITEMS_COUNT%):", "%REWARD_ITEMS%"));
 
 
             config.copyDefaults(true).save();
