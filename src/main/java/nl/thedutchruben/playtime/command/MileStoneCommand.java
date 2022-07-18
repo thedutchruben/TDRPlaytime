@@ -92,7 +92,7 @@ public class MileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "addCommandToMilestone", usage = "<milestone> <string>" , minParams = 3 )
+    @SubCommand(subCommand = "addCommandToMilestone", usage = "<milestone> <string>" , minParams = 3, maxParams = 3 )
     public void addCommandToMilestone(CommandSender sender, List<String> args) {
         Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
