@@ -157,6 +157,7 @@ public final class Playtime extends JavaPlugin {
         configfileConfiguration.addDefault("settings.update_check", true);
         configfileConfiguration.addDefault("settings.afk.countAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.chatResetAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.inventoryClickResetAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.interactResetAfkTime", true);
 
         configfileConfiguration.addDefault("settings.update_checktime", 0.5);
@@ -479,9 +480,12 @@ public final class Playtime extends JavaPlugin {
 
         if (config.get().getDouble("version") < 1.2) {
             getLogger().info("Updating English translations to version 1.2");
-//            config.get().set("version", 1.2);
+            config.get().set("version", 1.2);
             config.get().addDefault("command.defaults.enabled", "Enabled");
             config.get().addDefault("command.defaults.disabled", "Disabled");
+
+            config.get().addDefault("command.milestone.itemremoved", "&aYou removed an item from the milestone!");
+            config.get().addDefault("command.milestone.commandremoved", "&aYou removed an command from the milestone!");
 
             config.get().addDefault("command.playtime.timeadded", "&aYou have successfully added playtime to <player>");
             config.get().addDefault("command.playtime.timeremoved", "&aYou have successfully removed playtime from <player>");
@@ -498,9 +502,9 @@ public final class Playtime extends JavaPlugin {
     }
 
     public void generateDutchTranslations() {
-        getLogger().info("Generate Dutch translations");
         FileManager.Config config = fileManager.getConfig("lang/nl_NL.yml");
         if (!config.get().contains("version")) {
+            getLogger().info("Generate Dutch translations");
             config.get().addDefault("version", 1.0);
             config.get().addDefault("only.player.command", "&cDit is een command die alleen een speler kan gebruiken!");
             //playtime command messages
@@ -531,12 +535,33 @@ public final class Playtime extends JavaPlugin {
             config.save();
         }
 
+        if (config.get().getDouble("version") < 1.2) {
+            getLogger().info("Updating Dutch translations to version 1.2");
+            config.get().set("version", 1.2);
+            config.get().addDefault("command.defaults.enabled", "Aan");
+            config.get().addDefault("command.defaults.disabled", "Uit");
+
+            config.get().addDefault("command.milestone.itemremoved", "&aJe hebt een item uit de mijlpaal verwijderd!");
+            config.get().addDefault("command.milestone.commandremoved", "&aJe hebt een opdracht uit de mijlpaal verwijderd!");
+
+            config.get().addDefault("command.playtime.timeadded", "&aJe hebt met succes speeltijd toegevoegd aan <player>");
+            config.get().addDefault("command.playtime.timeremoved", "&aJe hebt de speeltijd met succes verwijderd van <player>");
+            config.get().addDefault("command.milestone.list", Arrays.asList("%MILESTONE_NAME%"," Tijd: Dagen: %D% Uren: %H%, Minuten: %M% Seconden: %S%"));
+            config.get().addDefault("command.milestone.info", Arrays.asList("%MILESTONE_NAME%"," Tijd: Dagen: %D% Uren: %H%, Minuten: %M% Seconden: %S%"," Beloningen:"
+                    , "    Commando's(%REWARD_COMMAND_COUNT%):", "%REWARD_COMMAND%"
+                    , "    Artikelen(%REWARD_ITEMS_COUNT%):", "%REWARD_ITEMS%"));
+
+
+            config.copyDefaults(true).save();
+            config.save();
+        }
+
     }
 
     public void generateGermanTranslations() {
-        getLogger().info("Generate German translations");
         FileManager.Config config = fileManager.getConfig("lang/de_DE.yml");
         if (!config.get().contains("version")) {
+            getLogger().info("Generate German translations");
             config.get().addDefault("version", 1.0);
             config.get().addDefault("only.player.command", "&cDies ist ein Kommando nur für Spieler!");
             //playtime command messages
@@ -561,6 +586,27 @@ public final class Playtime extends JavaPlugin {
             config.get().addDefault("command.milestone.fireworktoggled", "&aSie <state> das Feuerwerk für den Meilenstein");
             config.get().addDefault("command.milestone.setfireworkamount", "&aSie stellen die Feuerwerksnummer auf <amount>");
             config.get().addDefault("command.milestone.setfireworkdelay", "&aDu hast die Feuerwerksverzögerung auf <amount> eingestellt");
+
+
+            config.copyDefaults(true).save();
+            config.save();
+        }
+
+        if (config.get().getDouble("version") < 1.2) {
+            getLogger().info("Updating German translations to version 1.2");
+            config.get().set("version", 1.2);
+            config.get().addDefault("command.defaults.enabled", "An");
+            config.get().addDefault("command.defaults.disabled", "aus");
+
+            config.get().addDefault("command.milestone.itemremoved", "&aSie haben ein Element aus dem Meilenstein entfernt!");
+            config.get().addDefault("command.milestone.commandremoved", "&aSie haben eine Aufgabe aus dem Meilenstein entfernt!");
+
+            config.get().addDefault("command.playtime.timeadded", "&aSie haben <player> erfolgreich Spielzeit hinzugefügt");
+            config.get().addDefault("command.playtime.timeremoved", "&aSie haben die Spielzeit erfolgreich von <player> entfernt");
+            config.get().addDefault("command.milestone.list", Arrays.asList("%MILESTONE_NAME%"," Zeit: Tage: %D% Stunden: %H%, Minuten: %M% Sekunden: %S%"));
+            config.get().addDefault("command.milestone.info", Arrays.asList("%MILESTONE_NAME%"," Zeit: Tage: %D% Stunden: %H%, Minuten: %M% Sekunden: %S%"," Belohnung:"
+                    , "    Befehle(%REWARD_COMMAND_COUNT%):", "%REWARD_COMMAND%"
+                    , "    Artikel(%REWARD_ITEMS_COUNT%):", "%REWARD_ITEMS%"));
 
 
             config.copyDefaults(true).save();

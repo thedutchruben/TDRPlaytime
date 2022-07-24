@@ -8,7 +8,7 @@ import nl.thedutchruben.mccore.spigot.commands.Command;
 import nl.thedutchruben.mccore.spigot.commands.Default;
 import nl.thedutchruben.mccore.spigot.commands.SubCommand;
 import nl.thedutchruben.playtime.Playtime;
-import nl.thedutchruben.playtime.milestone.Milestone;
+import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -18,16 +18,16 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Map;
 
-@Command(command = "milestone",description = "Milestones command" ,permission = "playtime.milestones" ,console = true)
-public class MileStoneCommand {
+@Command(command = "repeatingmilestone",description = "Milestones command" ,permission = "playtime.milestones" ,console = true)
+public class RepeatingMileStoneCommand {
 
     @SubCommand(subCommand = "create", usage = "<string> <time>" , minParams = 3 , maxParams = 3)
     public void create(CommandSender sender, List<String> args) {
-        Milestone milestone = new Milestone();
+        RepeatingMilestone milestone = new RepeatingMilestone();
         milestone.setMilestoneName(args.get(1));
         milestone.setOnlineTime(Integer.parseInt(args.get(2)));
-        Playtime.getInstance().getMilestoneMap().put(Integer.parseInt(args.get(2)) * 1000L, milestone);
-        Playtime.getInstance().getStorage().createMilestone(milestone).whenComplete((unused, throwable) -> {
+        Playtime.getInstance().getRepeatedMilestoneList().add(milestone);
+        Playtime.getInstance().getStorage().createRepeatingMilestone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestonecreated"));
         });
 
@@ -36,17 +36,17 @@ public class MileStoneCommand {
     @Default
     @SubCommand(subCommand = "list")
     public void list(CommandSender sender, List<String> args) {
-        Playtime.getInstance().getMilestoneMap().forEach((aLong, milestone) -> {
+        Playtime.getInstance().getRepeatedMilestoneList().forEach(( milestone) -> {
             for (String s : Playtime.getInstance().getLangFile().get().getStringList("command.milestone.list")) {
-                sender.sendMessage(translateMessage(s.replaceAll("%MILESTONE_NAME%",milestone.getMilestoneName()),aLong));
+                sender.sendMessage(translateMessage(s.replaceAll("%MILESTONE_NAME%",milestone.getMilestoneName()),milestone.getOnlineTime()));
             }
         });
 
     }
 
-    @SubCommand(subCommand = "info", usage = "<milestone>" , minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "info", usage = "<repeatingmilestone>" , minParams = 2, maxParams = 2)
     public void info(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         for (String s : Playtime.getInstance().getLangFile().get().getStringList("command.milestone.info")) {
             if(s.contains("%REWARD_COMMAND%")){
@@ -91,20 +91,20 @@ public class MileStoneCommand {
         }
     }
 
-    @SubCommand(subCommand = "addItemToMilestone", usage = "<milestone>" , minParams = 2 , maxParams = 2)
+    @SubCommand(subCommand = "addItemToMilestone", usage = "<repeatingmilestone>" , minParams = 2 , maxParams = 2)
     public void addItemToMilestone(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         milestone.getItemStacks().add(((Player)sender).getInventory().getItemInMainHand().serialize());
-        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+        Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.itemadded"));
         });
 
     }
 
-    @SubCommand(subCommand = "removeItemFromMilestone", usage = "<milestone> <string>" , minParams = 3 , maxParams = 3)
+    @SubCommand(subCommand = "removeItemFromMilestone", usage = "<repeatingmilestone> <string>" , minParams = 3 , maxParams = 3)
     public void removeItemFromMilestone(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         for (Map<String, Object> itemStack : milestone.getItemStacks()) {
             ItemStack itemStack1 = ItemStack.deserialize(itemStack);
@@ -120,7 +120,7 @@ public class MileStoneCommand {
             }
             if(name.equalsIgnoreCase(args.get(2))){
                 milestone.getItemStacks().remove(itemStack);
-                Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+                Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
                     sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.itemremoved"));
                 });
                 return;
@@ -129,56 +129,56 @@ public class MileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "addCommandToMilestone", usage = "<milestone> <string>" , minParams = 3, maxParams = 3 )
+    @SubCommand(subCommand = "addCommandToMilestone", usage = "<repeatingmilestone> <string>" , minParams = 3, maxParams = 3 )
     public void addCommandToMilestone(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         milestone.getCommands().add(args.get(2));
-        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+        Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.commandadded"));
         });
 
     }
 
-    @SubCommand(subCommand = "removeCommandFromMilestone", usage = "<milestone> <string>" , minParams = 3, maxParams = 3 )
+    @SubCommand(subCommand = "removeCommandFromMilestone", usage = "<repeatingmilestone> <string>" , minParams = 3, maxParams = 3 )
     public void removeCommandFromMilestone(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         System.out.println( milestone.getCommands());
         System.out.println(args.get(2));
         milestone.getCommands().remove(args.get(2));
-        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+        Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.commandremoved"));
         });
 
     }
 
-    @SubCommand(subCommand = "toggleFirework", usage = "<milestone>" , minParams = 2 , maxParams = 2)
+    @SubCommand(subCommand = "toggleFirework", usage = "<repeatingmilestone>" , minParams = 2 , maxParams = 2)
     public void toggleFirework(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         milestone.setFireworkShow(!milestone.isFireworkShow());
-        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+        Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.fireworktoggled").replaceAll("<state>", getState(milestone.isFireworkShow())));
         });
     }
 
-    @SubCommand(subCommand = "setFireworkAmount", usage = "<milestone> <integer>" , minParams = 3 , maxParams = 3)
+    @SubCommand(subCommand = "setFireworkAmount", usage = "<repeatingmilestone> <integer>" , minParams = 3 , maxParams = 3)
     public void setFireworkAmount(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         milestone.setFireworkShowAmount(Integer.parseInt(args.get(2)));
-        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+        Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount",new Replacement("<amount>", args.get(2))));
         });
     }
 
-    @SubCommand(subCommand = "setFireworkDelay", usage = "<milestone> <integer>" , minParams = 3 , maxParams = 3)
+    @SubCommand(subCommand = "setFireworkDelay", usage = "<repeatingmilestone> <integer>" , minParams = 3 , maxParams = 3)
     public void setFireworkDelay(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream().
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         milestone.setFireworkShowSecondsBetween(Integer.parseInt(args.get(2)));
-        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+        Playtime.getInstance().getStorage().saveRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay",new Replacement("<delay>", args.get(2))));
         });
     }
