@@ -11,20 +11,25 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
       - name: Setup JDK
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: '17'
-      - name: Build with Gradle
+
+      - name: Build with Maven
         run: |
-         ./gradlew jar
+          mvn package
           git_hash=$(git rev-parse --short "$GITHUB_SHA")
           echo "git_hash=$git_hash" >> $GITHUB_ENV
-          echo "snapshotVersion=5.5-SNAPSHOT" >> $GITHUB_ENV
-          echo "artifactPath=$(pwd)/builds" >> $GITHUB_ENV
+          echo "artifactPath=$(pwd)/target" >> $GITHUB_ENV
+      - name: Extract Maven project version
+        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+        id: project
+
       - name: Upload Plugin jar
         uses: actions/upload-artifact@v3
         with:
-          name: Plugin-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
-          path: ${{ env.artifactPath }}/Plugin-${{ env.snapshotVersion }}.jar
+          name: Playtime-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
+          path: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar

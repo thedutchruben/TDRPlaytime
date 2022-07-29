@@ -100,7 +100,10 @@
             <id>jeff-media-public</id>
             <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
         </repository>
-
+        <repository>
+            <id>thedutchruben-repo</id>
+            <url>https://repo.thedutchruben.nl/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
