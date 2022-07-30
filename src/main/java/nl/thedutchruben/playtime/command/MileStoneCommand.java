@@ -17,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 
 @Command(command = "milestone",description = "Milestones command" ,permission = "playtime.milestones" ,console = true)
 public class MileStoneCommand {
@@ -50,6 +52,12 @@ public class MileStoneCommand {
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         Playtime.getInstance().getStorage().removeMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestoneremoved"));
+            Playtime.getInstance().getMilestoneMap().clear();
+            Playtime.getInstance().getStorage().getMilestones().whenComplete((milestones, throwable1) -> {
+                        for (Milestone storageMilestone : milestones) {
+                            Playtime.getInstance().getMilestoneMap().put(storageMilestone.getOnlineTime() * 1000L, storageMilestone);
+                        }
+                    });
         });
     }
 

@@ -51,6 +51,10 @@ public class RepeatingMileStoneCommand {
                 filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
         Playtime.getInstance().getStorage().removeRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.repeatingmilestoneremoved"));
+            Playtime.getInstance().getRepeatedMilestoneList().clear();
+            Playtime.getInstance().getStorage().getRepeatingMilestones().whenComplete((milestones, throwable1) -> {
+                Playtime.getInstance().setRepeatedMilestoneList(milestones);
+            });
         });
     }
 
