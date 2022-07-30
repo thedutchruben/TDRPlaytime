@@ -101,6 +101,12 @@ public abstract class Storage {
     public abstract CompletableFuture<Void> saveMileStone(Milestone milestone);
 
     /**
+     * Remove a milestone
+     * @param milestone The {@link Milestone} to remove
+     * @return Empty CompletableFuture
+     */
+    public abstract CompletableFuture<Void> removeMileStone(Milestone milestone);
+    /**
      * Get all milestones
      * @return A {@link CompletableFuture} with a {@link List} of {@link Milestone}
      */
@@ -119,6 +125,13 @@ public abstract class Storage {
      * @return Empty CompletableFuture
      */
     public abstract CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone);
+
+    /**
+     * Remove a repeating milestone
+     * @param milestone The {@link RepeatingMilestone} to remove
+     * @return Empty CompletableFuture
+     */
+    public abstract CompletableFuture<Void> removeRepeatingMileStone(RepeatingMilestone milestone);
 
     /**
      * Get all repeating milestones

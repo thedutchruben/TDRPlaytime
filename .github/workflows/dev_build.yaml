@@ -40,5 +40,6 @@ jobs:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
           file: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
-          message: "New Playtime build: ${{ steps.project.outputs.version }}"
+          message: "New Playtime build: ${{ steps.project.outputs.version }} - ${{ env.git_hash }}"
           color: "#48f442"
+          username: "TdrPlaytime Builds"

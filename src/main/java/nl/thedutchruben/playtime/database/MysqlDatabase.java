@@ -280,6 +280,20 @@ public class MysqlDatabase extends Storage {
     }
 
     @Override
+    public CompletableFuture<Void> removeMileStone(Milestone milestone) {
+        //DELETE FROM `milestones` WHERE `name` = ?
+        return CompletableFuture.supplyAsync(() -> {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `" + tablePrefix + "milestones` WHERE `name` = ?)")) {
+                preparedStatement.setString(1, milestone.getMilestoneName());
+                preparedStatement.execute();
+            } catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            }
+            return null;
+        });
+    }
+
+    @Override
     public CompletableFuture<List<Milestone>> getMilestones() {
         return CompletableFuture.supplyAsync(() -> {
             List<Milestone> milestones = new ArrayList<>();
@@ -317,6 +331,25 @@ public class MysqlDatabase extends Storage {
                 preparedStatement.setString(1, gson.toJson(milestone, RepeatingMilestone.class));
                 preparedStatement.setString(2, milestone.getMilestoneName());
 
+                preparedStatement.execute();
+            } catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Remove a repeating milestone
+     *
+     * @param milestone The {@link RepeatingMilestone} to remove
+     * @return Empty CompletableFuture
+     */
+    @Override
+    public CompletableFuture<Void> removeRepeatingMileStone(RepeatingMilestone milestone) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `" + tablePrefix + "repeating_milestones` WHERE `name` = ?)")) {
+                preparedStatement.setString(1, milestone.getMilestoneName());
                 preparedStatement.execute();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();

@@ -156,9 +156,9 @@ public final class Playtime extends JavaPlugin {
         configfileConfiguration.addDefault("language", "en_GB");
         configfileConfiguration.addDefault("settings.update_check", true);
         configfileConfiguration.addDefault("settings.afk.countAfkTime", true);
-        configfileConfiguration.addDefault("settings.afk.chatResetAfkTime", true);
-        configfileConfiguration.addDefault("settings.afk.inventoryClickResetAfkTime", true);
-        configfileConfiguration.addDefault("settings.afk.interactResetAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.events.chatResetAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.events.inventoryClickResetAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.events.interactResetAfkTime", true);
 
         configfileConfiguration.addDefault("settings.update_checktime", 0.5);
         config.copyDefaults(true).save();
@@ -240,7 +240,7 @@ public final class Playtime extends JavaPlugin {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     update(onlinePlayer.getUniqueId(), true);
                 }
-            }, 0, 20);
+            }, 0, 20 * 30);
 
             // Register tab completion for milestones.
             CommandRegistry.getTabCompletable().put("milestone", commandSender -> {
@@ -324,7 +324,7 @@ public final class Playtime extends JavaPlugin {
     /**
      * Update the playtime of a player.
      * @param uuid The uuid of the player.
-     * @param save Whether or not to save the playtime to the database.
+     * @param save Whether to save the playtime to the database.
      */
     public void update(UUID uuid, boolean save) {
         if(lastCheckedTime.get(uuid) == null) return;
@@ -332,6 +332,12 @@ public final class Playtime extends JavaPlugin {
         playerOnlineTime.putIfAbsent(uuid, 0L);
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid).getTime();
         lastCheckedTime.replace(uuid, new LastCheckedData(System.currentTimeMillis(), Bukkit.getPlayer(uuid).getLocation()));
+       if(!countAfkTime){
+           Player player = Bukkit.getPlayer(uuid);
+           if(lastCheckedData.getLocation().getX() == player.getLocation().getX() && lastCheckedData.getLocation().getY() == player.getLocation().getY() && lastCheckedData.getLocation().getZ() == player.getLocation().getZ()){
+               return;
+           }
+       }
         long newtime = playerOnlineTime.get(uuid) + extraTime;
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
             if (Bukkit.getPlayer(uuid) != null) {
@@ -485,6 +491,9 @@ public final class Playtime extends JavaPlugin {
             config.get().addDefault("command.defaults.enabled", "Enabled");
             config.get().addDefault("command.defaults.disabled", "Disabled");
 
+            config.get().addDefault("command.milestone.repeatingmilestoneremoved", "&aYou have successfully removed the repeating milestone!");
+            config.get().addDefault("command.milestone.milestoneremoved", "&aYou have successfully removed the milestone!");
+
             config.get().addDefault("command.milestone.itemremoved", "&aYou removed an item from the milestone!");
             config.get().addDefault("command.milestone.commandremoved", "&aYou removed an command from the milestone!");
 
@@ -542,6 +551,9 @@ public final class Playtime extends JavaPlugin {
             config.get().addDefault("command.defaults.enabled", "Aan");
             config.get().addDefault("command.defaults.disabled", "Uit");
 
+            config.get().addDefault("command.milestone.repeatingmilestoneremoved", "&aJe hebt successvol de herhalende mijlpaal verwijderd!");
+            config.get().addDefault("command.milestone.milestoneremoved", "&aJe hebt successvol de mijlpaal verwijderd!");
+
             config.get().addDefault("command.milestone.itemremoved", "&aJe hebt een item uit de mijlpaal verwijderd!");
             config.get().addDefault("command.milestone.commandremoved", "&aJe hebt een opdracht uit de mijlpaal verwijderd!");
 
@@ -598,6 +610,9 @@ public final class Playtime extends JavaPlugin {
             config.get().set("version", 1.2);
             config.get().addDefault("command.defaults.enabled", "An");
             config.get().addDefault("command.defaults.disabled", "aus");
+
+            config.get().addDefault("command.milestone.repeatingmilestoneremoved", "&aSie haben den sich wiederholenden Meilenstein erfolgreich entfernt!");
+            config.get().addDefault("command.milestone.milestoneremoved", "&aSie haben den Meilenstein erfolgreich entfernt!");
 
             config.get().addDefault("command.milestone.itemremoved", "&aSie haben ein Element aus dem Meilenstein entfernt!");
             config.get().addDefault("command.milestone.commandremoved", "&aSie haben eine Aufgabe aus dem Meilenstein entfernt!");

@@ -17,18 +17,43 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 11
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '11'
           distribution: 'adopt'
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          settings-path: ${{ github.workspace }} # location for the settings.xml file
+          java-version: '17'
+
+
+      - if: github.event.release
+        name: Update version in pom.xml (Release only)
+        run: mvn -B versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: |
+          mvn package
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          echo "git_hash=$git_hash" >> $GITHUB_ENV
+          echo "artifactPath=$(pwd)/target" >> $GITHUB_ENV
 
-      - name: Publish to GitHub Packages Apache Maven
-        run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Extract Maven project version
+        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+        id: project
+
+      - name: Upload Plugin jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: Playtime-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
+          path: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
+
+      - name: send message
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          file: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
+          message: "New Playtime Release: ${{ steps.project.outputs.version }}"
+          color: "#48f442"
+          username: "TdrPlaytime Release"

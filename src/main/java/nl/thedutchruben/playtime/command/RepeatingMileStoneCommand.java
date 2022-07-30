@@ -8,6 +8,7 @@ import nl.thedutchruben.mccore.spigot.commands.Command;
 import nl.thedutchruben.mccore.spigot.commands.Default;
 import nl.thedutchruben.mccore.spigot.commands.SubCommand;
 import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.ChatColor;
@@ -42,6 +43,15 @@ public class RepeatingMileStoneCommand {
             }
         });
 
+    }
+
+    @SubCommand(subCommand = "remove", usage = "<repeatingmilestone>" , minParams = 2, maxParams = 2)
+    public void remove(CommandSender sender, List<String> args) {
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream().
+                filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Playtime.getInstance().getStorage().removeRepeatingMileStone(milestone).whenComplete((unused, throwable) -> {
+            sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.repeatingmilestoneremoved"));
+        });
     }
 
     @SubCommand(subCommand = "info", usage = "<repeatingmilestone>" , minParams = 2, maxParams = 2)

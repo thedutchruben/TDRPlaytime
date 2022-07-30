@@ -154,6 +154,14 @@ public class YamlDatabase extends Storage {
     }
 
     @Override
+    public CompletableFuture<Void> removeMileStone(Milestone milestone) {
+        return CompletableFuture.supplyAsync(() -> {
+            Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml").file.delete();
+            return null;
+        });
+    }
+
+    @Override
     public CompletableFuture<List<Milestone>> getMilestones() {
         return CompletableFuture.supplyAsync(() -> {
             List<Milestone> milestones = new ArrayList<>();
@@ -177,6 +185,21 @@ public class YamlDatabase extends Storage {
         return CompletableFuture.supplyAsync(() -> {
             Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").get().set("data", this.gson.toJson(milestone, Milestone.class));
             Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").save();
+            return null;
+        });
+    }
+
+    /**
+     * Remove a repeating milestone
+     *
+     * @param milestone The {@link RepeatingMilestone} to remove
+     * @return Empty CompletableFuture
+     */
+    @Override
+    public CompletableFuture<Void> removeRepeatingMileStone(RepeatingMilestone milestone) {
+        return CompletableFuture.supplyAsync(() -> {
+            Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").file.delete();
+
             return null;
         });
     }
