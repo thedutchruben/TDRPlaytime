@@ -33,3 +33,12 @@ jobs:
         with:
           name: Playtime-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
           path: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
+
+      - name: send message
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          file: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
+          message: "New Playtime build: ${{ steps.project.outputs.version }}"
+          color: "#48f442"
