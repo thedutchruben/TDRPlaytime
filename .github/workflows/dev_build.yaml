@@ -1,4 +1,4 @@
-name: Build DEV Jars
+name: Build DEV Version
 
 on: [push, pull_request]
 
@@ -8,6 +8,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Get branch name (merge)
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+
+      - name: Get branch name (pull request)
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+
+      - name: Debug
+        run: echo ${{ env.BRANCH_NAME }}
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -31,15 +43,15 @@ jobs:
       - name: Upload Plugin jar
         uses: actions/upload-artifact@v3
         with:
-          name: Playtime-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
-          path: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
+          name: Plugin-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
+          path: ${{ env.artifactPath }}/mccore-${{ steps.project.outputs.version }}.jar
 
       - name: send message
         uses: appleboy/discord-action@master
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-          file: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
-          message: "New Playtime build: ${{ steps.project.outputs.version }} - ${{ env.git_hash }}"
+          file: ${{ env.artifactPath }}/mccore-${{ steps.project.outputs.version }}.jar
+          message: "New McCore build: ${{ steps.project.outputs.version }} - ${{ env.git_hash }}\n${{ env.BRANCH_NAME  }}\n${{ github.event.head_commit.message }}"
           color: "#48f442"
-          username: "TdrPlaytime Builds"
+          username: "McCore Builds"
