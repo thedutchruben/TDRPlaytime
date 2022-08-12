@@ -45,7 +45,10 @@ jobs:
         with:
           name: Plugin-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
           path: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
-
+      - name: Sleep for 5 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '5s'
       - name: send message
         uses: appleboy/discord-action@master
         with:
