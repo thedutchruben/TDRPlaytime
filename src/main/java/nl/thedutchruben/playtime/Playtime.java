@@ -149,10 +149,18 @@ public final class Playtime extends JavaPlugin {
         // Setup the configs of the plugin.
         FileManager.Config config = fileManager.getConfig("config.yml");
         FileConfiguration configfileConfiguration = config.get();
-        configfileConfiguration.options().setHeader(Arrays.asList("TDR Playtime Plugin " ,
-                "https://www.spigotmc.org/resources/tdrplaytime.47894/ " ,
-                "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, " ,
-                "you can create your own language file"));
+        try{
+            configfileConfiguration.options().setHeader(Arrays.asList("TDR Playtime Plugin " ,
+                    "https://www.spigotmc.org/resources/tdrplaytime.47894/ " ,
+                    "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, " ,
+                    "you can create your own language file"));
+        }catch (NoSuchMethodError e){
+            configfileConfiguration.options().header("TDR Playtime Plugin \n" +
+                    "https://www.spigotmc.org/resources/tdrplaytime.47894/ \n" +
+                    "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, \n" +
+                    "you can create your own language file");
+        }
+
         configfileConfiguration.addDefault("language", "en_GB");
         configfileConfiguration.addDefault("settings.update_check", true);
         configfileConfiguration.addDefault("settings.afk.countAfkTime", true);

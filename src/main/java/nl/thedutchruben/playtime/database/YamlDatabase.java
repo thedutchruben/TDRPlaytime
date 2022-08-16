@@ -183,7 +183,7 @@ public class YamlDatabase extends Storage {
     @Override
     public CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
-            Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").get().set("data", this.gson.toJson(milestone, Milestone.class));
+            Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").get().set("data", this.gson.toJson(milestone, RepeatingMilestone.class));
             Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").save();
             return null;
         });
