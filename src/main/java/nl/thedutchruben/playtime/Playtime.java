@@ -303,7 +303,7 @@ public final class Playtime extends JavaPlugin {
             metrics.addCustomChart(new SimplePie("update_checker", () -> String.valueOf(configfileConfiguration.getBoolean("settings.update_check", true))));
             metrics.addCustomChart(new SimplePie("uses_milestones", () -> String.valueOf(milestoneMap.size() > 1)));
             metrics.addCustomChart(new SimplePie("uses_repeating_milestones", () -> String.valueOf(repeatedMilestoneList.size() > 1)));
-            metrics.addCustomChart(new SimplePie("count_afk_time", () -> String.valueOf(configfileConfiguration.getBoolean("settings.count_afk_time", true))));
+            metrics.addCustomChart(new SimplePie("count_afk_time", () -> String.valueOf(configfileConfiguration.getBoolean(String.valueOf(countAfkTime), true))));
             metrics.addCustomChart(new SimplePie("language", () -> config.get().getString("language")));
             metrics.addCustomChart(new SingleLineChart("total_play_time", () -> Math.toIntExact(storage.getTotalPlayTime() / 1000 / 60 / 60)));
             metrics.addCustomChart(new SingleLineChart("total_players", () -> Math.toIntExact(storage.getTotalPlayers())));
