@@ -8,6 +8,8 @@ import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Statistic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -87,6 +89,22 @@ public class PlayTimeCommand {
         }
         commandSender.sendMessage(Playtime.getInstance().getMessage("command.playtime.timeremoved").replace("<player>",playerName));
     }
+
+    @SubCommand(subCommand = "importPlaytime",permission = "playtime.playtime.importPlaytime",console = true)
+    public void importPlaytime(CommandSender commandSender,List<String> args){
+        int count = 0;
+        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+            Playtime.getInstance().getStorage().savePlayTime(offlinePlayer.getUniqueId(), (long) offlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE)/20*1000);
+            count++;
+        }
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            Playtime.getInstance().getStorage().savePlayTime(onlinePlayer.getUniqueId(), (long) onlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE)/20*1000);
+            count++;
+        }
+        commandSender.sendMessage(Playtime.getInstance().getMessage("command.playtime.imported").replace("<count>",String.valueOf(count)));
+    }
+
 
     @SubCommand(subCommand = "reload",permission = "playtime.playtime.reload", console = true)
     public void reload(CommandSender commandSender,List<String> args) throws ExecutionException, InterruptedException {

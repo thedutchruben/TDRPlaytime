@@ -149,18 +149,10 @@ public final class Playtime extends JavaPlugin {
         // Setup the configs of the plugin.
         FileManager.Config config = fileManager.getConfig("config.yml");
         FileConfiguration configfileConfiguration = config.get();
-        try{
-            configfileConfiguration.options().setHeader(Arrays.asList("TDR Playtime Plugin " ,
-                    "https://www.spigotmc.org/resources/tdrplaytime.47894/ " ,
-                    "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, " ,
-                    "you can create your own language file"));
-        }catch (NoSuchMethodError e){
-            configfileConfiguration.options().header("TDR Playtime Plugin \n" +
-                    "https://www.spigotmc.org/resources/tdrplaytime.47894/ \n" +
-                    "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, \n" +
-                    "you can create your own language file");
-        }
-
+           configfileConfiguration.options().header("TDR Playtime Plugin \n" +
+                   "https://www.spigotmc.org/resources/tdrplaytime.47894/ \n" +
+                   "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, \n" +
+                   "you can create your own language file");
         configfileConfiguration.addDefault("language", "en_GB");
         configfileConfiguration.addDefault("settings.update_check", true);
         configfileConfiguration.addDefault("settings.afk.countAfkTime", true);
@@ -517,6 +509,14 @@ public final class Playtime extends JavaPlugin {
             config.save();
         }
 
+        if (config.get().getDouble("version") < 1.3) {
+            getLogger().info("Updating English translations to version 1.3");
+            config.get().set("version", 1.3);
+            config.get().addDefault("command.playtime.imported", "&aYou have successfully imported <count> players!");
+            config.copyDefaults(true).save();
+            config.save();
+        }
+
     }
 
     public void generateDutchTranslations() {
@@ -577,6 +577,14 @@ public final class Playtime extends JavaPlugin {
             config.save();
         }
 
+        if (config.get().getDouble("version") < 1.3) {
+            getLogger().info("Updating Dutch translations to version 1.3");
+            config.get().set("version", 1.3);
+            config.get().addDefault("command.playtime.imported", "&aJe hebt met success <count> spelers over gezet!");
+            config.copyDefaults(true).save();
+            config.save();
+        }
+
     }
 
     public void generateGermanTranslations() {
@@ -633,6 +641,13 @@ public final class Playtime extends JavaPlugin {
                     , "    Artikel(%REWARD_ITEMS_COUNT%):", "%REWARD_ITEMS%"));
 
 
+            config.copyDefaults(true).save();
+            config.save();
+        }
+        if (config.get().getDouble("version") < 1.3) {
+            getLogger().info("Updating German translations to version 1.3");
+            config.get().set("version", 1.3);
+            config.get().addDefault("command.playtime.imported", "&aSie haben <count> Spieler erfolgreich transferiert!");
             config.copyDefaults(true).save();
             config.save();
         }

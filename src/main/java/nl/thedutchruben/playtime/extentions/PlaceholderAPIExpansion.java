@@ -90,6 +90,87 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return Playtime.getInstance().getStorage().getTopPlace(placeNumber - 1);
         }
 
+        //%tdrplaytime_top_time_{1-10}_days%
+        if (params.contains("top_time_") && params.endsWith("_days")) {
+            int placeNumber = 1;
+            String place =params.split("_")[params.split("_").length -1];
+            try {
+                placeNumber = Integer.parseInt(place);
+                if(placeNumber <= 1){
+                    placeNumber = 1;
+                }
+
+                if(placeNumber >= 10){
+                    placeNumber = 10;
+                }
+            }catch (NumberFormatException exception){
+                Bukkit.getLogger().log(Level.WARNING,"Wrong number format");
+            }
+
+            return String.valueOf(getTime(Long.parseLong(Playtime.getInstance().getStorage().getTopPlaceTime(placeNumber - 1)))[0]);
+        }
+
+        //%tdrplaytime_top_time_{1-10}_hours%
+        if (params.contains("top_time_") && params.endsWith("_hours")) {
+            int placeNumber = 1;
+            String place =params.split("_")[params.split("_").length -1];
+            try {
+                placeNumber = Integer.parseInt(place);
+                if(placeNumber <= 1){
+                    placeNumber = 1;
+                }
+
+                if(placeNumber >= 10){
+                    placeNumber = 10;
+                }
+            }catch (NumberFormatException exception){
+                Bukkit.getLogger().log(Level.WARNING,"Wrong number format");
+            }
+
+            return String.valueOf(getTime(Long.parseLong(Playtime.getInstance().getStorage().getTopPlaceTime(placeNumber - 1)))[1]);
+        }
+
+        //%tdrplaytime_top_time_{1-10}_minutes%
+        if (params.contains("top_time_") && params.endsWith("_minutes")) {
+            int placeNumber = 1;
+            String place =params.split("_")[params.split("_").length -1];
+            try {
+                placeNumber = Integer.parseInt(place);
+                if(placeNumber <= 1){
+                    placeNumber = 1;
+                }
+
+                if(placeNumber >= 10){
+                    placeNumber = 10;
+                }
+            }catch (NumberFormatException exception){
+                Bukkit.getLogger().log(Level.WARNING,"Wrong number format");
+            }
+
+            return String.valueOf(getTime(Long.parseLong(Playtime.getInstance().getStorage().getTopPlaceTime(placeNumber - 1)))[2]);
+        }
+
+        //%tdrplaytime_top_time_{1-10}_seconds%
+        if (params.contains("top_time_") && params.endsWith("_seconds")) {
+            int placeNumber = 1;
+            String place =params.split("_")[params.split("_").length -1];
+            try {
+                placeNumber = Integer.parseInt(place);
+                if(placeNumber <= 1){
+                    placeNumber = 1;
+                }
+
+                if(placeNumber >= 10){
+                    placeNumber = 10;
+                }
+            }catch (NumberFormatException exception){
+                Bukkit.getLogger().log(Level.WARNING,"Wrong number format");
+            }
+
+            return String.valueOf(getTime(Long.parseLong(Playtime.getInstance().getStorage().getTopPlaceTime(placeNumber - 1)))[3]);
+        }
+
+
         //%tdrplaytime_top_time_{1-10}%
         if (params.contains("top_time_")) {
             int placeNumber = 1;
@@ -109,7 +190,21 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return Playtime.getInstance().getStorage().getTopPlaceTime(placeNumber - 1);
         }
 
+
+
         return null;
+    }
+
+    public int[] getTime(long time){
+        time = time / 1000;
+        int days = (int) (time / 86400);
+        time = time - days * 86400L;
+        int hours = (int) (time / 3600);
+        time = time - hours * 3600L;
+        int minutes = (int) (time / 60);
+        time = time - minutes * 60L;
+        int seconds = (int) time;
+        return new int[]{days,hours,minutes,seconds};
     }
 
 
