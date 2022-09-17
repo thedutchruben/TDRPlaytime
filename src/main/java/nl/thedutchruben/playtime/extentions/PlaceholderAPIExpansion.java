@@ -93,7 +93,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         //%tdrplaytime_top_time_{1-10}_days%
         if (params.contains("top_time_") && params.endsWith("_days")) {
             int placeNumber = 1;
-            String place =params.split("_")[params.split("_").length -1];
+            String place =params.split("_")[params.split("_").length -2];
             try {
                 placeNumber = Integer.parseInt(place);
                 if(placeNumber <= 1){
@@ -113,7 +113,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         //%tdrplaytime_top_time_{1-10}_hours%
         if (params.contains("top_time_") && params.endsWith("_hours")) {
             int placeNumber = 1;
-            String place =params.split("_")[params.split("_").length -1];
+            String place =params.split("_")[params.split("_").length -2];
             try {
                 placeNumber = Integer.parseInt(place);
                 if(placeNumber <= 1){
@@ -133,7 +133,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         //%tdrplaytime_top_time_{1-10}_minutes%
         if (params.contains("top_time_") && params.endsWith("_minutes")) {
             int placeNumber = 1;
-            String place =params.split("_")[params.split("_").length -1];
+            String place =params.split("_")[params.split("_").length -2];
             try {
                 placeNumber = Integer.parseInt(place);
                 if(placeNumber <= 1){
@@ -153,7 +153,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         //%tdrplaytime_top_time_{1-10}_seconds%
         if (params.contains("top_time_") && params.endsWith("_seconds")) {
             int placeNumber = 1;
-            String place =params.split("_")[params.split("_").length -1];
+            String place =params.split("_")[params.split("_").length -2];
             try {
                 placeNumber = Integer.parseInt(place);
                 if(placeNumber <= 1){

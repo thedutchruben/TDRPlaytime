@@ -165,8 +165,8 @@ public final class Playtime extends JavaPlugin {
 
         FileManager.Config database = fileManager.getConfig("database.yml");
         FileConfiguration fileConfiguration = database.get();
-        fileConfiguration.options().setHeader(Arrays.asList("TDR Playtime Plugin Database" ,
-                "You can use the following database types : yaml/mysql"));
+        fileConfiguration.options().header("TDR Playtime Plugin Database\n" +
+                "You can use the following database types : yaml/mysql");
         fileConfiguration.addDefault("database", "yaml");
         fileConfiguration.addDefault("mysql.hostname", "localhost");
         fileConfiguration.addDefault("mysql.port", 3306);
