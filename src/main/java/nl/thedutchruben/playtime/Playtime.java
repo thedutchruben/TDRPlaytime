@@ -321,6 +321,7 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+
     /**
      * Update the playtime of a player.
      * @param uuid The uuid of the player.
