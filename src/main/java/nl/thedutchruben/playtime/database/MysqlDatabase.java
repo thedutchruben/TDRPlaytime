@@ -249,7 +249,7 @@ public class MysqlDatabase extends Storage {
     }
 
     @Override
-    public CompletableFuture<Void> createMilestone(Milestone milestone) {
+    public CompletableFuture<Boolean> createMilestone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `" + tablePrefix + "milestones`(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
@@ -257,14 +257,15 @@ public class MysqlDatabase extends Storage {
                 preparedStatement.execute();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
         });
     }
 
     @SneakyThrows
     @Override
-    public CompletableFuture<Void> saveMileStone(Milestone milestone) {
+    public CompletableFuture<Boolean> saveMileStone(Milestone milestone) {
 
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `" + tablePrefix + "milestones` SET `data`=? WHERE `name`=?")) {
@@ -274,22 +275,24 @@ public class MysqlDatabase extends Storage {
                 preparedStatement.execute();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
         });
     }
 
     @Override
-    public CompletableFuture<Void> removeMileStone(Milestone milestone) {
+    public CompletableFuture<Boolean> removeMileStone(Milestone milestone) {
         //DELETE FROM `milestones` WHERE `name` = ?
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `" + tablePrefix + "milestones` WHERE `name` = ?)")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `" + tablePrefix + "milestones` WHERE `name` = ?")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
                 preparedStatement.execute();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
         });
     }
 
@@ -311,7 +314,7 @@ public class MysqlDatabase extends Storage {
     }
 
     @Override
-    public CompletableFuture<Void> createRepeatingMilestone(RepeatingMilestone milestone) {
+    public CompletableFuture<Boolean> createRepeatingMilestone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `" + tablePrefix + "repeating_milestones`(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
@@ -319,13 +322,14 @@ public class MysqlDatabase extends Storage {
                 preparedStatement.execute();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
         });
     }
 
     @Override
-    public CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone) {
+    public CompletableFuture<Boolean> saveRepeatingMileStone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `" + tablePrefix + "repeating_milestones` SET `data`=? WHERE `name`=?")) {
                 preparedStatement.setString(1, gson.toJson(milestone, RepeatingMilestone.class));
@@ -334,8 +338,9 @@ public class MysqlDatabase extends Storage {
                 preparedStatement.execute();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
         });
     }
 
@@ -346,15 +351,16 @@ public class MysqlDatabase extends Storage {
      * @return Empty CompletableFuture
      */
     @Override
-    public CompletableFuture<Void> removeRepeatingMileStone(RepeatingMilestone milestone) {
+    public CompletableFuture<Boolean> removeRepeatingMileStone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `" + tablePrefix + "repeating_milestones` WHERE `name` = ?)")) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `" + tablePrefix + "repeating_milestones` WHERE `name` = ?")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
                 preparedStatement.execute();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
         });
     }
 
@@ -377,7 +383,7 @@ public class MysqlDatabase extends Storage {
 
     @SneakyThrows
     @Override
-    public CompletableFuture<Void> reset(String uuid) {
+    public CompletableFuture<Boolean> reset(String uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `" + tablePrefix + "playtime` SET `time`=? WHERE `name` = ?")) {
                 preparedStatement.setLong(1, 0);
@@ -385,9 +391,10 @@ public class MysqlDatabase extends Storage {
                 preparedStatement.execute();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+                return false;
             }
 
-            return null;
+            return true;
         });
     }
 

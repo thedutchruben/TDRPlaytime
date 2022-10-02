@@ -139,25 +139,25 @@ public class YamlDatabase extends Storage {
     }
 
     @Override
-    public CompletableFuture<Void> createMilestone(Milestone milestone) {
+    public CompletableFuture<Boolean> createMilestone(Milestone milestone) {
         return saveMileStone(milestone);
     }
 
     @Override
-    public CompletableFuture<Void> saveMileStone(Milestone milestone) {
+    public CompletableFuture<Boolean> saveMileStone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml").get().set("data", this.gson.toJson(milestone, Milestone.class));
             Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml").save();
-            return null;
+            return true;
         });
 
     }
 
     @Override
-    public CompletableFuture<Void> removeMileStone(Milestone milestone) {
+    public CompletableFuture<Boolean> removeMileStone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml").file.delete();
-            return null;
+            return true;
         });
     }
 
@@ -176,16 +176,16 @@ public class YamlDatabase extends Storage {
     }
 
     @Override
-    public CompletableFuture<Void> createRepeatingMilestone(RepeatingMilestone milestone) {
+    public CompletableFuture<Boolean> createRepeatingMilestone(RepeatingMilestone milestone) {
         return saveRepeatingMileStone(milestone);
     }
 
     @Override
-    public CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone) {
+    public CompletableFuture<Boolean> saveRepeatingMileStone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").get().set("data", this.gson.toJson(milestone, RepeatingMilestone.class));
             Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").save();
-            return null;
+            return true;
         });
     }
 
@@ -196,11 +196,11 @@ public class YamlDatabase extends Storage {
      * @return Empty CompletableFuture
      */
     @Override
-    public CompletableFuture<Void> removeRepeatingMileStone(RepeatingMilestone milestone) {
+    public CompletableFuture<Boolean> removeRepeatingMileStone(RepeatingMilestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             Playtime.getInstance().getFileManager().getConfig("repeatingmilestones/" + milestone.getMilestoneName() + ".yaml").file.delete();
 
-            return null;
+            return true;
         });
     }
 
@@ -219,12 +219,12 @@ public class YamlDatabase extends Storage {
     }
 
     @Override
-    public CompletableFuture<Void> reset(String name) {
+    public CompletableFuture<Boolean> reset(String name) {
         return CompletableFuture.supplyAsync(() -> {
             String uuid = Bukkit.getPlayer(name).getUniqueId().toString();
             Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").get().set("onlinetime", 0);
             Playtime.getInstance().getFileManager().getConfig("players/" + uuid + ".yaml").save();
-            return null;
+            return true;
         });
     }
 }

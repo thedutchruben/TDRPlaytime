@@ -130,6 +130,14 @@ public final class Playtime extends JavaPlugin {
      */
     private boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",true);
 
+
+    private int milestoneGot = 0;
+
+    private int repeatingMilestoneGot = 0;
+
+    private int playTimeEarned = 0;
+
+
     /**
      * Get the instance of the plugin.
      * @return The instance of the plugin.
@@ -290,6 +298,9 @@ public final class Playtime extends JavaPlugin {
             if (Bukkit.getPluginManager().getPlugin("JoinAndQuitMessages") != null) {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
+
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.BUKKIT::name));
+
             metrics.addCustomChart(new SimplePie("bungeecord", () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
             metrics.addCustomChart(new SimplePie("database_type", () -> storage.getName()));
             metrics.addCustomChart(new SimplePie("update_checker", () -> String.valueOf(configfileConfiguration.getBoolean("settings.update_check", true))));
@@ -299,6 +310,25 @@ public final class Playtime extends JavaPlugin {
             metrics.addCustomChart(new SimplePie("language", () -> config.get().getString("language")));
             metrics.addCustomChart(new SingleLineChart("total_play_time", () -> Math.toIntExact(storage.getTotalPlayTime() / 1000 / 60 / 60)));
             metrics.addCustomChart(new SingleLineChart("total_players", () -> Math.toIntExact(storage.getTotalPlayers())));
+
+            metrics.addCustomChart(new SingleLineChart("milestone_got", () -> {
+                int milestoneCount = Math.toIntExact(milestoneGot);
+                milestoneGot = 0;
+                return milestoneCount;
+            }));
+
+            metrics.addCustomChart(new SingleLineChart("repeating_milestone_got", () -> {
+                int milestoneCount = Math.toIntExact(repeatingMilestoneGot);
+                repeatingMilestoneGot = 0;
+                return milestoneCount;
+            }));
+
+            metrics.addCustomChart(new SingleLineChart("playtime_earned", () -> {
+                int milestoneCount = Math.toIntExact(playTimeEarned);
+                playTimeEarned = 0;
+                return milestoneCount;
+            }));
+
         }
     }
 
@@ -339,6 +369,7 @@ public final class Playtime extends JavaPlugin {
                return;
            }
        }
+        playTimeEarned += extraTime;
         long newtime = playerOnlineTime.get(uuid) + extraTime;
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
             if (Bukkit.getPlayer(uuid) != null) {
@@ -382,10 +413,12 @@ public final class Playtime extends JavaPlugin {
                         return;
                     }
                     repeatingMilestone.apply(Bukkit.getPlayer(uuid));
+                    repeatingMilestoneGot++;
                 }
             }
             if (milestoneMap.containsKey(i)) {
                 milestoneMap.get(i).apply(Bukkit.getPlayer(uuid));
+                milestoneGot++;
             }
         }
     }
@@ -665,5 +698,11 @@ public final class Playtime extends JavaPlugin {
     public Map<String, String> getKeyMessageMap() {
         return keyMessageMap;
     }
+
+     enum DownloadSource {
+         SPIGOT,
+         BUKKIT,
+         GITHUB
+     }
 }
 

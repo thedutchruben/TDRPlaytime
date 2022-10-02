@@ -42,7 +42,7 @@ public abstract class Storage {
      * @param playtime the players online time
      * @return Empty CompletableFuture
      */
-    public abstract CompletableFuture<Void> savePlayTime(String uuid, long playtime);
+    public abstract CompletableFuture<Boolean> savePlayTime(String uuid, long playtime);
 
     /**
      * Save the players online time
@@ -50,7 +50,7 @@ public abstract class Storage {
      * @param playtime the players online time
      * @return Empty CompletableFuture
      */
-    public CompletableFuture<Void> savePlayTime(UUID uuid, long playtime){
+    public CompletableFuture<Boolean> savePlayTime(UUID uuid, long playtime){
         return savePlayTime(uuid.toString(),playtime);
     }
 
@@ -91,21 +91,21 @@ public abstract class Storage {
      * @param milestone The {@link Milestone} to create
      * @return Empty CompletableFuture
      */
-    public abstract CompletableFuture<Void> createMilestone(Milestone milestone);
+    public abstract CompletableFuture<Boolean> createMilestone(Milestone milestone);
 
     /**
      * Save a milestone
      * @param milestone The {@link Milestone} to save
      * @return Empty CompletableFuture
      */
-    public abstract CompletableFuture<Void> saveMileStone(Milestone milestone);
+    public abstract CompletableFuture<Boolean> saveMileStone(Milestone milestone);
 
     /**
      * Remove a milestone
      * @param milestone The {@link Milestone} to remove
      * @return Empty CompletableFuture
      */
-    public abstract CompletableFuture<Void> removeMileStone(Milestone milestone);
+    public abstract CompletableFuture<Boolean> removeMileStone(Milestone milestone);
     /**
      * Get all milestones
      * @return A {@link CompletableFuture} with a {@link List} of {@link Milestone}
@@ -117,21 +117,21 @@ public abstract class Storage {
      * @param milestone The {@link RepeatingMilestone} to create
      * @return Empty CompletableFuture
      */
-    public abstract CompletableFuture<Void> createRepeatingMilestone(RepeatingMilestone milestone);
+    public abstract CompletableFuture<Boolean> createRepeatingMilestone(RepeatingMilestone milestone);
 
     /**
      * Save a repeating milestone
      * @param milestone The {@link RepeatingMilestone} to save
      * @return Empty CompletableFuture
      */
-    public abstract CompletableFuture<Void> saveRepeatingMileStone(RepeatingMilestone milestone);
+    public abstract CompletableFuture<Boolean> saveRepeatingMileStone(RepeatingMilestone milestone);
 
     /**
      * Remove a repeating milestone
      * @param milestone The {@link RepeatingMilestone} to remove
      * @return Empty CompletableFuture
      */
-    public abstract CompletableFuture<Void> removeRepeatingMileStone(RepeatingMilestone milestone);
+    public abstract CompletableFuture<Boolean> removeRepeatingMileStone(RepeatingMilestone milestone);
 
     /**
      * Get all repeating milestones
@@ -144,7 +144,7 @@ public abstract class Storage {
      * @param name The name of the {@link org.bukkit.entity.Player}
      * @return Empty CompletableFuture
      */
-    public abstract CompletableFuture<Void> reset(String name);
+    public abstract CompletableFuture<Boolean> reset(String name);
 
 
     public Set<String> sortHashMapByValues(
