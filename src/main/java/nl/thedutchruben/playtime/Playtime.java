@@ -299,7 +299,7 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.BUKKIT::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.GITHUB::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord", () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
             metrics.addCustomChart(new SimplePie("database_type", () -> storage.getName()));
