@@ -9,22 +9,24 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 @TDRListener
 public class OnChatListener implements Listener {
-    private boolean count = Playtime.getInstance().getFileManager().getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime");
-    private boolean chatReset = Playtime.getInstance().getFileManager().getConfig("config.yml").get().getBoolean("settings.afk.events.chatResetAfkTime");
+    private boolean count = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
+            .getBoolean("settings.afk.countAfkTime");
+    private boolean chatReset = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
+            .getBoolean("settings.afk.events.chatResetAfkTime");
 
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent event){
-        if(!count){
-            if (chatReset){
+    public void onChat(AsyncPlayerChatEvent event) {
+        if (!count) {
+            if (chatReset) {
                 Playtime.getInstance().forceSave(event.getPlayer().getUniqueId());
             }
         }
     }
 
     @EventHandler
-    public void onChat(PlayerCommandPreprocessEvent event){
-        if(!count){
-            if (chatReset){
+    public void onChat(PlayerCommandPreprocessEvent event) {
+        if (!count) {
+            if (chatReset) {
                 Playtime.getInstance().forceSave(event.getPlayer().getUniqueId());
             }
         }

@@ -10,7 +10,6 @@ public class PlayTimeUpdatePlayerEvent extends Event {
     private final long oldTime;
     private final long newTime;
 
-
     /**
      * The default constructor is defined for cleaner code. This constructor
      * assumes the event is synchronous.

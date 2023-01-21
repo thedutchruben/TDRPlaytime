@@ -12,9 +12,9 @@ import java.util.Random;
  * @author Ruben
  * @since 1.0
  * @version 1.0
- * <p>
- *     This class is used to spawn firework
- * </p>
+ *          <p>
+ *          This class is used to spawn firework
+ *          </p>
  *
  */
 public class FireworkUtil {
@@ -27,8 +27,8 @@ public class FireworkUtil {
      * @param location The location to spawn the firework.
      */
     public static void spawn(Location location) {
-        FireworkEffect effect = FireworkEffect.builder().trail(getRandomBoolean()).flicker(getRandomBoolean()).
-                withColor(Color.fromRGB(random.nextInt(255), random.nextInt(255), random.nextInt(255)))
+        FireworkEffect effect = FireworkEffect.builder().trail(getRandomBoolean()).flicker(getRandomBoolean())
+                .withColor(Color.fromRGB(random.nextInt(255), random.nextInt(255), random.nextInt(255)))
                 .withFade(Color.fromRGB(random.nextInt(255), random.nextInt(255), random.nextInt(255)))
                 .with(FireworkEffect.Type.values()[random.nextInt(FireworkEffect.Type.values().length)]).build();
         Firework fw = location.getWorld().spawn(location, Firework.class);

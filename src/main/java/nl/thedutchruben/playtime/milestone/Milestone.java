@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 public class Milestone {
     private transient List<ItemStack> itemStackObjects;
 
@@ -30,7 +29,6 @@ public class Milestone {
     @SerializedName("firework_show_seconds_between_firework")
     private int fireworkShowSecondsBetween = 0;
 
-
     public void apply(Player player) {
         if (itemStacks != null) {
             if (itemStackObjects == null) {
@@ -45,9 +43,10 @@ public class Milestone {
         }
 
         if (commands != null) {
-            Bukkit.getScheduler().runTask(Playtime.getInstance(),() -> {
+            Bukkit.getScheduler().runTask(Playtime.getInstance(), () -> {
                 for (String command : commands) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%playername%", player.getName()).replace("%playeruuid%", player.getUniqueId().toString()));
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%playername%", player.getName())
+                            .replace("%playeruuid%", player.getUniqueId().toString()));
                 }
             });
         }

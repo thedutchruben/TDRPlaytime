@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * @author Ruben
  * @version 1.0
@@ -66,9 +65,10 @@ public class RepeatingMilestone {
         }
 
         if (commands != null) {
-            Bukkit.getScheduler().runTask(Playtime.getInstance(),() -> {
+            Bukkit.getScheduler().runTask(Playtime.getInstance(), () -> {
                 for (String command : commands) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%playername%", player.getName()).replace("%playeruuid%", player.getUniqueId().toString()));
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%playername%", player.getName())
+                            .replace("%playeruuid%", player.getUniqueId().toString()));
                 }
             });
 

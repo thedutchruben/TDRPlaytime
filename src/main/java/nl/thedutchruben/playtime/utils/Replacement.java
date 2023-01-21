@@ -4,9 +4,9 @@ package nl.thedutchruben.playtime.utils;
  * @author Ruben
  * @since 1.0
  * @version 1.0
- * <p>
- *     This class is used to replace a string with a string.
- * </p>
+ *          <p>
+ *          This class is used to replace a string with a string.
+ *          </p>
  *
  */
 public class Replacement {
@@ -22,7 +22,7 @@ public class Replacement {
 
     /**
      * @param from The string to replace.
-     * @param to The string to replace with.
+     * @param to   The string to replace with.
      */
     public Replacement(String from, String to) {
         this.from = from;

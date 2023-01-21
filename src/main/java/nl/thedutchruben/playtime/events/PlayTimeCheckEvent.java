@@ -6,7 +6,6 @@ import org.bukkit.event.HandlerList;
 public class PlayTimeCheckEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
 
-
     /**
      * The default constructor is defined for cleaner code. This constructor
      * assumes the event is synchronous.
