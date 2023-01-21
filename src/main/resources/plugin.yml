@@ -9,7 +9,6 @@ website: www.thedutchruben.nl/nl/projects/tdrplaytime
 commands:
   playtime:
     aliases:
-      - ptime
       - playertime
       - onlinetime
     description: Main play time command
