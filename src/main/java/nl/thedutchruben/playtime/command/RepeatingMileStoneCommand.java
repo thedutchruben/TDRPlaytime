@@ -7,7 +7,6 @@ import nl.thedutchruben.mccore.spigot.commands.Command;
 import nl.thedutchruben.mccore.spigot.commands.Default;
 import nl.thedutchruben.mccore.spigot.commands.SubCommand;
 import nl.thedutchruben.playtime.Playtime;
-import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.ChatColor;

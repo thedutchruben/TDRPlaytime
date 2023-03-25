@@ -80,10 +80,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 if (placeNumber <= 1) {
                     placeNumber = 1;
                 }
-
-                if (placeNumber >= 10) {
-                    placeNumber = 10;
-                }
             } catch (NumberFormatException exception) {
                 Bukkit.getLogger().log(Level.WARNING, "Wrong number format");
             }
@@ -100,9 +96,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     placeNumber = 1;
                 }
 
-                if (placeNumber >= 10) {
-                    placeNumber = 10;
-                }
             } catch (NumberFormatException exception) {
                 Bukkit.getLogger().log(Level.WARNING, "Wrong number format");
             }
@@ -121,9 +114,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     placeNumber = 1;
                 }
 
-                if (placeNumber >= 10) {
-                    placeNumber = 10;
-                }
             } catch (NumberFormatException exception) {
                 Bukkit.getLogger().log(Level.WARNING, "Wrong number format");
             }
@@ -142,9 +132,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     placeNumber = 1;
                 }
 
-                if (placeNumber >= 10) {
-                    placeNumber = 10;
-                }
             } catch (NumberFormatException exception) {
                 Bukkit.getLogger().log(Level.WARNING, "Wrong number format");
             }
@@ -163,9 +150,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     placeNumber = 1;
                 }
 
-                if (placeNumber >= 10) {
-                    placeNumber = 10;
-                }
             } catch (NumberFormatException exception) {
                 Bukkit.getLogger().log(Level.WARNING, "Wrong number format");
             }
@@ -184,9 +168,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                     placeNumber = 1;
                 }
 
-                if (placeNumber >= 10) {
-                    placeNumber = 10;
-                }
             } catch (NumberFormatException exception) {
                 Bukkit.getLogger().log(Level.WARNING, "Wrong number format");
             }
