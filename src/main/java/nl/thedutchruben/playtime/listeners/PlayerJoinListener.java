@@ -17,7 +17,13 @@ public class PlayerJoinListener implements Listener {
                 .whenCompleteAsync((aLong, throwable) -> {
                     Playtime.getInstance().getPlayerOnlineTime().put(event.getPlayer().getUniqueId(), aLong);
                     Playtime.getInstance().getLastCheckedTime().put(event.getPlayer().getUniqueId(),
-                            new Playtime.LastCheckedData(System.currentTimeMillis(), event.getPlayer().getLocation()));
+                            new Playtime.LastCheckedData(System.currentTimeMillis(),
+                                    event.getPlayer().getLocation()));
+
+                    if (aLong == 0L) {
+                        Playtime.getInstance().forceSave(event.getPlayer().getUniqueId());
+
+                    }
                 });
 
     }
