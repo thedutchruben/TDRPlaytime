@@ -45,8 +45,11 @@ public class Milestone {
         if (commands != null) {
             Bukkit.getScheduler().runTask(Playtime.getInstance(), () -> {
                 for (String command : commands) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%playername%", player.getName())
-                            .replace("%playeruuid%", player.getUniqueId().toString()));
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                            command.replaceAll("%playername%", player.getName())
+                                    .replaceAll("%player_name%", player.getName())
+                                    .replaceAll("%playeruuid%", player.getUniqueId().toString())
+                                    .replaceAll("%player_uuid%", player.getUniqueId().toString()));
                 }
             });
         }
