@@ -1,6 +1,6 @@
 name: Discord Notification
 
-on: [push]
+on: [merge_group,push,pull_request,pull_request_target,schedule,workflow_call,workflow_run,workflow_dispatch,branch_protection_rule,check_run,check_suite,commit_comment,create,delete,deployment,deployment_status,discussion,discussion_comment,fork,gollum,issue_comment,issues,label,member,milestone,package,page_build,project,project_card,project_column,public,pull_request_review_comment,pull_request_review,registry_package,repository_dispatch,release,status,watch]
 
 jobs:
   report-status:
@@ -9,9 +9,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3.5.0
+        uses: actions/checkout@v3.0.2
       - name: Set up Java JDK 11
-        uses: actions/setup-java@v3.11.0
+        uses: actions/setup-java@v3.5.0
         with:
           distribution: 'adopt'
           java-version: '17'
