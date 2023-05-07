@@ -90,6 +90,22 @@ public class PlayTimeCommand {
     }
 
     @SneakyThrows
+    @SubCommand(subCommand = "set", permission = "playtime.playtime.set", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>")
+    public void set(CommandSender commandSender, List<String> args) {
+        String playerName = args.get(1);
+        long time = Long.parseLong(args.get(2));
+        if (Bukkit.getPlayer(playerName) != null) {
+            Playtime.getInstance().getPlayerOnlineTime().replace(Bukkit.getPlayer(playerName).getUniqueId(),
+                    (time * 1000));
+        } else {
+            Playtime.getInstance().getStorage().savePlayTime(Bukkit.getOfflinePlayer(playerName).getUniqueId(),
+                    time);
+        }
+        commandSender.sendMessage(
+                Playtime.getInstance().getMessage("command.playtime.timeadded").replace("<player>", playerName));
+    }
+
+    @SneakyThrows
     @SubCommand(subCommand = "remove", permission = "playtime.playtime.remove", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>")
     public void remove(CommandSender commandSender, List<String> args) {
         String playerName = args.get(1);

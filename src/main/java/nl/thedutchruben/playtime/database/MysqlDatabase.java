@@ -238,9 +238,13 @@ public class MysqlDatabase extends Storage {
                 if (resultSet.next()) {
                     return resultSet.getString("name");
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "";
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            return "";
         }
         return "";
     }

@@ -212,6 +212,14 @@ public class RepeatingMileStoneCommand {
         });
     }
 
+    @Default
+    @SubCommand(subCommand = "test", usage = "<milestone>", minParams = 2, maxParams = 2, console = false)
+    public void test(CommandSender sender, List<String> args) {
+        RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
+                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        milestone.apply((Player) sender);
+    }
+
     public String getState(boolean b) {
         return b ? Playtime.getInstance().getMessage("command.defaults.enabled")
                 : Playtime.getInstance().getMessage("command.defaults.disabled");

@@ -44,6 +44,14 @@ public class MileStoneCommand {
 
     }
 
+    @Default
+    @SubCommand(subCommand = "test", usage = "<milestone>", minParams = 2, maxParams = 2, console = false)
+    public void test(CommandSender sender, List<String> args) {
+        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
+                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        milestone.apply((Player) sender);
+    }
+
     @SubCommand(subCommand = "remove", usage = "<milestone>", minParams = 2, maxParams = 2)
     public void remove(CommandSender sender, List<String> args) {
         Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
