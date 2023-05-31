@@ -2,8 +2,8 @@ package nl.thedutchruben.playtime;
 
 import lombok.SneakyThrows;
 import nl.thedutchruben.mccore.Mccore;
-import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
 import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
+import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.database.MysqlDatabase;
 import nl.thedutchruben.playtime.database.Storage;
@@ -33,59 +33,14 @@ import java.util.logging.Level;
  * @author Ruben
  * @version 1.0
  * @since 1.0
- *        <p>
- *        This class is the main class of the plugin.
- *        It is responsible for loading the plugin,
- *        registering commands, events, and other stuff.
- *        It also handles the database.
- *        </p>
- *
+ * <p>
+ * This class is the main class of the plugin.
+ * It is responsible for loading the plugin,
+ * registering commands, events, and other stuff.
+ * It also handles the database.
+ * </p>
  */
 public final class Playtime extends JavaPlugin {
-
-    /**
-     * Small simple class to save the temporary data of a player.
-     */
-    public static class LastCheckedData {
-        /**
-         * The last time the player was checked.
-         */
-        private long time;
-
-        /**
-         * The last location of the player
-         */
-        private Location location;
-
-        /**
-         * Creates a new instance of LastCheckedData.
-         * 
-         * @param time     The last time the player was checked.
-         * @param location The last location of the player.
-         */
-        public LastCheckedData(long time, Location location) {
-            this.time = time;
-            this.location = location;
-        }
-
-        /**
-         * Gets the last time the player was checked.
-         * 
-         * @return The last time the player was checked.
-         */
-        public long getTime() {
-            return time;
-        }
-
-        /**
-         * Gets the last location of the player.
-         * 
-         * @return The last location of the player.
-         */
-        public Location getLocation() {
-            return location;
-        }
-    }
 
     /**
      * The instance of the plugin.
@@ -99,6 +54,10 @@ public final class Playtime extends JavaPlugin {
      * The player's last checked data.
      */
     private final Map<UUID, LastCheckedData> lastCheckedTime = new HashMap<>();
+    /**
+     * The filemanager of the plugin.
+     */
+    private final FileManager fileManager = new FileManager(this);
     /**
      * A map filled with the milestones of the server
      */
@@ -116,34 +75,25 @@ public final class Playtime extends JavaPlugin {
      */
     private Storage storage;
     /**
-     * The filemanager of the plugin.
-     */
-    private final FileManager fileManager = new FileManager(this);
-    /**
      * The language file
      */
     private FileManager.Config langFile;
-
     /**
      * The stores task for checking data
      */
     private BukkitTask checkTask;
-
     /**
      * The setting for counting afk time
      */
     private boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",
             true);
-
     private int milestoneGot = 0;
-
     private int repeatingMilestoneGot = 0;
-
     private int playTimeEarned = 0;
 
     /**
      * Get the instance of the plugin.
-     * 
+     *
      * @return The instance of the plugin.
      */
     public static Playtime getInstance() {
@@ -305,7 +255,7 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.BUKKIT::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.CURSE_FORGE::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
@@ -365,7 +315,7 @@ public final class Playtime extends JavaPlugin {
 
     /**
      * Update the playtime of a player.
-     * 
+     *
      * @param uuid The uuid of the player.
      * @param save Whether to save the playtime to the database.
      */
@@ -403,7 +353,7 @@ public final class Playtime extends JavaPlugin {
 
     /**
      * Force save the playtime of a player.
-     * 
+     *
      * @param uuid The uuid of the player.
      */
     public void forceSave(UUID uuid) {
@@ -420,7 +370,7 @@ public final class Playtime extends JavaPlugin {
 
     /**
      * Check if a player has reached a milestone.
-     * 
+     *
      * @param uuid    The uuid of the player.
      * @param oldtime The old playtime of the player.
      * @param newtime The new playtime of the player.
@@ -445,7 +395,7 @@ public final class Playtime extends JavaPlugin {
 
     /**
      * Get the message from the language file.
-     * 
+     *
      * @param key The key of the message.
      * @return The message.
      */
@@ -469,7 +419,7 @@ public final class Playtime extends JavaPlugin {
 
     /**
      * The storage of the plugin
-     * 
+     *
      * @return The storage of the plugin.
      */
     public Storage getStorage() {
@@ -478,7 +428,7 @@ public final class Playtime extends JavaPlugin {
 
     /**
      * The last checked time of a player.
-     * 
+     *
      * @return The last checked time.
      */
     public Map<UUID, LastCheckedData> getLastCheckedTime() {
@@ -487,7 +437,7 @@ public final class Playtime extends JavaPlugin {
 
     /**
      * The online time of a player.
-     * 
+     *
      * @return The online time.
      */
     public Map<UUID, Long> getPlayerOnlineTime() {
@@ -498,12 +448,20 @@ public final class Playtime extends JavaPlugin {
         return repeatedMilestoneList;
     }
 
+    public void setRepeatedMilestoneList(List<RepeatingMilestone> repeatedMilestoneList) {
+        this.repeatedMilestoneList = repeatedMilestoneList;
+    }
+
     public FileManager getFileManager() {
         return fileManager;
     }
 
     public Map<Long, Milestone> getMilestoneMap() {
         return milestoneMap;
+    }
+
+    public void setMilestoneMap(Map<Long, Milestone> milestoneMap) {
+        this.milestoneMap = milestoneMap;
     }
 
     public FileManager.Config getLangFile() {
@@ -744,21 +702,70 @@ public final class Playtime extends JavaPlugin {
         }
     }
 
-    public void setMilestoneMap(Map<Long, Milestone> milestoneMap) {
-        this.milestoneMap = milestoneMap;
-    }
-
-    public void setRepeatedMilestoneList(List<RepeatingMilestone> repeatedMilestoneList) {
-        this.repeatedMilestoneList = repeatedMilestoneList;
-    }
-
     public Map<String, String> getKeyMessageMap() {
         return keyMessageMap;
     }
 
     enum DownloadSource {
+        /**
+         * Spigot.org
+         */
         SPIGOT,
-        BUKKIT,
-        GITHUB
+        /**
+         * curseforge
+         */
+        CURSE_FORGE,
+        /**
+         * github.com
+         */
+        GITHUB,
+        /**
+         * https://hangar.papermc.io/
+         */
+        HANGAR,
+    }
+
+    /**
+     * Small simple class to save the temporary data of a player.
+     */
+    public static class LastCheckedData {
+        /**
+         * The last time the player was checked.
+         */
+        private long time;
+
+        /**
+         * The last location of the player
+         */
+        private Location location;
+
+        /**
+         * Creates a new instance of LastCheckedData.
+         *
+         * @param time     The last time the player was checked.
+         * @param location The last location of the player.
+         */
+        public LastCheckedData(long time, Location location) {
+            this.time = time;
+            this.location = location;
+        }
+
+        /**
+         * Gets the last time the player was checked.
+         *
+         * @return The last time the player was checked.
+         */
+        public long getTime() {
+            return time;
+        }
+
+        /**
+         * Gets the last location of the player.
+         *
+         * @return The last location of the player.
+         */
+        public Location getLocation() {
+            return location;
+        }
     }
 }

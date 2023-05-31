@@ -17,10 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Map;
 
-@Command(command = "repeatingmilestone", description = "Milestones command", permission = "playtime.milestones", console = true)
+@Command(command = "repeatingmilestone", description = "Milestones command", permission = "playtime.milestone", console = true)
 public class RepeatingMileStoneCommand {
 
-    @SubCommand(subCommand = "create", usage = "<string> <time>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "create", usage = "<string> <time>", minParams = 3, maxParams = 3, permission = "playtime.milestone")
     public void create(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = new RepeatingMilestone();
         milestone.setMilestoneName(args.get(1));
@@ -33,7 +33,7 @@ public class RepeatingMileStoneCommand {
     }
 
     @Default
-    @SubCommand(subCommand = "list")
+    @SubCommand(subCommand = "list", permission = "playtime.milestone.list")
     public void list(CommandSender sender, List<String> args) {
         Playtime.getInstance().getRepeatedMilestoneList().forEach((milestone) -> {
             for (String s : Playtime.getInstance().getLangFile().get().getStringList("command.milestone.list")) {
@@ -44,7 +44,7 @@ public class RepeatingMileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "remove", usage = "<repeatingmilestone>", minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "remove", usage = "<repeatingmilestone>", minParams = 2, maxParams = 2, permission = "playtime.milestone.remove")
     public void remove(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -57,7 +57,7 @@ public class RepeatingMileStoneCommand {
         });
     }
 
-    @SubCommand(subCommand = "info", usage = "<repeatingmilestone>", minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "info", usage = "<repeatingmilestone>", minParams = 2, maxParams = 2, permission = "playtime.milestone.info")
     public void info(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -68,8 +68,8 @@ public class RepeatingMileStoneCommand {
                 } else {
                     for (String command : milestone.getCommands()) {
                         TextComponent textComponent = new TextComponent("     " + command);
-                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
-                                new TextComponent(ChatColor.DARK_RED + "Click remove the command") }));
+                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{
+                                new TextComponent(ChatColor.DARK_RED + "Click remove the command")}));
                         textComponent.setClickEvent(
                                 new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone removeCommandFromMilestone "
                                         + milestone.getMilestoneName() + " \"" + command + "\""));
@@ -94,8 +94,8 @@ public class RepeatingMileStoneCommand {
                         }
                         TextComponent textComponent = new TextComponent(
                                 "     " + name + " x " + itemStack1.getAmount());
-                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
-                                new TextComponent(ChatColor.DARK_RED + "Click remove the item") }));
+                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{
+                                new TextComponent(ChatColor.DARK_RED + "Click remove the item")}));
 
                         textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                                 "/milestone removeItemFromMilestone " + milestone.getMilestoneName() + " " + name));
@@ -116,7 +116,7 @@ public class RepeatingMileStoneCommand {
         }
     }
 
-    @SubCommand(subCommand = "addItemToMilestone", usage = "<repeatingmilestone>", minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "addItemToMilestone", usage = "<repeatingmilestone>", minParams = 2, maxParams = 2, permission = "playtime.milestone.addItemToMilestone")
     public void addItemToMilestone(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -127,7 +127,7 @@ public class RepeatingMileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "removeItemFromMilestone", usage = "<repeatingmilestone> <string>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "removeItemFromMilestone", usage = "<repeatingmilestone> <string>", minParams = 3, maxParams = 3, permission = "playtime.milestone.removeItemFromMilestone")
     public void removeItemFromMilestone(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -155,7 +155,7 @@ public class RepeatingMileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "addCommandToMilestone", usage = "<repeatingmilestone> <string>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "addCommandToMilestone", usage = "<repeatingmilestone> <string>", minParams = 3, maxParams = 3, permission = "playtime.milestone.addCommandToMilestone")
     public void addCommandToMilestone(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -166,7 +166,7 @@ public class RepeatingMileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "removeCommandFromMilestone", usage = "<repeatingmilestone> <string>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "removeCommandFromMilestone", usage = "<repeatingmilestone> <string>", minParams = 3, maxParams = 3, permission = "playtime.milestone.removeCommandFromMilestone")
     public void removeCommandFromMilestone(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -179,7 +179,7 @@ public class RepeatingMileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "toggleFirework", usage = "<repeatingmilestone>", minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "toggleFirework", usage = "<repeatingmilestone>", minParams = 2, maxParams = 2, permission = "playtime.milestone.toggleFirework")
     public void toggleFirework(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -190,7 +190,7 @@ public class RepeatingMileStoneCommand {
         });
     }
 
-    @SubCommand(subCommand = "setFireworkAmount", usage = "<repeatingmilestone> <integer>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "setFireworkAmount", usage = "<repeatingmilestone> <integer>", minParams = 3, maxParams = 3, permission = "playtime.milestone.setFireworkAmount")
     public void setFireworkAmount(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -201,7 +201,7 @@ public class RepeatingMileStoneCommand {
         });
     }
 
-    @SubCommand(subCommand = "setFireworkDelay", usage = "<repeatingmilestone> <integer>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "setFireworkDelay", usage = "<repeatingmilestone> <integer>", minParams = 3, maxParams = 3, permission = "playtime.milestone.setFireworkDelay")
     public void setFireworkDelay(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
@@ -213,7 +213,7 @@ public class RepeatingMileStoneCommand {
     }
 
     @Default
-    @SubCommand(subCommand = "test", usage = "<milestone>", minParams = 2, maxParams = 2, console = false)
+    @SubCommand(subCommand = "test", usage = "<milestone>", minParams = 2, maxParams = 2, console = false, permission = "playtime.milestone.test")
     public void test(CommandSender sender, List<String> args) {
         RepeatingMilestone milestone = Playtime.getInstance().getRepeatedMilestoneList().stream()
                 .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();

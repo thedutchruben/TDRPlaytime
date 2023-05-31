@@ -17,7 +17,6 @@ import java.util.Map;
  * @date 24-06-2020
  * @project Playtime
  * @package nl.thedutchruben.playtime.milestone
- *
  */
 public class RepeatingMilestone {
     /**

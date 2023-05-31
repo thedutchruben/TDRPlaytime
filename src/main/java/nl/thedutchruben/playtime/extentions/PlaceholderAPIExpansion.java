@@ -186,7 +186,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         int minutes = (int) (time / 60);
         time = time - minutes * 60L;
         int seconds = (int) time;
-        return new int[] { days, hours, minutes, seconds };
+        return new int[]{days, hours, minutes, seconds};
     }
 
     public String translateMessage(String message, long time) {

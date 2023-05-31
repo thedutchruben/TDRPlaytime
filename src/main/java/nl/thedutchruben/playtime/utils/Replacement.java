@@ -2,12 +2,11 @@ package nl.thedutchruben.playtime.utils;
 
 /**
  * @author Ruben
- * @since 1.0
  * @version 1.0
- *          <p>
- *          This class is used to replace a string with a string.
- *          </p>
- *
+ * <p>
+ * This class is used to replace a string with a string.
+ * </p>
+ * @since 1.0
  */
 public class Replacement {
     /**

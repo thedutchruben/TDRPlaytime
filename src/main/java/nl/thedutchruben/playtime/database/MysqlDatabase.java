@@ -15,8 +15,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class MysqlDatabase extends Storage {
-    private Connection connection;
     private final FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("database.yml");
+    private Connection connection;
     private Gson gson;
 
     private String tablePrefix = "";

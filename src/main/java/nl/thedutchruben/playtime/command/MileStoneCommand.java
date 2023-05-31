@@ -79,8 +79,8 @@ public class MileStoneCommand {
                 } else {
                     for (String command : milestone.getCommands()) {
                         TextComponent textComponent = new TextComponent("     " + command);
-                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
-                                new TextComponent(ChatColor.DARK_RED + "Click remove the command") }));
+                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{
+                                new TextComponent(ChatColor.DARK_RED + "Click remove the command")}));
                         textComponent.setClickEvent(
                                 new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone removeCommandFromMilestone "
                                         + milestone.getMilestoneName() + " \"" + command + "\""));
@@ -105,8 +105,8 @@ public class MileStoneCommand {
                         }
                         TextComponent textComponent = new TextComponent(
                                 "     " + name + " x " + itemStack1.getAmount());
-                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[] {
-                                new TextComponent(ChatColor.DARK_RED + "Click remove the item") }));
+                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{
+                                new TextComponent(ChatColor.DARK_RED + "Click remove the item")}));
 
                         textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                                 "/milestone removeItemFromMilestone " + milestone.getMilestoneName() + " " + name));

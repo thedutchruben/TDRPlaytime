@@ -10,12 +10,11 @@ import java.util.Random;
 
 /**
  * @author Ruben
- * @since 1.0
  * @version 1.0
- *          <p>
- *          This class is used to spawn firework
- *          </p>
- *
+ * <p>
+ * This class is used to spawn firework
+ * </p>
+ * @since 1.0
  */
 public class FireworkUtil {
     /**

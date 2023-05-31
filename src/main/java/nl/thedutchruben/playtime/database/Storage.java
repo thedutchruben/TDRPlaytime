@@ -10,7 +10,7 @@ public abstract class Storage {
 
     /**
      * Get the name of the storage type
-     * 
+     *
      * @return The name of the storage type
      */
     public abstract String getName();
@@ -28,7 +28,7 @@ public abstract class Storage {
     /**
      * @param uuid The {@link UUID} of the {@link org.bukkit.entity.Player}
      * @return A {@link CompletableFuture} with the time of the
-     *         {@link org.bukkit.entity.Player}
+     * {@link org.bukkit.entity.Player}
      */
     public abstract CompletableFuture<Long> getPlayTimeByUUID(String uuid);
 
@@ -36,13 +36,13 @@ public abstract class Storage {
      * @param name The name as an {@link String} of the
      *             {@link org.bukkit.entity.Player}
      * @return A {@link CompletableFuture} with the time of the
-     *         {@link org.bukkit.entity.Player}
+     * {@link org.bukkit.entity.Player}
      */
     public abstract CompletableFuture<Long> getPlayTimeByName(String name);
 
     /**
      * Save the players online time
-     * 
+     *
      * @param uuid     The {@link UUID} of the {@link org.bukkit.entity.Player}
      * @param playtime the players online time
      * @return Empty CompletableFuture
@@ -51,7 +51,7 @@ public abstract class Storage {
 
     /**
      * Save the players online time
-     * 
+     *
      * @param uuid     The {@link UUID} of the {@link org.bukkit.entity.Player}
      * @param playtime the players online time
      * @return Empty CompletableFuture
@@ -62,29 +62,29 @@ public abstract class Storage {
 
     /**
      * Get the top 10 list
-     * 
+     *
      * @return A {@link CompletableFuture} with a {@link Map} with the {@link UUID}
-     *         and the time of the {@link org.bukkit.entity.Player}
+     * and the time of the {@link org.bukkit.entity.Player}
      */
     public abstract CompletableFuture<Map<String, Long>> getTopTenList();
 
     /**
      * Get the total playtime of all players
-     * 
+     *
      * @return A {@link CompletableFuture} with the total playtime of all players
      */
     public abstract long getTotalPlayTime();
 
     /**
      * Get the total registered players
-     * 
+     *
      * @return The total registered players
      */
     public abstract int getTotalPlayers();
 
     /**
      * Get the name of a top place
-     * 
+     *
      * @param place The place
      * @return The name of the top place
      */
@@ -92,7 +92,7 @@ public abstract class Storage {
 
     /**
      * Get the time of a top place
-     * 
+     *
      * @param place The place of the player
      * @return The time of the top place
      */
@@ -100,7 +100,7 @@ public abstract class Storage {
 
     /**
      * Create a milestone
-     * 
+     *
      * @param milestone The {@link Milestone} to create
      * @return Empty CompletableFuture
      */
@@ -108,7 +108,7 @@ public abstract class Storage {
 
     /**
      * Save a milestone
-     * 
+     *
      * @param milestone The {@link Milestone} to save
      * @return Empty CompletableFuture
      */
@@ -116,7 +116,7 @@ public abstract class Storage {
 
     /**
      * Remove a milestone
-     * 
+     *
      * @param milestone The {@link Milestone} to remove
      * @return Empty CompletableFuture
      */
@@ -124,14 +124,14 @@ public abstract class Storage {
 
     /**
      * Get all milestones
-     * 
+     *
      * @return A {@link CompletableFuture} with a {@link List} of {@link Milestone}
      */
     public abstract CompletableFuture<List<Milestone>> getMilestones();
 
     /**
      * Create a repeating milestone
-     * 
+     *
      * @param milestone The {@link RepeatingMilestone} to create
      * @return Empty CompletableFuture
      */
@@ -139,7 +139,7 @@ public abstract class Storage {
 
     /**
      * Save a repeating milestone
-     * 
+     *
      * @param milestone The {@link RepeatingMilestone} to save
      * @return Empty CompletableFuture
      */
@@ -147,7 +147,7 @@ public abstract class Storage {
 
     /**
      * Remove a repeating milestone
-     * 
+     *
      * @param milestone The {@link RepeatingMilestone} to remove
      * @return Empty CompletableFuture
      */
@@ -155,15 +155,15 @@ public abstract class Storage {
 
     /**
      * Get all repeating milestones
-     * 
+     *
      * @return A {@link CompletableFuture} with a {@link List} of
-     *         {@link RepeatingMilestone}
+     * {@link RepeatingMilestone}
      */
     public abstract CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones();
 
     /**
      * Reset the playtime of a player
-     * 
+     *
      * @param name The name of the {@link org.bukkit.entity.Player}
      * @return Empty CompletableFuture
      */

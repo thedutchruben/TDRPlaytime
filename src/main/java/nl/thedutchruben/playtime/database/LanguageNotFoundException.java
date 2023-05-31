@@ -83,7 +83,7 @@ public class LanguageNotFoundException extends Exception {
      * @since 1.7
      */
     public LanguageNotFoundException(String message, Throwable cause, boolean enableSuppression,
-            boolean writableStackTrace, String language) {
+                                     boolean writableStackTrace, String language) {
         super(message, cause, enableSuppression, writableStackTrace);
         this.language = language;
     }
