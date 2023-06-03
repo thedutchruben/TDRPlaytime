@@ -8,8 +8,8 @@ import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.database.MysqlDatabase;
 import nl.thedutchruben.playtime.database.Storage;
 import nl.thedutchruben.playtime.database.YamlDatabase;
-import nl.thedutchruben.playtime.events.PlayTimeCheckEvent;
-import nl.thedutchruben.playtime.events.PlayTimeUpdatePlayerEvent;
+import nl.thedutchruben.playtime.events.playtime.PlayTimeCheckEvent;
+import nl.thedutchruben.playtime.events.playtime.PlayTimeUpdatePlayerEvent;
 import nl.thedutchruben.playtime.extentions.PlaceholderAPIExpansion;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
@@ -117,6 +117,7 @@ public final class Playtime extends JavaPlugin {
                 "you can create your own language file");
         configfileConfiguration.addDefault("language", "en_GB");
         configfileConfiguration.addDefault("settings.update_check", true);
+        configfileConfiguration.addDefault("settings.cacheTime", 5);
         configfileConfiguration.addDefault("settings.afk.countAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.events.chatResetAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.events.inventoryClickResetAfkTime", true);

@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
-@Command(command = "playtime", description = "Main play time command", permission = "playtime.playtime", console = true)
+@Command(command = "playtime", description = "Main playtime command", permission = "playtime.playtime", console = true)
 public class PlayTimeCommand {
 
     @Default

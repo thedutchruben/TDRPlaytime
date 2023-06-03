@@ -2,6 +2,7 @@ package nl.thedutchruben.playtime.utils;
 
 import lombok.AllArgsConstructor;
 import nl.thedutchruben.mccore.global.caching.CachingObject;
+import nl.thedutchruben.playtime.Playtime;
 
 import java.util.Date;
 
@@ -29,7 +30,9 @@ public class TopPlaceCache extends CachingObject {
 
     @Override
     public Date getExpireDate() {
-        return null;
+        int minuteCache = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
+                .getInt("settings.cacheTime",5);
+        return new Date(createDate.getTime() + (minuteCache * 60000L));
     }
 
     @Override
@@ -37,4 +40,15 @@ public class TopPlaceCache extends CachingObject {
         return new TopPlaceData(name, uuid, time);
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getTime() {
+        return time;
+    }
 }

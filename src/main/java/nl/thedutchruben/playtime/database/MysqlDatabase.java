@@ -3,14 +3,17 @@ package nl.thedutchruben.playtime.database;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.SneakyThrows;
+import nl.thedutchruben.mccore.Mccore;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
+import nl.thedutchruben.playtime.utils.TopPlaceCache;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -58,7 +61,7 @@ public class MysqlDatabase extends Storage {
             return false;
         }
 
-        String update = "ALTER TABLE " + tablePrefix + "playtime MODIFY uuid VARCHAR(36);";
+        String update = "ALTER TABLE `" + tablePrefix + "playtime` MODIFY uuid VARCHAR(36);";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(update)) {
             preparedStatement.execute();
@@ -180,6 +183,7 @@ public class MysqlDatabase extends Storage {
         });
     }
 
+
     @SneakyThrows
     @Override
     public CompletableFuture<Map<String, Long>> getTopTenList() {
@@ -232,11 +236,19 @@ public class MysqlDatabase extends Storage {
 
     @Override
     public String getTopPlace(int place) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `name` FROM `" + tablePrefix
+
+        TopPlaceCache topListCache = (TopPlaceCache) Mccore.getInstance().getCachingManager().getCachingObject("tdrplaytime-topplace-" + place);
+        if(topListCache != null){
+            return topListCache.getName();
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `name`,`time` FROM `" + tablePrefix
                 + "playtime`ORDER BY `time` DESC LIMIT " + (place) + "," + (place + 1) + "")) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getString("name");
+                    String name =  resultSet.getString("name");
+                    Mccore.getInstance().getCachingManager().addCachingObject("tdrplaytime-topplace-" + place,new TopPlaceCache("tdrplaytime-topplace-" + place,new Date(),name,"",resultSet.getLong("time")));
+                    return name;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -251,11 +263,20 @@ public class MysqlDatabase extends Storage {
 
     @Override
     public String getTopPlaceTime(int place) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `time` FROM `" + tablePrefix
+        TopPlaceCache topListCache = (TopPlaceCache) Mccore.getInstance().getCachingManager().getCachingObject("tdrplaytime-topplace-" + place);
+        if(topListCache != null){
+            return String.valueOf(topListCache.getTime());
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `name`,`time` FROM `" + tablePrefix
                 + "playtime`ORDER BY `time` DESC LIMIT " + (place) + "," + (place + 1) + "")) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return String.valueOf(resultSet.getLong("time"));
+                    long time = resultSet.getLong("time");
+
+                    Mccore.getInstance().getCachingManager().addCachingObject("tdrplaytime-topplace-" + place,new TopPlaceCache("tdrplaytime-topplace-" + place,new Date(),resultSet.getString("name"),"",time));
+
+                    return String.valueOf(time);
                 }
             }
         } catch (SQLException sqlException) {

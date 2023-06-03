@@ -1,4 +1,4 @@
-package nl.thedutchruben.playtime.events;
+package nl.thedutchruben.playtime.events.playtime;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
