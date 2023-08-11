@@ -12,8 +12,8 @@ import nl.thedutchruben.playtime.utils.TopPlaceCache;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 

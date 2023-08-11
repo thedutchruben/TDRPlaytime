@@ -67,9 +67,9 @@ public final class Playtime extends JavaPlugin {
      */
     private List<RepeatingMilestone> repeatedMilestoneList = new ArrayList<>();
     /**
-     * The stores messages of the plugin.
+     * The stores message's of the plugin.
      */
-    private Map<String, String> keyMessageMap = new HashMap<>();
+    private final Map<String, String> keyMessageMap = new HashMap<>();
     /**
      * The storage of the plugin.
      */
@@ -85,7 +85,7 @@ public final class Playtime extends JavaPlugin {
     /**
      * The setting for counting afk time
      */
-    private boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",
+    private final boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",
             true);
     private int milestoneGot = 0;
     private int repeatingMilestoneGot = 0;
@@ -108,13 +108,9 @@ public final class Playtime extends JavaPlugin {
         // Register the metrics of the plugin.
         Metrics metrics = new Metrics(this, 9404);
 
-        // Setup the configs of the plugin.
+        // Set up the configs of the plugin.
         FileManager.Config config = fileManager.getConfig("config.yml");
         FileConfiguration configfileConfiguration = config.get();
-        configfileConfiguration.options().header("TDR Playtime Plugin \n" +
-                "https://www.spigotmc.org/resources/tdrplaytime.47894/ \n" +
-                "Change the language to one of the other files default it has nl_NL.yml and en_GB.yml, \n" +
-                "you can create your own language file");
         configfileConfiguration.addDefault("language", "en_GB");
         configfileConfiguration.addDefault("settings.update_check", true);
         configfileConfiguration.addDefault("settings.cacheTime", 5);
@@ -128,8 +124,6 @@ public final class Playtime extends JavaPlugin {
 
         FileManager.Config database = fileManager.getConfig("database.yml");
         FileConfiguration fileConfiguration = database.get();
-        fileConfiguration.options().header("TDR Playtime Plugin Database\n" +
-                "You can use the following database types : yaml/mysql");
         fileConfiguration.addDefault("database", "yaml");
         fileConfiguration.addDefault("mysql.hostname", "localhost");
         fileConfiguration.addDefault("mysql.port", 3306);
@@ -149,7 +143,7 @@ public final class Playtime extends JavaPlugin {
         }
         config.save();
         database.save();
-        // Setup the database.
+        // Set up the database.
         boolean data = storage.setup();
         if (data) {
             // Register the mc core
@@ -292,6 +286,8 @@ public final class Playtime extends JavaPlugin {
                 return milestoneCount;
             }));
 
+        } else {
+            Bukkit.getPluginManager().disablePlugin(this);
         }
     }
 
@@ -327,10 +323,10 @@ public final class Playtime extends JavaPlugin {
         playerOnlineTime.putIfAbsent(uuid, 0L);
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid).getTime();
         lastCheckedTime.replace(uuid,
-                new LastCheckedData(System.currentTimeMillis(), Bukkit.getPlayer(uuid).getLocation()));
+                new LastCheckedData(System.currentTimeMillis(), Objects.requireNonNull(Bukkit.getPlayer(uuid)).getLocation()));
         if (!countAfkTime) {
             Player player = Bukkit.getPlayer(uuid);
-            if (lastCheckedData.getLocation().getX() == player.getLocation().getX()
+            if (player != null && lastCheckedData.getLocation().getX() == player.getLocation().getX()
                     && lastCheckedData.getLocation().getY() == player.getLocation().getY()
                     && lastCheckedData.getLocation().getZ() == player.getLocation().getZ()) {
                 return;
@@ -361,7 +357,7 @@ public final class Playtime extends JavaPlugin {
 
         long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid).getTime();
         lastCheckedTime.replace(uuid,
-                new LastCheckedData(System.currentTimeMillis(), Bukkit.getPlayer(uuid).getLocation()));
+                new LastCheckedData(System.currentTimeMillis(), Objects.requireNonNull(Bukkit.getPlayer(uuid)).getLocation()));
         long newtime = playerOnlineTime.get(uuid) + extraTime;
         checkMileStones(uuid, playerOnlineTime.get(uuid), newtime);
         playerOnlineTime.replace(uuid, newtime);
@@ -721,7 +717,7 @@ public final class Playtime extends JavaPlugin {
          */
         GITHUB,
         /**
-         * https://hangar.papermc.io/
+         * <a href="https://hangar.papermc.io/">...</a>
          */
         HANGAR,
     }
