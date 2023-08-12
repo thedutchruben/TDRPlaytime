@@ -321,7 +321,7 @@ public final class Playtime extends JavaPlugin {
             return;
         LastCheckedData lastCheckedData = lastCheckedTime.get(uuid);
         playerOnlineTime.putIfAbsent(uuid, 0L);
-        long extraTime = System.currentTimeMillis() - lastCheckedTime.get(uuid).getTime();
+        long extraTime = System.currentTimeMillis() - lastCheckedData.getTime();
         lastCheckedTime.replace(uuid,
                 new LastCheckedData(System.currentTimeMillis(), Objects.requireNonNull(Bukkit.getPlayer(uuid)).getLocation()));
         if (!countAfkTime) {
