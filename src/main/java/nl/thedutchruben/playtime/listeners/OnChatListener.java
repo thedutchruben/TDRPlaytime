@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 @TDRListener
 public class OnChatListener implements Listener {
-    private boolean count = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
+    private final boolean count = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
             .getBoolean("settings.afk.countAfkTime");
-    private boolean chatReset = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
+    private final boolean chatReset = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
             .getBoolean("settings.afk.events.chatResetAfkTime");
 
     @EventHandler

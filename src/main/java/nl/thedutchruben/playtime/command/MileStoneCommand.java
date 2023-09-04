@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Command(command = "milestone", description = "Milestones command", permission = "playtime.milestones", console = true)
 public class MileStoneCommand {
@@ -44,18 +45,17 @@ public class MileStoneCommand {
 
     }
 
-    @Default
     @SubCommand(subCommand = "test", usage = "<milestone>", minParams = 2, maxParams = 2, console = false)
     public void test(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         milestone.apply((Player) sender);
     }
 
     @SubCommand(subCommand = "remove", usage = "<milestone>", minParams = 2, maxParams = 2)
     public void remove(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         Playtime.getInstance().getStorage().removeMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestoneremoved"));
             Playtime.getInstance().getMilestoneMap().clear();
@@ -70,8 +70,9 @@ public class MileStoneCommand {
 
     @SubCommand(subCommand = "info", usage = "<milestone>", minParams = 2, maxParams = 2)
     public void info(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+
+        Milestone milestone = getMilestone(sender, args.get(1));
+        if(milestone == null) return;
         for (String s : Playtime.getInstance().getLangFile().get().getStringList("command.milestone.info")) {
             if (s.contains("%REWARD_COMMAND%")) {
                 if (milestone.getCommands().size() == 0) {
@@ -129,8 +130,8 @@ public class MileStoneCommand {
 
     @SubCommand(subCommand = "addItemToMilestone", usage = "<milestone>", minParams = 2, maxParams = 2)
     public void addItemToMilestone(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         milestone.getItemStacks().add(((Player) sender).getInventory().getItemInMainHand().serialize());
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.itemadded"));
@@ -140,8 +141,8 @@ public class MileStoneCommand {
 
     @SubCommand(subCommand = "removeItemFromMilestone", usage = "<milestone> <string>", minParams = 3, maxParams = 3)
     public void removeItemFromMilestone(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         for (Map<String, Object> itemStack : milestone.getItemStacks()) {
             ItemStack itemStack1 = ItemStack.deserialize(itemStack);
             String name = "";
@@ -167,8 +168,8 @@ public class MileStoneCommand {
 
     @SubCommand(subCommand = "addCommandToMilestone", usage = "<milestone> <string>", minParams = 3, maxParams = 3)
     public void addCommandToMilestone(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         milestone.getCommands().add(args.get(2));
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.commandadded"));
@@ -178,8 +179,8 @@ public class MileStoneCommand {
 
     @SubCommand(subCommand = "removeCommandFromMilestone", usage = "<milestone> <string>", minParams = 3, maxParams = 3)
     public void removeCommandFromMilestone(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         System.out.println(milestone.getCommands());
         System.out.println(args.get(2));
         milestone.getCommands().remove(args.get(2));
@@ -191,8 +192,8 @@ public class MileStoneCommand {
 
     @SubCommand(subCommand = "toggleFirework", usage = "<milestone>", minParams = 2, maxParams = 2)
     public void toggleFirework(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         milestone.setFireworkShow(!milestone.isFireworkShow());
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.fireworktoggled")
@@ -202,8 +203,8 @@ public class MileStoneCommand {
 
     @SubCommand(subCommand = "setFireworkAmount", usage = "<milestone> <integer>", minParams = 3, maxParams = 3)
     public void setFireworkAmount(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         milestone.setFireworkShowAmount(Integer.parseInt(args.get(2)));
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkamount",
@@ -213,8 +214,8 @@ public class MileStoneCommand {
 
     @SubCommand(subCommand = "setFireworkDelay", usage = "<milestone> <integer>", minParams = 3, maxParams = 3)
     public void setFireworkDelay(CommandSender sender, List<String> args) {
-        Milestone milestone = Playtime.getInstance().getMilestoneMap().values().stream()
-                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args.get(1))).findFirst().get();
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
         milestone.setFireworkShowSecondsBetween(Integer.parseInt(args.get(2)));
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.setfireworkdelay",
@@ -239,5 +240,15 @@ public class MileStoneCommand {
         return ChatColor.translateAlternateColorCodes('&',
                 message.replace("%H%", String.valueOf(hours)).replace("%M%", String.valueOf(minutes))
                         .replace("%S%", String.valueOf(seconds)).replace("%D%", String.valueOf(days)));
+    }
+
+    public Milestone getMilestone(CommandSender sender,String args){
+        Optional<Milestone> optionalMilestone = Playtime.getInstance().getMilestoneMap().values().stream()
+                .filter(milestone1 -> milestone1.getMilestoneName().equalsIgnoreCase(args)).findFirst();
+        if(optionalMilestone.isPresent()){
+            return optionalMilestone.get();
+        }
+        sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.milestonenotexist",new Replacement("<name>",args)));
+        return null;
     }
 }

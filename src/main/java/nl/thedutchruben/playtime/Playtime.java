@@ -226,18 +226,6 @@ public final class Playtime extends JavaPlugin {
                 new PlaceholderAPIExpansion().register();
             }
 
-            if (Bukkit.getPluginManager().getPlugin("Multiverse-Core") != null) {
-                metrics.addCustomChart(new SimplePie("addons_use", () -> "Multiverse-Core"));
-            }
-
-            if (Bukkit.getPluginManager().getPlugin("MultiWorld") != null) {
-                metrics.addCustomChart(new SimplePie("addons_use", () -> "MultiWorld"));
-            }
-
-            if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
-                metrics.addCustomChart(new SimplePie("addons_use", () -> "mcMMO"));
-            }
-
             if (Bukkit.getPluginManager().getPlugin("HolographicDisplay") != null) {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "HolographicDisplay"));
             }
@@ -250,7 +238,7 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.CURSE_FORGE::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.GITHUB::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
