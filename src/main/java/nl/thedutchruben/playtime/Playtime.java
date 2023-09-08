@@ -5,6 +5,7 @@ import nl.thedutchruben.mccore.Mccore;
 import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
 import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
 import nl.thedutchruben.mccore.utils.config.FileManager;
+import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.database.MysqlDatabase;
 import nl.thedutchruben.playtime.database.Storage;
 import nl.thedutchruben.playtime.database.YamlDatabase;
@@ -91,6 +92,8 @@ public final class Playtime extends JavaPlugin {
     private int repeatingMilestoneGot = 0;
     private int playTimeEarned = 0;
 
+    private Mccore mccore;
+
     /**
      * Get the instance of the plugin.
      *
@@ -147,7 +150,7 @@ public final class Playtime extends JavaPlugin {
         boolean data = storage.setup();
         if (data) {
             // Register the mc core
-            Mccore mccore = new Mccore(this, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
+            mccore = new Mccore(this, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
 
             // Generate the language files.
             generateEnglishTranslations();
@@ -238,7 +241,7 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.GITHUB::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.HANGAR::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
@@ -296,6 +299,18 @@ public final class Playtime extends JavaPlugin {
             keyMessageMap.clear();
         }
 
+    }
+
+
+    public void setupStyleConfig(){
+        FileManager.Config config = fileManager.getConfig("style.yml");
+        if (!config.get().contains("version")) {
+            getLogger().info("Generate style config");
+            config.get().addDefault("version", 1.0);
+            config.get().addDefault("only.player.command", "&cThis is a player only command!");
+            config.copyDefaults(true).save();
+            config.save();
+        }
     }
 
     /**
@@ -391,7 +406,7 @@ public final class Playtime extends JavaPlugin {
                 return ChatColor.RED + "No translation found for : " + key;
             }
             keyMessageMap.put(key,
-                    ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key))));
+                    MessageUtil.translateHexColorCodes("<",">",ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key)))));
         }
         String message = keyMessageMap.get(key);
 
@@ -400,6 +415,10 @@ public final class Playtime extends JavaPlugin {
         }
 
         return message;
+    }
+
+    public Mccore getMccore() {
+        return mccore;
     }
 
     /**
