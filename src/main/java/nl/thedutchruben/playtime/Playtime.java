@@ -1,5 +1,6 @@
 package nl.thedutchruben.playtime;
 
+import com.earth2me.essentials.Essentials;
 import lombok.SneakyThrows;
 import nl.thedutchruben.mccore.Mccore;
 import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
@@ -118,6 +119,7 @@ public final class Playtime extends JavaPlugin {
         configfileConfiguration.addDefault("settings.update_check", true);
         configfileConfiguration.addDefault("settings.cacheTime", 5);
         configfileConfiguration.addDefault("settings.afk.countAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.useEssentialsAfk", false);
         configfileConfiguration.addDefault("settings.afk.events.chatResetAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.events.inventoryClickResetAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.events.interactResetAfkTime", true);
@@ -326,13 +328,8 @@ public final class Playtime extends JavaPlugin {
         long extraTime = System.currentTimeMillis() - lastCheckedData.getTime();
         lastCheckedTime.replace(uuid,
                 new LastCheckedData(System.currentTimeMillis(), Objects.requireNonNull(Bukkit.getPlayer(uuid)).getLocation()));
-        if (!countAfkTime) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null && lastCheckedData.getLocation().getX() == player.getLocation().getX()
-                    && lastCheckedData.getLocation().getY() == player.getLocation().getY()
-                    && lastCheckedData.getLocation().getZ() == player.getLocation().getZ()) {
-                return;
-            }
+        if(isAfk(Bukkit.getPlayer(uuid), lastCheckedData)){
+            return;
         }
         playTimeEarned += extraTime;
         long newtime = playerOnlineTime.get(uuid) + extraTime;
@@ -350,8 +347,33 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+
+    public boolean isAfk(Player player, LastCheckedData lastCheckedData){
+        if(countAfkTime){
+            return false;
+        }
+        FileManager.Config config = fileManager.getConfig("config.yml");
+        if(config.get().getBoolean("settings.afk.useEssentialsAfk", false)){
+            if (Bukkit.getPluginManager().getPlugin("Essentials") != null) {
+                getLogger().log(Level.INFO, "Essentials found");
+                Essentials essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+                return essentials.getUser(player).isAfk();
+            }
+        }
+
+
+        if (player != null && lastCheckedData.getLocation().getX() == player.getLocation().getX()
+                && lastCheckedData.getLocation().getY() == player.getLocation().getY()
+                && lastCheckedData.getLocation().getZ() == player.getLocation().getZ()) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Force save the playtime of a player.
+     * Doesn't check if the player is afk.
      *
      * @param uuid The uuid of the player.
      */
