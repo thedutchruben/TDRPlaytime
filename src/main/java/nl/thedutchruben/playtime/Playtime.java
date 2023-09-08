@@ -91,6 +91,8 @@ public final class Playtime extends JavaPlugin {
     private int repeatingMilestoneGot = 0;
     private int playTimeEarned = 0;
 
+    private Mccore mccore;
+
     /**
      * Get the instance of the plugin.
      *
@@ -147,7 +149,7 @@ public final class Playtime extends JavaPlugin {
         boolean data = storage.setup();
         if (data) {
             // Register the mc core
-            Mccore mccore = new Mccore(this, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
+             mccore = new Mccore(this, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
 
             // Generate the language files.
             generateEnglishTranslations();
@@ -238,7 +240,7 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.GITHUB::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.HANGAR::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
@@ -400,6 +402,10 @@ public final class Playtime extends JavaPlugin {
         }
 
         return message;
+    }
+
+    public Mccore getMccore() {
+        return mccore;
     }
 
     /**
