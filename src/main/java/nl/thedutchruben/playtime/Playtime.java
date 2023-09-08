@@ -335,7 +335,7 @@ public final class Playtime extends JavaPlugin {
 
 
     public boolean isAfk(Player player, LastCheckedData lastCheckedData){
-        if(!countAfkTime){
+        if(countAfkTime){
             return false;
         }
         FileManager.Config config = fileManager.getConfig("config.yml");
