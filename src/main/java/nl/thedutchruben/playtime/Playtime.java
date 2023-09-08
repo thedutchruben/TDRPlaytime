@@ -151,7 +151,6 @@ public final class Playtime extends JavaPlugin {
         if (data) {
             // Register the mc core
             mccore = new Mccore(this, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
-
             // Generate the language files.
             generateEnglishTranslations();
             generateDutchTranslations();

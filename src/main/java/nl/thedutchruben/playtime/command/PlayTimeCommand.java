@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 public class PlayTimeCommand {
 
     @Default
-    @SubCommand(subCommand = "")
+    @SubCommand(subCommand = "", description = "Show your own playtime")
     public void myTime(CommandSender commandSender, List<String> args) {
         if (commandSender instanceof Player) {
             Playtime.getInstance().update(((Player) commandSender).getUniqueId(), true);
@@ -30,7 +30,7 @@ public class PlayTimeCommand {
         }
     }
 
-    @SubCommand(subCommand = "", minParams = 1, usage = "<player>")
+    @SubCommand(subCommand = "", minParams = 1, usage = "<player>", description = "Show a players playtime")
     public void see(CommandSender commandSender, List<String> args) throws ExecutionException, InterruptedException {
         String playerName = args.get(0);
 
@@ -50,7 +50,7 @@ public class PlayTimeCommand {
         }
     }
 
-    @SubCommand(subCommand = "top", permission = "playtime.playtime.top", console = true)
+    @SubCommand(subCommand = "top", permission = "playtime.playtime.top", console = true, description = "Show the top 10 players")
     public void top(CommandSender commandSender, List<String> args) {
         Playtime.getInstance().getStorage().getTopTenList().whenCompleteAsync((stringLongMap, throwable) -> {
             sortHashMapByValues((HashMap<String, Long>) stringLongMap).forEach((s, aLong) -> commandSender.sendMessage(
@@ -59,7 +59,7 @@ public class PlayTimeCommand {
         });
     }
 
-    @SubCommand(subCommand = "reset", permission = "playtime.playtime.reset", minParams = 2, maxParams = 2, console = true, usage = "<player>")
+    @SubCommand(subCommand = "reset", permission = "playtime.playtime.reset", minParams = 2, maxParams = 2, console = true, usage = "<player>", description = "Reset a players playtime")
     public void reset(CommandSender commandSender, List<String> args) {
         String playerName = args.get(1);
         if (Bukkit.getPlayer(playerName) != null) {
@@ -73,7 +73,7 @@ public class PlayTimeCommand {
     }
 
     @SneakyThrows
-    @SubCommand(subCommand = "add", permission = "playtime.playtime.add", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>")
+    @SubCommand(subCommand = "add", permission = "playtime.playtime.add", minParams = 3, maxParams = 3, console = true, description = "Add playtime to a user",usage = "<player> <time>")
     public void add(CommandSender commandSender, List<String> args) {
         String playerName = args.get(1);
         long time = Long.parseLong(args.get(2));
@@ -90,7 +90,7 @@ public class PlayTimeCommand {
     }
 
     @SneakyThrows
-    @SubCommand(subCommand = "set", permission = "playtime.playtime.set", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>")
+    @SubCommand(subCommand = "set", permission = "playtime.playtime.set", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>", description = "Set a players playtime"  )
     public void set(CommandSender commandSender, List<String> args) {
         String playerName = args.get(1);
         long time = Long.parseLong(args.get(2));
@@ -106,7 +106,7 @@ public class PlayTimeCommand {
     }
 
     @SneakyThrows
-    @SubCommand(subCommand = "remove", permission = "playtime.playtime.remove", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>")
+    @SubCommand(subCommand = "remove", permission = "playtime.playtime.remove", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>", description = "Remove playtime from a user")
     public void remove(CommandSender commandSender, List<String> args) {
         String playerName = args.get(1);
         long time = Long.parseLong(args.get(2));
@@ -140,7 +140,7 @@ public class PlayTimeCommand {
                 String.valueOf(count)));
     }
 
-    @SubCommand(subCommand = "reload", permission = "playtime.playtime.reload", console = true)
+    @SubCommand(subCommand = "reload", permission = "playtime.playtime.reload", console = true, description = "Reload the plugin")
     public void reload(CommandSender commandSender, List<String> args) throws ExecutionException, InterruptedException {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             Playtime.getInstance().forceSave(onlinePlayer.getUniqueId());
@@ -169,6 +169,21 @@ public class PlayTimeCommand {
 
         Playtime.getInstance().getKeyMessageMap().clear();
         commandSender.sendMessage(ChatColor.GREEN + "Reloaded");
+    }
+
+    @SubCommand(subCommand = "info", permission = "playtime.playtime.info", console = true, description = "Show info about the plugin")
+    public void info(CommandSender commandSender, List<String> args) {
+        commandSender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
+        commandSender.sendMessage(ChatColor.GREEN + "Version: " + Playtime.getInstance().getDescription().getVersion());
+        commandSender.sendMessage(ChatColor.GREEN + "Author: " + Playtime.getInstance().getDescription().getAuthors());
+        commandSender.sendMessage(ChatColor.GREEN + "Website: " + Playtime.getInstance().getDescription().getWebsite());
+        Playtime.getInstance().getStorage().getMilestones().whenComplete((milestones, throwable) -> {
+            commandSender.sendMessage(ChatColor.GREEN + "Milestones: " + milestones.size());
+        });
+        Playtime.getInstance().getStorage().getRepeatingMilestones().whenComplete((milestones, throwable) -> {
+            commandSender.sendMessage(ChatColor.GREEN + "Repeating Milestones: " + milestones.size());
+        });
+        Playtime.getInstance().getMccore().getUpdate(commandSender, true);
     }
 
     public String translateMessage(String message, long time) {
