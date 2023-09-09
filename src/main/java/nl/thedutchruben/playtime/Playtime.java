@@ -119,7 +119,7 @@ public final class Playtime extends JavaPlugin {
         configfileConfiguration.addDefault("settings.update_check", true);
         configfileConfiguration.addDefault("settings.cacheTime", 5);
         configfileConfiguration.addDefault("settings.afk.countAfkTime", true);
-        configfileConfiguration.addDefault("settings.afk.useEssentialsAfk", false);
+        configfileConfiguration.addDefault("settings.afk.useEssentialsApi", false);
         configfileConfiguration.addDefault("settings.afk.events.chatResetAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.events.inventoryClickResetAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.events.interactResetAfkTime", true);
@@ -353,7 +353,7 @@ public final class Playtime extends JavaPlugin {
             return false;
         }
         FileManager.Config config = fileManager.getConfig("config.yml");
-        if(config.get().getBoolean("settings.afk.useEssentialsAfk", false)){
+        if(config.get().getBoolean("settings.afk.useEssentialsApi", false)){
             if (Bukkit.getPluginManager().getPlugin("Essentials") != null) {
                 getLogger().log(Level.INFO, "Essentials found");
                 Essentials essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");

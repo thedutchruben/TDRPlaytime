@@ -171,8 +171,8 @@ public class PlayTimeCommand {
         commandSender.sendMessage(ChatColor.GREEN + "Reloaded");
     }
 
-    @SubCommand(subCommand = "info", permission = "playtime.playtime.info", console = true, description = "Show info about the plugin")
-    public void info(CommandSender commandSender, List<String> args) {
+    @SubCommand(subCommand = "pluginInfo", permission = "playtime.playtime.pluginInfo", console = true, description = "Show info about the plugin")
+    public void pluginInfo(CommandSender commandSender, List<String> args) {
         commandSender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
         commandSender.sendMessage(ChatColor.GREEN + "Version: " + Playtime.getInstance().getDescription().getVersion());
         commandSender.sendMessage(ChatColor.GREEN + "Author: " + Playtime.getInstance().getDescription().getAuthors());
