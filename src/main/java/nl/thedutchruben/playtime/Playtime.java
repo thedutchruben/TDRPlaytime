@@ -355,7 +355,6 @@ public final class Playtime extends JavaPlugin {
         FileManager.Config config = fileManager.getConfig("config.yml");
         if(config.get().getBoolean("settings.afk.useEssentialsApi", false)){
             if (Bukkit.getPluginManager().getPlugin("Essentials") != null) {
-                getLogger().log(Level.INFO, "Essentials found");
                 Essentials essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
                 return essentials.getUser(player).isAfk();
             }
@@ -568,7 +567,7 @@ public final class Playtime extends JavaPlugin {
 
     }
 
-    public void generateDutchTranslations() {
+    public void  generateDutchTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/nl_NL.yml");
         if (!config.get().contains("version")) {
             getLogger().info("Generate Dutch translations");
