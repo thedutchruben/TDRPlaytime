@@ -242,7 +242,7 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.HANGAR::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.MODRINTH::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
@@ -361,13 +361,9 @@ public final class Playtime extends JavaPlugin {
         }
 
 
-        if (player != null && lastCheckedData.getLocation().getX() == player.getLocation().getX()
+        return player != null && lastCheckedData.getLocation().getX() == player.getLocation().getX()
                 && lastCheckedData.getLocation().getY() == player.getLocation().getY()
-                && lastCheckedData.getLocation().getZ() == player.getLocation().getZ()) {
-            return true;
-        }
-
-        return false;
+                && lastCheckedData.getLocation().getZ() == player.getLocation().getZ();
     }
 
     /**
@@ -747,6 +743,10 @@ public final class Playtime extends JavaPlugin {
          * <a href="https://hangar.papermc.io/">...</a>
          */
         HANGAR,
+        /**
+         * modrinth.com
+         */
+        MODRINTH,
     }
 
     /**
@@ -756,12 +756,12 @@ public final class Playtime extends JavaPlugin {
         /**
          * The last time the player was checked.
          */
-        private long time;
+        private final long time;
 
         /**
          * The last location of the player
          */
-        private Location location;
+        private final Location location;
 
         /**
          * Creates a new instance of LastCheckedData.

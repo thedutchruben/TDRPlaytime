@@ -1,9 +1,11 @@
 package nl.thedutchruben.playtime.milestone;
 
 import com.google.gson.annotations.SerializedName;
+import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.utils.FireworkUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,6 +24,8 @@ public class Milestone {
     private List<Map<String, Object>> itemStacks;
     @SerializedName("commands")
     private List<String> commands;
+    @SerializedName("messages")
+    private List<String> messages;
     @SerializedName("firework_show")
     private boolean fireworkShow = false;
     @SerializedName("firework_show_amount")
@@ -51,6 +55,13 @@ public class Milestone {
                                     .replaceAll("%playeruuid%", player.getUniqueId().toString())
                                     .replaceAll("%player_uuid%", player.getUniqueId().toString()));
                 }
+            });
+        }
+
+        if (messages != null){
+            messages.forEach(s -> {
+                String formattedString = MessageUtil.translateHexColorCodes("<",">", ChatColor.translateAlternateColorCodes('&',s));
+                player.sendMessage(formattedString);
             });
         }
 
@@ -124,5 +135,16 @@ public class Milestone {
 
     public void setFireworkShowSecondsBetween(int fireworkShowSecondsBetween) {
         this.fireworkShowSecondsBetween = fireworkShowSecondsBetween;
+    }
+
+    public List<String> getMessages() {
+        if(messages == null)
+            messages = new ArrayList<>();
+
+        return messages;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
     }
 }
