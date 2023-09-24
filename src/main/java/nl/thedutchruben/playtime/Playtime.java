@@ -89,9 +89,24 @@ public final class Playtime extends JavaPlugin {
      */
     private final boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",
             true);
+
+    /**
+     * Count the amount of milestones got.
+     */
     private int milestoneGot = 0;
+
+    /**
+     * Count the amount of repeating milestones got.
+     */
     private int repeatingMilestoneGot = 0;
+    /**
+     * Count the amount of playtime earned.
+     */
     private int playTimeEarned = 0;
+
+    /**
+     * The mccore instance
+     */
 
     private Mccore mccore;
 
@@ -303,17 +318,6 @@ public final class Playtime extends JavaPlugin {
     }
 
 
-    public void setupStyleConfig(){
-        FileManager.Config config = fileManager.getConfig("style.yml");
-        if (!config.get().contains("version")) {
-            getLogger().info("Generate style config");
-            config.get().addDefault("version", 1.0);
-            config.get().addDefault("only.player.command", "&cThis is a player only command!");
-            config.copyDefaults(true).save();
-            config.save();
-        }
-    }
-
     /**
      * Update the playtime of a player.
      *
@@ -348,6 +352,12 @@ public final class Playtime extends JavaPlugin {
     }
 
 
+    /**
+     * Check if a player is afk
+     * @param player The player to check
+     * @param lastCheckedData The last checked data of the player
+     * @return Whether the player is afk
+     */
     public boolean isAfk(Player player, LastCheckedData lastCheckedData){
         if(countAfkTime){
             return false;
@@ -433,6 +443,10 @@ public final class Playtime extends JavaPlugin {
         return message;
     }
 
+    /**
+     * Get the mccore instance
+     * @return The mccore instance
+     */
     public Mccore getMccore() {
         return mccore;
     }
@@ -464,30 +478,59 @@ public final class Playtime extends JavaPlugin {
         return playerOnlineTime;
     }
 
+    /**
+     * Get the repeating milestones.
+     * @return A list with the repeating milestones.
+     */
     public List<RepeatingMilestone> getRepeatedMilestoneList() {
         return repeatedMilestoneList;
     }
 
+    /**
+     * Set the repeating milestones.
+     * @param repeatedMilestoneList A list with the repeating milestones.
+     */
     public void setRepeatedMilestoneList(List<RepeatingMilestone> repeatedMilestoneList) {
         this.repeatedMilestoneList = repeatedMilestoneList;
     }
 
+    /**
+     * Get the filemanager of the plugin.
+     *
+     * @return The filemanager of the plugin.
+     */
     public FileManager getFileManager() {
         return fileManager;
     }
 
+    /**
+     * Get the milestone map.
+     *
+     * @return The milestone map.
+     */
     public Map<Long, Milestone> getMilestoneMap() {
         return milestoneMap;
     }
 
+    /**
+     * Set the milestone map.
+     * @param milestoneMap
+     */
     public void setMilestoneMap(Map<Long, Milestone> milestoneMap) {
         this.milestoneMap = milestoneMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public FileManager.Config getLangFile() {
         return langFile;
     }
 
+    /**
+     * Generate the English translations.
+     */
     public void generateEnglishTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/en_GB.yml");
         if (!config.get().contains("version")) {
@@ -563,6 +606,9 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+    /**
+     * Generate the Dutch translations.
+     */
     public void  generateDutchTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/nl_NL.yml");
         if (!config.get().contains("version")) {
@@ -642,6 +688,9 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+    /**
+     * Generate the German translations.
+     */
     public void generateGermanTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/de_DE.yml");
         if (!config.get().contains("version")) {
@@ -722,10 +771,16 @@ public final class Playtime extends JavaPlugin {
         }
     }
 
+    /** Get the key message map.
+     * @return The key message map.
+     */
     public Map<String, String> getKeyMessageMap() {
         return keyMessageMap;
     }
 
+    /**
+     *
+     */
     enum DownloadSource {
         /**
          * Spigot.org

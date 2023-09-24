@@ -16,23 +16,52 @@ import java.util.Map;
 public class Milestone {
     private transient List<ItemStack> itemStackObjects;
 
+    /**
+     * The name of the milestone.
+     */
     @SerializedName("_id")
     private String milestoneName;
+    /**
+     * The time the player has to be online to get the milestone
+     */
     @SerializedName("online_time")
     private long onlineTime;
+    /**
+     * The list of items to give the player.
+     */
     @SerializedName("item_stacks")
     private List<Map<String, Object>> itemStacks;
+    /**
+     * The list of commands to execute
+     */
     @SerializedName("commands")
     private List<String> commands;
+    /**
+     * The list of messages to send
+     */
     @SerializedName("messages")
     private List<String> messages;
+    /**
+     * if there shall be a firework show
+     */
     @SerializedName("firework_show")
     private boolean fireworkShow = false;
+    /**
+     * The amount of fireworks to spawn
+     */
     @SerializedName("firework_show_amount")
     private int fireworkShowAmount = 1;
+    /**
+     * The seconds between the fireworks
+     */
     @SerializedName("firework_show_seconds_between_firework")
     private int fireworkShowSecondsBetween = 0;
 
+    /**
+     * Apply the milestone on the player
+     *
+     * @param player The player to apply the milestone to
+     */
     public void apply(Player player) {
         if (itemStacks != null) {
             if (itemStackObjects == null) {
@@ -83,6 +112,9 @@ public class Milestone {
 
     }
 
+    /**
+     * @return The list of items to give the player.
+     */
     public List<Map<String, Object>> getItemStacks() {
         if (itemStacks == null) {
             itemStacks = new ArrayList<>();
@@ -90,6 +122,9 @@ public class Milestone {
         return itemStacks;
     }
 
+    /**
+     * @return The list of commands to execute
+     */
     public List<String> getCommands() {
         if (commands == null) {
             commands = new ArrayList<>();
@@ -97,46 +132,79 @@ public class Milestone {
         return commands;
     }
 
+    /**
+     * get the name of the milestone
+     */
     public String getMilestoneName() {
         return milestoneName;
     }
 
+    /**
+     * set the name of the milestone
+     */
     public void setMilestoneName(String milestoneName) {
         this.milestoneName = milestoneName;
     }
 
+    /**
+     * get the time the player has to be online to get the milestone
+     */
     public long getOnlineTime() {
         return onlineTime;
     }
 
+    /**
+     * set the time the player has to be online to get the milestone
+     */
     public void setOnlineTime(long onlineTime) {
         this.onlineTime = onlineTime;
     }
 
+    /**
+     * get if there is a firework show
+     */
     public boolean isFireworkShow() {
         return fireworkShow;
     }
 
+    /**
+     * set if there is a firework show
+     */
     public void setFireworkShow(boolean fireworkShow) {
         this.fireworkShow = fireworkShow;
     }
 
+    /**
+     * get the amount of fireworks to spawn
+     */
     public int getFireworkShowAmount() {
         return fireworkShowAmount;
     }
 
+    /**
+     * set the amount of fireworks to spawn
+     */
     public void setFireworkShowAmount(int fireworkShowAmount) {
         this.fireworkShowAmount = fireworkShowAmount;
     }
 
+    /**
+     * get the seconds between the fireworks
+     */
     public int getFireworkShowSecondsBetween() {
         return fireworkShowSecondsBetween;
     }
 
+    /**
+     * set the seconds between the fireworks
+     */
     public void setFireworkShowSecondsBetween(int fireworkShowSecondsBetween) {
         this.fireworkShowSecondsBetween = fireworkShowSecondsBetween;
     }
 
+    /**
+     * get the list of messages to send
+     */
     public List<String> getMessages() {
         if(messages == null)
             messages = new ArrayList<>();
@@ -144,6 +212,9 @@ public class Milestone {
         return messages;
     }
 
+    /**
+     * set the list of messages to send
+     */
     public void setMessages(List<String> messages) {
         this.messages = messages;
     }
