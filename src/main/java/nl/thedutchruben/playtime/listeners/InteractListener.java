@@ -14,7 +14,7 @@ public class InteractListener implements Listener {
             .getBoolean("settings.afk.events.interactResetAfkTime");
 
     @EventHandler
-    public void onChat(PlayerInteractEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
         if (!count) {
             if (interactReset) {
                 Playtime.getInstance().forceSave(event.getPlayer().getUniqueId());

@@ -14,7 +14,7 @@ public class InventoryClickListener implements Listener {
             .getBoolean("settings.afk.events.inventoryClickResetAfkTime");
 
     @EventHandler
-    public void onChat(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (!count) {
             if (clickReset) {
                 Playtime.getInstance().forceSave(event.getWhoClicked().getUniqueId());
