@@ -1,6 +1,7 @@
 package nl.thedutchruben.playtime.milestone;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
 import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.utils.FireworkUtil;
@@ -18,12 +19,20 @@ public class Milestone {
 
     /**
      * The name of the milestone.
+     * -- GETTER --
+     *  get the name of the milestone
+
      */
+    @Getter
     @SerializedName("_id")
     private String milestoneName;
     /**
      * The time the player has to be online to get the milestone
+     * -- GETTER --
+     *  get the time the player has to be online to get the milestone
+
      */
+    @Getter
     @SerializedName("online_time")
     private long onlineTime;
     /**
@@ -43,12 +52,20 @@ public class Milestone {
     private List<String> messages;
     /**
      * if there shall be a firework show
+     * -- GETTER --
+     *  get if there is a firework show
+
      */
+    @Getter
     @SerializedName("firework_show")
     private boolean fireworkShow = false;
     /**
      * The amount of fireworks to spawn
+     * -- GETTER --
+     *  get the amount of fireworks to spawn
+
      */
+    @Getter
     @SerializedName("firework_show_amount")
     private int fireworkShowAmount = 1;
     /**
@@ -133,24 +150,10 @@ public class Milestone {
     }
 
     /**
-     * get the name of the milestone
-     */
-    public String getMilestoneName() {
-        return milestoneName;
-    }
-
-    /**
      * set the name of the milestone
      */
     public void setMilestoneName(String milestoneName) {
         this.milestoneName = milestoneName;
-    }
-
-    /**
-     * get the time the player has to be online to get the milestone
-     */
-    public long getOnlineTime() {
-        return onlineTime;
     }
 
     /**
@@ -161,13 +164,6 @@ public class Milestone {
     }
 
     /**
-     * get if there is a firework show
-     */
-    public boolean isFireworkShow() {
-        return fireworkShow;
-    }
-
-    /**
      * set if there is a firework show
      */
     public void setFireworkShow(boolean fireworkShow) {
@@ -175,24 +171,10 @@ public class Milestone {
     }
 
     /**
-     * get the amount of fireworks to spawn
-     */
-    public int getFireworkShowAmount() {
-        return fireworkShowAmount;
-    }
-
-    /**
      * set the amount of fireworks to spawn
      */
     public void setFireworkShowAmount(int fireworkShowAmount) {
         this.fireworkShowAmount = fireworkShowAmount;
-    }
-
-    /**
-     * get the seconds between the fireworks
-     */
-    public int getFireworkShowSecondsBetween() {
-        return fireworkShowSecondsBetween;
     }
 
     /**

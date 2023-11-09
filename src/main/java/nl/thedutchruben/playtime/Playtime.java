@@ -161,6 +161,7 @@ public final class Playtime extends JavaPlugin {
         } else {
             storage = new YamlDatabase();
         }
+        keyMessageMap.clear();
         config.save();
         database.save();
         // Set up the database.

@@ -18,6 +18,7 @@ import java.util.Map;
  * @version 1.0
  */
 public class RepeatingMilestone {
+
     /**
      * The list of items to give the player.
      */
