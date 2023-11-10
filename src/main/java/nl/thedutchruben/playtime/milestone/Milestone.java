@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
-import nl.thedutchruben.playtime.utils.FireworkUtil;
+import nl.thedutchruben.mccore.utils.firework.FireworkUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -115,7 +115,7 @@ public class Milestone {
             Bukkit.getScheduler().runTaskAsynchronously(Playtime.getInstance(), () -> {
                 for (int i = 0; i < fireworkShowAmount; i++) {
                     Bukkit.getScheduler().runTask(Playtime.getInstance(), () -> {
-                        FireworkUtil.spawn(player.getLocation());
+                        FireworkUtil.spawnRandomFirework(player.getLocation());
                     });
                     try {
                         Thread.sleep(fireworkShowSecondsBetween * 1000L);
