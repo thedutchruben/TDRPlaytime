@@ -7,6 +7,7 @@ import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
 import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.mccore.utils.message.MessageUtil;
+import nl.thedutchruben.playtime.database.MongoDatabase;
 import nl.thedutchruben.playtime.database.MysqlDatabase;
 import nl.thedutchruben.playtime.database.Storage;
 import nl.thedutchruben.playtime.database.YamlDatabase;
@@ -155,12 +156,21 @@ public final class Playtime extends JavaPlugin {
 
         database.copyDefaults(true).save();
 
-        // Select the database type
-        if (Objects.requireNonNull(database.get().getString("database")).equalsIgnoreCase("mysql")) {
-            storage = new MysqlDatabase();
-        } else {
-            storage = new YamlDatabase();
+        switch (database.get().getString("database")){
+            case "mysql":
+                storage = new MysqlDatabase();
+                break;
+            case "mongodb":
+                storage = new MongoDatabase();
+                break;
+            case "yml":
+            case "yaml":
+                storage = new YamlDatabase();
+                break;
+            default:
+                throw new Exception("Database methode not found");
         }
+
         keyMessageMap.clear();
         config.save();
         database.save();
