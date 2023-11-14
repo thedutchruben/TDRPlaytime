@@ -1,9 +1,11 @@
 package nl.thedutchruben.playtime.milestone;
 
 import com.google.gson.annotations.SerializedName;
+import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
-import nl.thedutchruben.playtime.utils.FireworkUtil;
+import nl.thedutchruben.mccore.utils.firework.FireworkUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,11 +16,9 @@ import java.util.Map;
 /**
  * @author Ruben
  * @version 1.0
- * @date 24-06-2020
- * @project Playtime
- * @package nl.thedutchruben.playtime.milestone
  */
 public class RepeatingMilestone {
+
     /**
      * The list of items to give the player.
      */
@@ -43,6 +43,9 @@ public class RepeatingMilestone {
     private int fireworkShowSecondsBetween = 0;
     @SerializedName("normal_milestone_override_me")
     private boolean overrideMe = false;
+    @SerializedName("messages")
+    private List<String> messages;
+
 
     /**
      * Apply the milestone on the player
@@ -75,12 +78,17 @@ public class RepeatingMilestone {
             });
 
         }
-
+        if (messages != null){
+            messages.forEach(s -> {
+                String formattedString = MessageUtil.translateHexColorCodes("<",">", ChatColor.translateAlternateColorCodes('&',s));
+                player.sendMessage(formattedString);
+            });
+        }
         if (fireworkShow) {
             Bukkit.getScheduler().runTaskAsynchronously(Playtime.getInstance(), () -> {
                 for (int i = 0; i < fireworkShowAmount; i++) {
                     Bukkit.getScheduler().runTask(Playtime.getInstance(), () -> {
-                        FireworkUtil.spawn(player.getLocation());
+                        FireworkUtil.spawnRandomFirework(player.getLocation());
                     });
                     try {
                         Thread.sleep(fireworkShowSecondsBetween * 1000L);
@@ -129,6 +137,17 @@ public class RepeatingMilestone {
 
     public void setOnlineTime(long onlineTime) {
         this.onlineTime = onlineTime;
+    }
+
+    public List<String> getMessages() {
+        if(messages == null)
+            messages = new ArrayList<>();
+
+        return messages;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
     }
 
     public List<ItemStack> getItemStackObjects() {

@@ -21,7 +21,7 @@ import java.util.Optional;
 @Command(command = "milestone", description = "Milestones command", permission = "playtime.milestones", console = true)
 public class MileStoneCommand {
 
-    @SubCommand(subCommand = "create", usage = "<string> <time>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "create", usage = "<string> <time>", minParams = 3, maxParams = 3, description = "Create a milestone")
     public void create(CommandSender sender, List<String> args) {
         Milestone milestone = new Milestone();
         milestone.setMilestoneName(args.get(1));
@@ -34,7 +34,7 @@ public class MileStoneCommand {
     }
 
     @Default
-    @SubCommand(subCommand = "list")
+    @SubCommand(subCommand = "list", description = "Show a list of all the milestones" , console = true)
     public void list(CommandSender sender, List<String> args) {
         Playtime.getInstance().getMilestoneMap().forEach((aLong, milestone) -> {
             for (String s : Playtime.getInstance().getLangFile().get().getStringList("command.milestone.list")) {
@@ -45,14 +45,14 @@ public class MileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "test", usage = "<milestone>", minParams = 2, maxParams = 2, console = false)
+    @SubCommand(subCommand = "test", usage = "<milestone>", minParams = 2, maxParams = 2, description = "Test milestone rewards on yourself")
     public void test(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
         milestone.apply((Player) sender);
     }
 
-    @SubCommand(subCommand = "remove", usage = "<milestone>", minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "remove", usage = "<milestone>", minParams = 2, maxParams = 2, description = "Remove a milestone")
     public void remove(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
@@ -68,14 +68,14 @@ public class MileStoneCommand {
         });
     }
 
-    @SubCommand(subCommand = "info", usage = "<milestone>", minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "info", usage = "<milestone>", minParams = 2, maxParams = 2, description = "Show the info of a milestone")
     public void info(CommandSender sender, List<String> args) {
 
         Milestone milestone = getMilestone(sender, args.get(1));
         if(milestone == null) return;
         for (String s : Playtime.getInstance().getLangFile().get().getStringList("command.milestone.info")) {
             if (s.contains("%REWARD_COMMAND%")) {
-                if (milestone.getCommands().size() == 0) {
+                if (milestone.getCommands().isEmpty()) {
                     sender.sendMessage(ChatColor.DARK_RED + "     No commands found");
                 } else {
                     for (String command : milestone.getCommands()) {
@@ -83,13 +83,27 @@ public class MileStoneCommand {
                         textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{
                                 new TextComponent(ChatColor.DARK_RED + "Click remove the command")}));
                         textComponent.setClickEvent(
-                                new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone removeCommandFromMilestone "
+                                new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone removeCommand "
                                         + milestone.getMilestoneName() + " \"" + command + "\""));
                         sender.spigot().sendMessage(textComponent);
                     }
                 }
+            } else if (s.contains("%REWARD_MESSAGES%")) {
+                if (milestone.getCommands().isEmpty()) {
+                    sender.sendMessage(ChatColor.DARK_RED + "     No messages found");
+                } else {
+                    for (String message : milestone.getMessages()) {
+                        TextComponent textComponent = new TextComponent("     " + message);
+                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{
+                                new TextComponent(ChatColor.DARK_RED + "Click remove the message")}));
+                        textComponent.setClickEvent(
+                                new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone removeMessage "
+                                        + milestone.getMilestoneName() + " \"" + message + "\""));
+                        sender.spigot().sendMessage(textComponent);
+                    }
+                }
             } else if (s.contains("%REWARD_ITEMS%")) {
-                if (milestone.getItemStacks().size() == 0) {
+                if (milestone.getItemStacks().isEmpty()) {
                     sender.sendMessage(ChatColor.DARK_RED + "     No items found");
                 } else {
                     for (Map<String, Object> itemStack : milestone.getItemStacks()) {
@@ -110,7 +124,7 @@ public class MileStoneCommand {
                                 new TextComponent(ChatColor.DARK_RED + "Click remove the item")}));
 
                         textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                                "/milestone removeItemFromMilestone " + milestone.getMilestoneName() + " " + name));
+                                "/milestone removeItem " + milestone.getMilestoneName() + " " + name));
                         sender.spigot().sendMessage(textComponent);
                     }
 
@@ -128,7 +142,7 @@ public class MileStoneCommand {
         }
     }
 
-    @SubCommand(subCommand = "addItemToMilestone", usage = "<milestone>", minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "addItem", usage = "<milestone>", minParams = 2, maxParams = 2, description = "Add the item in your hand to the milestone")
     public void addItemToMilestone(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
@@ -139,7 +153,7 @@ public class MileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "removeItemFromMilestone", usage = "<milestone> <string>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "removeItem", usage = "<milestone> <string>", minParams = 3, maxParams = 3, description = "Remove the item from the milestone")
     public void removeItemFromMilestone(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
@@ -166,7 +180,27 @@ public class MileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "addCommandToMilestone", usage = "<milestone> <string>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "addMessage", usage = "<milestone> <string>", minParams = 3, maxParams = 3, description = "Add a message to the milestone")
+    public void addMessageToMilestone(CommandSender sender, List<String> args) {
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
+        milestone.getMessages().add(args.get(2));
+        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+            sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.messageadded"));
+        });
+    }
+
+    @SubCommand(subCommand = "removeMessage", usage = "<milestone> <string>", minParams = 3, maxParams = 3, description = "Remove a message from the milestone")
+    public void removeMessageFromMilestone(CommandSender sender, List<String> args) {
+        Milestone milestone = getMilestone(sender,args.get(1));
+        if(milestone == null) return;
+        milestone.getMessages().remove(args.get(2));
+        Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
+            sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.messageremoved"));
+        });
+    }
+
+    @SubCommand(subCommand = "addCommand", usage = "<milestone> <string>", minParams = 3, maxParams = 3, description = "Add a command to the milestone")
     public void addCommandToMilestone(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
@@ -174,10 +208,9 @@ public class MileStoneCommand {
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.commandadded"));
         });
-
     }
 
-    @SubCommand(subCommand = "removeCommandFromMilestone", usage = "<milestone> <string>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "removeCommand", usage = "<milestone> <string>", minParams = 3, maxParams = 3, description = "Remove a command from the milestone")
     public void removeCommandFromMilestone(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
@@ -190,7 +223,7 @@ public class MileStoneCommand {
 
     }
 
-    @SubCommand(subCommand = "toggleFirework", usage = "<milestone>", minParams = 2, maxParams = 2)
+    @SubCommand(subCommand = "toggleFirework", usage = "<milestone>", minParams = 2, maxParams = 2, description = "Toggle the firework show on the milestone")
     public void toggleFirework(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
@@ -201,7 +234,7 @@ public class MileStoneCommand {
         });
     }
 
-    @SubCommand(subCommand = "setFireworkAmount", usage = "<milestone> <integer>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "setFireworkAmount", usage = "<milestone> <integer>", minParams = 3, maxParams = 3, description = "Set the amount of fireworks to show")
     public void setFireworkAmount(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
@@ -212,7 +245,7 @@ public class MileStoneCommand {
         });
     }
 
-    @SubCommand(subCommand = "setFireworkDelay", usage = "<milestone> <integer>", minParams = 3, maxParams = 3)
+    @SubCommand(subCommand = "setFireworkDelay", usage = "<milestone> <integer>", minParams = 3, maxParams = 3, description = "Set the delay between the fireworks")
     public void setFireworkDelay(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;

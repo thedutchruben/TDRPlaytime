@@ -1,5 +1,7 @@
 package nl.thedutchruben.playtime.utils;
 
+import lombok.Getter;
+
 /**
  * @author Ruben
  * @version 1.0
@@ -8,14 +10,23 @@ package nl.thedutchruben.playtime.utils;
  * </p>
  * @since 1.0
  */
+@Getter
 public class Replacement {
     /**
      * The string to replace.
+     * -- GETTER --
+     *
+     * @return The string to replace.
+
      */
     private final String from;
 
     /**
      * The string to replace with.
+     * -- GETTER --
+     *
+     * @return The string to replace with.
+
      */
     private final String to;
 
@@ -28,17 +39,4 @@ public class Replacement {
         this.to = to;
     }
 
-    /**
-     * @return The string to replace.
-     */
-    public String getFrom() {
-        return from;
-    }
-
-    /**
-     * @return The string to replace with.
-     */
-    public String getTo() {
-        return to;
-    }
 }

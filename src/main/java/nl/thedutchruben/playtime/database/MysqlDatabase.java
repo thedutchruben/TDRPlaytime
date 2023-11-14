@@ -243,7 +243,7 @@ public class MysqlDatabase extends Storage {
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `name`,`time` FROM `" + tablePrefix
-                + "playtime`ORDER BY `time` DESC LIMIT " + (place) + "," + (place + 1) + "")) {
+                + "playtime`ORDER BY `time` DESC LIMIT " + (place) + "," + (place + 1))) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     String name =  resultSet.getString("name");
@@ -269,7 +269,7 @@ public class MysqlDatabase extends Storage {
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `name`,`time` FROM `" + tablePrefix
-                + "playtime`ORDER BY `time` DESC LIMIT " + (place) + "," + (place + 1) + "")) {
+                + "playtime`ORDER BY `time` DESC LIMIT " + (place) + "," + (place + 1))) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     long time = resultSet.getLong("time");

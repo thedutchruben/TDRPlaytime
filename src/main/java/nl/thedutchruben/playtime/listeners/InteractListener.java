@@ -8,13 +8,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 @TDRListener
 public class InteractListener implements Listener {
-    private boolean count = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
+    private final boolean count = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
             .getBoolean("settings.afk.countAfkTime");
-    private boolean interactReset = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
+    private final boolean interactReset = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
             .getBoolean("settings.afk.events.interactResetAfkTime");
 
     @EventHandler
-    public void onChat(PlayerInteractEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
         if (!count) {
             if (interactReset) {
                 Playtime.getInstance().forceSave(event.getPlayer().getUniqueId());

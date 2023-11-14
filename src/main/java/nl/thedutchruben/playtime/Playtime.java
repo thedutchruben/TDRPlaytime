@@ -1,10 +1,12 @@
 package nl.thedutchruben.playtime;
 
+import com.earth2me.essentials.Essentials;
 import lombok.SneakyThrows;
 import nl.thedutchruben.mccore.Mccore;
 import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
 import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
 import nl.thedutchruben.mccore.utils.config.FileManager;
+import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.database.MysqlDatabase;
 import nl.thedutchruben.playtime.database.Storage;
 import nl.thedutchruben.playtime.database.YamlDatabase;
@@ -87,9 +89,26 @@ public final class Playtime extends JavaPlugin {
      */
     private final boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",
             true);
+
+    /**
+     * Count the amount of milestones got.
+     */
     private int milestoneGot = 0;
+
+    /**
+     * Count the amount of repeating milestones got.
+     */
     private int repeatingMilestoneGot = 0;
+    /**
+     * Count the amount of playtime earned.
+     */
     private int playTimeEarned = 0;
+
+    /**
+     * The mccore instance
+     */
+
+    private Mccore mccore;
 
     /**
      * Get the instance of the plugin.
@@ -115,6 +134,7 @@ public final class Playtime extends JavaPlugin {
         configfileConfiguration.addDefault("settings.update_check", true);
         configfileConfiguration.addDefault("settings.cacheTime", 5);
         configfileConfiguration.addDefault("settings.afk.countAfkTime", true);
+        configfileConfiguration.addDefault("settings.afk.useEssentialsApi", false);
         configfileConfiguration.addDefault("settings.afk.events.chatResetAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.events.inventoryClickResetAfkTime", true);
         configfileConfiguration.addDefault("settings.afk.events.interactResetAfkTime", true);
@@ -141,14 +161,14 @@ public final class Playtime extends JavaPlugin {
         } else {
             storage = new YamlDatabase();
         }
+        keyMessageMap.clear();
         config.save();
         database.save();
         // Set up the database.
         boolean data = storage.setup();
         if (data) {
             // Register the mc core
-            Mccore mccore = new Mccore(this, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
-
+            mccore = new Mccore(this, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
             // Generate the language files.
             generateEnglishTranslations();
             generateDutchTranslations();
@@ -238,7 +258,7 @@ public final class Playtime extends JavaPlugin {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.GITHUB::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.MODRINTH::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
@@ -298,6 +318,7 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+
     /**
      * Update the playtime of a player.
      *
@@ -312,13 +333,8 @@ public final class Playtime extends JavaPlugin {
         long extraTime = System.currentTimeMillis() - lastCheckedData.getTime();
         lastCheckedTime.replace(uuid,
                 new LastCheckedData(System.currentTimeMillis(), Objects.requireNonNull(Bukkit.getPlayer(uuid)).getLocation()));
-        if (!countAfkTime) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null && lastCheckedData.getLocation().getX() == player.getLocation().getX()
-                    && lastCheckedData.getLocation().getY() == player.getLocation().getY()
-                    && lastCheckedData.getLocation().getZ() == player.getLocation().getZ()) {
-                return;
-            }
+        if(isAfk(Bukkit.getPlayer(uuid), lastCheckedData)){
+            return;
         }
         playTimeEarned += extraTime;
         long newtime = playerOnlineTime.get(uuid) + extraTime;
@@ -336,8 +352,34 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+
+    /**
+     * Check if a player is afk
+     * @param player The player to check
+     * @param lastCheckedData The last checked data of the player
+     * @return Whether the player is afk
+     */
+    public boolean isAfk(Player player, LastCheckedData lastCheckedData){
+        if(countAfkTime){
+            return false;
+        }
+        FileManager.Config config = fileManager.getConfig("config.yml");
+        if(config.get().getBoolean("settings.afk.useEssentialsApi", false)){
+            if (Bukkit.getPluginManager().getPlugin("Essentials") != null) {
+                Essentials essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+                return essentials.getUser(player).isAfk();
+            }
+        }
+
+
+        return player != null && lastCheckedData.getLocation().getX() == player.getLocation().getX()
+                && lastCheckedData.getLocation().getY() == player.getLocation().getY()
+                && lastCheckedData.getLocation().getZ() == player.getLocation().getZ();
+    }
+
     /**
      * Force save the playtime of a player.
+     * Doesn't check if the player is afk.
      *
      * @param uuid The uuid of the player.
      */
@@ -391,7 +433,7 @@ public final class Playtime extends JavaPlugin {
                 return ChatColor.RED + "No translation found for : " + key;
             }
             keyMessageMap.put(key,
-                    ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key))));
+                    MessageUtil.translateHexColorCodes("<",">",ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key)))));
         }
         String message = keyMessageMap.get(key);
 
@@ -400,6 +442,14 @@ public final class Playtime extends JavaPlugin {
         }
 
         return message;
+    }
+
+    /**
+     * Get the mccore instance
+     * @return The mccore instance
+     */
+    public Mccore getMccore() {
+        return mccore;
     }
 
     /**
@@ -429,30 +479,59 @@ public final class Playtime extends JavaPlugin {
         return playerOnlineTime;
     }
 
+    /**
+     * Get the repeating milestones.
+     * @return A list with the repeating milestones.
+     */
     public List<RepeatingMilestone> getRepeatedMilestoneList() {
         return repeatedMilestoneList;
     }
 
+    /**
+     * Set the repeating milestones.
+     * @param repeatedMilestoneList A list with the repeating milestones.
+     */
     public void setRepeatedMilestoneList(List<RepeatingMilestone> repeatedMilestoneList) {
         this.repeatedMilestoneList = repeatedMilestoneList;
     }
 
+    /**
+     * Get the filemanager of the plugin.
+     *
+     * @return The filemanager of the plugin.
+     */
     public FileManager getFileManager() {
         return fileManager;
     }
 
+    /**
+     * Get the milestone map.
+     *
+     * @return The milestone map.
+     */
     public Map<Long, Milestone> getMilestoneMap() {
         return milestoneMap;
     }
 
+    /**
+     * Set the milestone map.
+     * @param milestoneMap
+     */
     public void setMilestoneMap(Map<Long, Milestone> milestoneMap) {
         this.milestoneMap = milestoneMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public FileManager.Config getLangFile() {
         return langFile;
     }
 
+    /**
+     * Generate the English translations.
+     */
     public void generateEnglishTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/en_GB.yml");
         if (!config.get().contains("version")) {
@@ -528,7 +607,10 @@ public final class Playtime extends JavaPlugin {
 
     }
 
-    public void generateDutchTranslations() {
+    /**
+     * Generate the Dutch translations.
+     */
+    public void  generateDutchTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/nl_NL.yml");
         if (!config.get().contains("version")) {
             getLogger().info("Generate Dutch translations");
@@ -607,6 +689,9 @@ public final class Playtime extends JavaPlugin {
 
     }
 
+    /**
+     * Generate the German translations.
+     */
     public void generateGermanTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/de_DE.yml");
         if (!config.get().contains("version")) {
@@ -687,10 +772,16 @@ public final class Playtime extends JavaPlugin {
         }
     }
 
+    /** Get the key message map.
+     * @return The key message map.
+     */
     public Map<String, String> getKeyMessageMap() {
         return keyMessageMap;
     }
 
+    /**
+     *
+     */
     enum DownloadSource {
         /**
          * Spigot.org
@@ -708,6 +799,10 @@ public final class Playtime extends JavaPlugin {
          * <a href="https://hangar.papermc.io/">...</a>
          */
         HANGAR,
+        /**
+         * modrinth.com
+         */
+        MODRINTH,
     }
 
     /**
@@ -717,12 +812,12 @@ public final class Playtime extends JavaPlugin {
         /**
          * The last time the player was checked.
          */
-        private long time;
+        private final long time;
 
         /**
          * The last location of the player
          */
-        private Location location;
+        private final Location location;
 
         /**
          * Creates a new instance of LastCheckedData.
