@@ -25,6 +25,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -43,12 +44,14 @@ import java.util.logging.Level;
  * It also handles the database.
  * </p>
  */
-public final class Playtime extends JavaPlugin {
+public final class Playtime {
 
     /**
      * The instance of the plugin.
      */
     private static Playtime instance;
+
+    private static JavaPlugin pluginInstance;
     /**
      * The player's playtime
      */
@@ -60,7 +63,7 @@ public final class Playtime extends JavaPlugin {
     /**
      * The filemanager of the plugin.
      */
-    private final FileManager fileManager = new FileManager(this);
+    private FileManager fileManager = null;
     /**
      * A map filled with the milestones of the server
      */
@@ -88,8 +91,7 @@ public final class Playtime extends JavaPlugin {
     /**
      * The setting for counting afk time
      */
-    private final boolean countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",
-            true);
+    private boolean countAfkTime = true;
 
     /**
      * Count the amount of milestones got.
@@ -116,17 +118,30 @@ public final class Playtime extends JavaPlugin {
      *
      * @return The instance of the plugin.
      */
+    public static JavaPlugin getPluginInstance() {
+        return pluginInstance;
+    }
+
     public static Playtime getInstance() {
         return instance;
     }
 
-    @SneakyThrows
-    @Override
-    public void onEnable() {
-        // Plugin startup logic
+    public Playtime(JavaPlugin plugin){
         instance = this;
+        pluginInstance = plugin;
+    }
+
+    @SneakyThrows
+    public void onEnable(JavaPlugin plugin) {
+        this.fileManager = new FileManager(plugin);
+        // Plugin startup logic
+
+        // Register the mc core
+        mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
+
+
         // Register the metrics of the plugin.
-        Metrics metrics = new Metrics(this, 9404);
+        Metrics metrics = new Metrics(plugin, 9404);
 
         // Set up the configs of the plugin.
         FileManager.Config config = fileManager.getConfig("config.yml");
@@ -153,9 +168,14 @@ public final class Playtime extends JavaPlugin {
         fileConfiguration.addDefault("mysql.database", "playtime");
         fileConfiguration.addDefault("mysql.ssl", "false");
         fileConfiguration.addDefault("mysql.table_prefix", "");
-
+        fileConfiguration.addDefault("mongodb.hostname", "localhost");
+        fileConfiguration.addDefault("mongodb.port", 27017);
+        fileConfiguration.addDefault("mongodb.user", "root");
+        fileConfiguration.addDefault("mongodb.password", "password");
+        fileConfiguration.addDefault("mongodb.collection", "playtime");
         database.copyDefaults(true).save();
-
+        countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",
+                true);
         switch (database.get().getString("database")){
             case "mysql":
                 storage = new MysqlDatabase();
@@ -177,8 +197,8 @@ public final class Playtime extends JavaPlugin {
         // Set up the database.
         boolean data = storage.setup();
         if (data) {
-            // Register the mc core
-            mccore = new Mccore(this, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
+
+
             // Generate the language files.
             generateEnglishTranslations();
             generateDutchTranslations();
@@ -188,19 +208,19 @@ public final class Playtime extends JavaPlugin {
             langFile = fileManager.getConfig("lang/" + configfileConfiguration.getString("language") + ".yml");
 
             // Load all the milestone's
-            getLogger().log(Level.INFO, "Loading milestones");
+            pluginInstance.getLogger().log(Level.INFO, "Loading milestones");
             storage.getMilestones().whenComplete((milestones, throwable) -> {
                 for (Milestone storageMilestone : milestones) {
                     milestoneMap.put(storageMilestone.getOnlineTime() * 1000L, storageMilestone);
                 }
-                getLogger().log(Level.INFO, milestoneMap.size() + " milestones loaded");
+                pluginInstance.getLogger().log(Level.INFO, milestoneMap.size() + " milestones loaded");
             });
 
             // Load all the repeating milestones.
-            getLogger().log(Level.INFO, "Loading repeating milestones");
+            pluginInstance.getLogger().log(Level.INFO, "Loading repeating milestones");
             storage.getRepeatingMilestones().whenComplete((repeatingMilestones, throwable) -> {
                 repeatedMilestoneList.addAll(repeatingMilestones);
-                getLogger().log(Level.INFO, repeatedMilestoneList.size() + " repeating milestones loaded");
+                pluginInstance.getLogger().log(Level.INFO, repeatedMilestoneList.size() + " repeating milestones loaded");
             });
 
             // Start the update checker if enabled.
@@ -224,7 +244,7 @@ public final class Playtime extends JavaPlugin {
             }
 
             // Start the checkTask
-            checkTask = Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), () -> {
+            checkTask = Bukkit.getScheduler().runTaskTimerAsynchronously(getPluginInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new PlayTimeCheckEvent(true));
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     update(onlinePlayer.getUniqueId(), true);
@@ -251,7 +271,7 @@ public final class Playtime extends JavaPlugin {
 
             // Register placeholder api expansion.
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                getLogger().log(Level.INFO, "PlaceholderAPI expansion implemented");
+                getPluginInstance().getLogger().log(Level.INFO, "PlaceholderAPI expansion implemented");
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "PlaceholderAPI"));
                 new PlaceholderAPIExpansion().register();
             }
@@ -271,7 +291,7 @@ public final class Playtime extends JavaPlugin {
             metrics.addCustomChart(new SimplePie("download_source", DownloadSource.MODRINTH::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
-                    () -> String.valueOf(getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
+                    () -> String.valueOf(getPluginInstance().getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
             metrics.addCustomChart(new SimplePie("database_type", () -> storage.getName()));
             metrics.addCustomChart(new SimplePie("update_checker",
                     () -> String.valueOf(configfileConfiguration.getBoolean("settings.update_check", true))));
@@ -305,11 +325,11 @@ public final class Playtime extends JavaPlugin {
             }));
 
         } else {
-            Bukkit.getPluginManager().disablePlugin(this);
+            Bukkit.getPluginManager().disablePlugin(getPluginInstance());
         }
     }
 
-    @Override
+
     public void onDisable() {
         // Plugin shutdown logic
         if (checkTask != null) {
@@ -348,7 +368,7 @@ public final class Playtime extends JavaPlugin {
         }
         playTimeEarned += extraTime;
         long newtime = playerOnlineTime.get(uuid) + extraTime;
-        Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(getPluginInstance(), () -> {
             if (Bukkit.getPlayer(uuid) != null) {
                 Bukkit.getPluginManager().callEvent(
                         new PlayTimeUpdatePlayerEvent(Bukkit.getPlayer(uuid), playerOnlineTime.get(uuid), newtime));
@@ -545,7 +565,7 @@ public final class Playtime extends JavaPlugin {
     public void generateEnglishTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/en_GB.yml");
         if (!config.get().contains("version")) {
-            getLogger().info("Generate English translations");
+            getPluginInstance().getLogger().info("Generate English translations");
             config.get().addDefault("version", 1.0);
             config.get().addDefault("only.player.command", "&cThis is a player only command!");
             // playtime command messages
@@ -567,7 +587,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.1) {
-            getLogger().info("Updating English translations to version 1.1");
+            getPluginInstance().getLogger().info("Updating English translations to version 1.1");
             config.get().set("version", 1.1);
 
             config.get().addDefault("command.milestone.fireworktoggled",
@@ -580,7 +600,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.2) {
-            getLogger().info("Updating English translations to version 1.2");
+            getPluginInstance().getLogger().info("Updating English translations to version 1.2");
             config.get().set("version", 1.2);
             config.get().addDefault("command.defaults.enabled", "Enabled");
             config.get().addDefault("command.defaults.disabled", "Disabled");
@@ -608,7 +628,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.3) {
-            getLogger().info("Updating English translations to version 1.3");
+            getPluginInstance().getLogger().info("Updating English translations to version 1.3");
             config.get().set("version", 1.3);
             config.get().addDefault("command.playtime.imported", "&aYou have successfully imported <count> players!");
             config.copyDefaults(true).save();
@@ -623,7 +643,7 @@ public final class Playtime extends JavaPlugin {
     public void  generateDutchTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/nl_NL.yml");
         if (!config.get().contains("version")) {
-            getLogger().info("Generate Dutch translations");
+            getPluginInstance().getLogger().info("Generate Dutch translations");
             config.get().addDefault("version", 1.0);
             config.get().addDefault("only.player.command", "&cDit is een command die alleen een speler kan gebruiken!");
             // playtime command messages
@@ -646,7 +666,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.1) {
-            getLogger().info("Updating Dutch translations to 1.1");
+            getPluginInstance().getLogger().info("Updating Dutch translations to 1.1");
             config.get().set("version", 1.1);
 
             config.get().addDefault("command.milestone.fireworktoggled", "&aJe <state> het vuurwerk voor de mijlpaal");
@@ -660,7 +680,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.2) {
-            getLogger().info("Updating Dutch translations to version 1.2");
+            getPluginInstance().getLogger().info("Updating Dutch translations to version 1.2");
             config.get().set("version", 1.2);
             config.get().addDefault("command.defaults.enabled", "Aan");
             config.get().addDefault("command.defaults.disabled", "Uit");
@@ -690,7 +710,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.3) {
-            getLogger().info("Updating Dutch translations to version 1.3");
+            getPluginInstance().getLogger().info("Updating Dutch translations to version 1.3");
             config.get().set("version", 1.3);
             config.get().addDefault("command.playtime.imported", "&aJe hebt met success <count> spelers over gezet!");
             config.copyDefaults(true).save();
@@ -705,7 +725,7 @@ public final class Playtime extends JavaPlugin {
     public void generateGermanTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/de_DE.yml");
         if (!config.get().contains("version")) {
-            getLogger().info("Generate German translations");
+            getPluginInstance().getLogger().info("Generate German translations");
             config.get().addDefault("version", 1.0);
             config.get().addDefault("only.player.command", "&cDies ist ein Kommando nur für Spieler!");
             // playtime command messages
@@ -728,7 +748,7 @@ public final class Playtime extends JavaPlugin {
             config.save();
         }
         if (config.get().getDouble("version") < 1.1) {
-            getLogger().info("Updating German translations to 1.1");
+            getPluginInstance().getLogger().info("Updating German translations to 1.1");
             config.get().set("version", 1.1);
 
             config.get().addDefault("command.milestone.fireworktoggled",
@@ -743,7 +763,7 @@ public final class Playtime extends JavaPlugin {
         }
 
         if (config.get().getDouble("version") < 1.2) {
-            getLogger().info("Updating German translations to version 1.2");
+            getPluginInstance().getLogger().info("Updating German translations to version 1.2");
             config.get().set("version", 1.2);
             config.get().addDefault("command.defaults.enabled", "An");
             config.get().addDefault("command.defaults.disabled", "aus");
@@ -773,7 +793,7 @@ public final class Playtime extends JavaPlugin {
             config.save();
         }
         if (config.get().getDouble("version") < 1.3) {
-            getLogger().info("Updating German translations to version 1.3");
+            getPluginInstance().getLogger().info("Updating German translations to version 1.3");
             config.get().set("version", 1.3);
             config.get().addDefault("command.playtime.imported",
                     "&aSie haben <count> Spieler erfolgreich transferiert!");

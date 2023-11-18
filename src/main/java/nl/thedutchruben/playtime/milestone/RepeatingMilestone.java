@@ -67,7 +67,7 @@ public class RepeatingMilestone {
         }
 
         if (commands != null) {
-            Bukkit.getScheduler().runTask(Playtime.getInstance(), () -> {
+            Bukkit.getScheduler().runTask(Playtime.getPluginInstance(), () -> {
                 for (String command : commands) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                             command.replaceAll("%playername%", player.getName())
@@ -85,9 +85,9 @@ public class RepeatingMilestone {
             });
         }
         if (fireworkShow) {
-            Bukkit.getScheduler().runTaskAsynchronously(Playtime.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPluginInstance(), () -> {
                 for (int i = 0; i < fireworkShowAmount; i++) {
-                    Bukkit.getScheduler().runTask(Playtime.getInstance(), () -> {
+                    Bukkit.getScheduler().runTask(Playtime.getPluginInstance(), () -> {
                         FireworkUtil.spawnRandomFirework(player.getLocation());
                     });
                     try {
