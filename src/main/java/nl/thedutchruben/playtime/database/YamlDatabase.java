@@ -109,10 +109,10 @@ public class YamlDatabase extends Storage {
 
     @Override
     public String getTopPlace(int place) {
-        CachingObject cache = Mccore.getInstance().getCachingManager().getCachingObject("top-place-" + place);
-        if (cache != null) {
-
-        }
+//        CachingObject cache = Mccore.getInstance().getCachingManager().getCachingObject("top-place-" + place);
+//        if (cache != null) {
+//
+//        }
         Map<String, Long> hashMap = new HashMap<>();
         for (final File fileEntry : Objects
                 .requireNonNull(new File(Playtime.getPluginInstance().getDataFolder(), "players/").listFiles())) {
