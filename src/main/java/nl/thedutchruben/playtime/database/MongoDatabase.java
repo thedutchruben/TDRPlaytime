@@ -165,7 +165,7 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public long getTotalPlayTime() {
-        return 0;
+        return this.database.getCollection("playtime").aggregate(Collections.singletonList(new Document("$group", new Document("_id", null).append("total", new Document("$sum", "$playtime"))))).first().getLong("total");
     }
 
     /**
@@ -186,7 +186,7 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public String getTopPlace(int place) {
-        return null;
+        return this.database.getCollection("playtime").find().sort(new Document("playtime", -1)).skip(place).first().getString("name");
     }
 
     /**
@@ -197,7 +197,7 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public String getTopPlaceTime(int place) {
-        return this.database.getCollection("playtime").find().sort(new Document("playtime", -1)).skip(place).first().getString("uuid");
+        return this.database.getCollection("playtime").find().sort(new Document("playtime", -1)).skip(place).first().getLong("playtime").toString();
     }
 
     /**
@@ -225,7 +225,6 @@ public class MongoDatabase extends Storage {
     public CompletableFuture<Boolean> saveMileStone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             Document document = Document.parse(gson.toJson(milestone, Milestone.class));
-            System.out.println(document.toJson());
             UpdateResult insertOneResult = this.database.getCollection("milestones").updateOne(new Document("_id", milestone.getMilestoneName()), new Document("$set", document));
             return insertOneResult.wasAcknowledged();
         });
@@ -263,7 +262,11 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> createRepeatingMilestone(RepeatingMilestone milestone) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = Document.parse(gson.toJson(milestone, RepeatingMilestone.class));
+            InsertOneResult insertOneResult = this.database.getCollection("repeatingmilestones").insertOne(document);
+            return insertOneResult.wasAcknowledged();
+        });
     }
 
     /**
@@ -274,7 +277,11 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> saveRepeatingMileStone(RepeatingMilestone milestone) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = Document.parse(gson.toJson(milestone, RepeatingMilestone.class));
+            UpdateResult insertOneResult = this.database.getCollection("repeatingmilestones").updateOne(new Document("_id", milestone.getMilestoneName()), new Document("$set", document));
+            return insertOneResult.wasAcknowledged();
+        });
     }
 
     /**
@@ -285,8 +292,10 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> removeRepeatingMileStone(RepeatingMilestone milestone) {
-        return null;
-    }
+        return CompletableFuture.supplyAsync(() -> {
+            DeleteResult insertOneResult = this.database.getCollection("repeatingmilestones").deleteOne(new Document("_id", milestone.getMilestoneName()));
+            return insertOneResult.wasAcknowledged();
+        });    }
 
     /**
      * Get all repeating milestones
@@ -307,6 +316,9 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> reset(String name) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            this.database.getCollection("playtime").updateOne(new Document("name",name),new Document("$set",new Document("playtime",0L)));
+            return true;
+        });
     }
 }

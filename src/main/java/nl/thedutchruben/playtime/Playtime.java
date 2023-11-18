@@ -183,6 +183,8 @@ public final class Playtime {
             case "mongodb":
                 storage = new MongoDatabase();
                 break;
+            case "redis":
+                throw new Exception("Database type not implemented yet");
             case "yml":
             case "yaml":
                 storage = new YamlDatabase();
