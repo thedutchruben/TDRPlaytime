@@ -436,19 +436,22 @@ public final class Playtime {
      */
     private void checkMileStones(UUID uuid, Long oldtime, long newtime) {
         for (Long i = oldtime; i < newtime; i++) {
-            for (RepeatingMilestone repeatingMilestone : repeatedMilestoneList) {
-                if (i % (repeatingMilestone.getOnlineTime() * 1000) == 1) {
-                    if (repeatingMilestone.isOverrideMe() && milestoneMap.containsKey(i)) {
-                        return;
+            if(i > 0){
+                for (RepeatingMilestone repeatingMilestone : repeatedMilestoneList) {
+                    if (i % (repeatingMilestone.getOnlineTime() * 1000) == 1) {
+                        if (repeatingMilestone.isOverrideMe() && milestoneMap.containsKey(i)) {
+                            return;
+                        }
+                        repeatingMilestone.apply(Bukkit.getPlayer(uuid));
+                        repeatingMilestoneGot++;
                     }
-                    repeatingMilestone.apply(Bukkit.getPlayer(uuid));
-                    repeatingMilestoneGot++;
+                }
+                if (milestoneMap.containsKey(i)) {
+                    milestoneMap.get(i).apply(Bukkit.getPlayer(uuid));
+                    milestoneGot++;
                 }
             }
-            if (milestoneMap.containsKey(i)) {
-                milestoneMap.get(i).apply(Bukkit.getPlayer(uuid));
-                milestoneGot++;
-            }
+
         }
     }
 
