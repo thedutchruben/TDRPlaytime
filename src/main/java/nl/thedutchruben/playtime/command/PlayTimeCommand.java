@@ -174,9 +174,9 @@ public class PlayTimeCommand {
     @SubCommand(subCommand = "pluginInfo", permission = "playtime.playtime.pluginInfo", console = true, description = "Show info about the plugin")
     public void pluginInfo(CommandSender commandSender, List<String> args) {
         commandSender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
-        commandSender.sendMessage(ChatColor.GREEN + "Version: " + Playtime.getInstance().getDescription().getVersion());
-        commandSender.sendMessage(ChatColor.GREEN + "Author: " + Playtime.getInstance().getDescription().getAuthors());
-        commandSender.sendMessage(ChatColor.GREEN + "Website: " + Playtime.getInstance().getDescription().getWebsite());
+        commandSender.sendMessage(ChatColor.GREEN + "Version: " + Playtime.getPluginInstance().getDescription().getVersion());
+        commandSender.sendMessage(ChatColor.GREEN + "Author: " + Playtime.getPluginInstance().getDescription().getAuthors());
+        commandSender.sendMessage(ChatColor.GREEN + "Website: " + Playtime.getPluginInstance().getDescription().getWebsite());
         Playtime.getInstance().getStorage().getMilestones().whenComplete((milestones, throwable) -> {
             commandSender.sendMessage(ChatColor.GREEN + "Milestones: " + milestones.size());
         });

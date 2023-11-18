@@ -214,8 +214,6 @@ public class MileStoneCommand {
     public void removeCommandFromMilestone(CommandSender sender, List<String> args) {
         Milestone milestone = getMilestone(sender,args.get(1));
         if(milestone == null) return;
-        System.out.println(milestone.getCommands());
-        System.out.println(args.get(2));
         milestone.getCommands().remove(args.get(2));
         Playtime.getInstance().getStorage().saveMileStone(milestone).whenComplete((unused, throwable) -> {
             sender.sendMessage(Playtime.getInstance().getMessage("command.milestone.commandremoved"));

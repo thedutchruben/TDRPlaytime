@@ -24,7 +24,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return Playtime.getInstance().getDescription().getVersion();
+        return Playtime.getPluginInstance().getDescription().getVersion();
     }
 
     @SneakyThrows

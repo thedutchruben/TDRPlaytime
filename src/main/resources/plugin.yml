@@ -1,6 +1,6 @@
 name: TDRPlaytime
 version: ${project.version}
-main: nl.thedutchruben.playtime.Playtime
+main: nl.thedutchruben.playtime.PlaytimePlugin
 authors: [ TheDutchRuben ]
 softdepend:
   - PlaceholderApi
