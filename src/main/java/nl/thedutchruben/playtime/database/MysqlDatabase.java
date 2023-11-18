@@ -42,7 +42,7 @@ public class MysqlDatabase extends Storage {
 
         } catch (Exception exception) {
             Bukkit.getLogger().log(Level.WARNING, "Sql not connected plugin shutting down");
-            Playtime.getInstance().getServer().getPluginManager().disablePlugin(Playtime.getInstance());
+            Playtime.getPluginInstance().getServer().getPluginManager().disablePlugin(Playtime.getPluginInstance());
             return false;
         }
 
