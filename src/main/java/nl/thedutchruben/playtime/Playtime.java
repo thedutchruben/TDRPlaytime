@@ -290,7 +290,7 @@ public final class Playtime {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.MODRINTH::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.SPIGOT::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getPluginInstance().getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
@@ -640,6 +640,14 @@ public final class Playtime {
             config.save();
         }
 
+        if (config.get().getDouble("version") < 1.4) {
+            getPluginInstance().getLogger().info("Updating English translations to version 1.4");
+            config.get().set("version", 1.4);
+            config.get().addDefault("command.milestone.messageadded", "&aYou have successfully added an message to a milestone!");
+            config.get().addDefault("command.milestone.messageremoved", "&aYou have removed a message from a milestone!");
+            config.copyDefaults(true).save();
+            config.save();
+        }
     }
 
     /**
@@ -722,6 +730,14 @@ public final class Playtime {
             config.save();
         }
 
+        if (config.get().getDouble("version") < 1.4) {
+            getPluginInstance().getLogger().info("Updating English translations to version 1.4");
+            config.get().set("version", 1.4);
+            config.get().addDefault("command.milestone.messageadded", "&aJe hebt met success een bericht toegevoegd aan een mijlpaal!");
+            config.get().addDefault("command.milestone.messageremoved", "&aJe hebt met success een bericht verwijdert van een mijlpaal!");
+            config.copyDefaults(true).save();
+            config.save();
+        }
     }
 
     /**
@@ -802,6 +818,15 @@ public final class Playtime {
             config.get().set("version", 1.3);
             config.get().addDefault("command.playtime.imported",
                     "&aSie haben <count> Spieler erfolgreich transferiert!");
+            config.copyDefaults(true).save();
+            config.save();
+        }
+
+        if (config.get().getDouble("version") < 1.4) {
+            getPluginInstance().getLogger().info("Updating English translations to version 1.4");
+            config.get().set("version", 1.4);
+            config.get().addDefault("command.milestone.messageadded", "&aSie haben erfolgreich eine Nachricht zu einem Meilenstein hinzugefügt!");
+            config.get().addDefault("command.milestone.messageremoved", "&aSie haben eine Nachricht erfolgreich von einem Meilenstein gelöscht!");
             config.copyDefaults(true).save();
             config.save();
         }

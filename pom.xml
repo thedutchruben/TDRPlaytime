@@ -6,7 +6,7 @@
 
     <groupId>nl.thedutchruben</groupId>
     <artifactId>playtime</artifactId>
-    <version>1.14.0-dev</version>
+    <version>1.14.0</version>
     <packaging>jar</packaging>
 
     <name>Playtime</name>
@@ -162,7 +162,7 @@
         <dependency>
             <groupId>nl.thedutchruben</groupId>
             <artifactId>mccore</artifactId>
-            <version>1.4.0-dev-02</version>
+            <version>1.4.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
