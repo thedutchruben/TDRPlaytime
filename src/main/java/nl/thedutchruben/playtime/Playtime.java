@@ -60,6 +60,10 @@ public final class Playtime {
      */
     private final Map<UUID, LastCheckedData> lastCheckedTime = new HashMap<>();
     /**
+     * The stores message's of the plugin.
+     */
+    private final Map<String, String> keyMessageMap = new HashMap<>();
+    /**
      * The filemanager of the plugin.
      */
     private FileManager fileManager = null;
@@ -71,10 +75,6 @@ public final class Playtime {
      * A list with the repeating milestones.
      */
     private List<RepeatingMilestone> repeatedMilestoneList = new ArrayList<>();
-    /**
-     * The stores message's of the plugin.
-     */
-    private final Map<String, String> keyMessageMap = new HashMap<>();
     /**
      * The storage of the plugin.
      */
@@ -112,6 +112,11 @@ public final class Playtime {
 
     private Mccore mccore;
 
+    public Playtime(JavaPlugin plugin) {
+        instance = this;
+        pluginInstance = plugin;
+    }
+
     /**
      * Get the instance of the plugin.
      *
@@ -123,11 +128,6 @@ public final class Playtime {
 
     public static Playtime getInstance() {
         return instance;
-    }
-
-    public Playtime(JavaPlugin plugin){
-        instance = this;
-        pluginInstance = plugin;
     }
 
     @SneakyThrows
@@ -175,7 +175,7 @@ public final class Playtime {
         database.copyDefaults(true).save();
         countAfkTime = fileManager.getConfig("config.yml").get().getBoolean("settings.afk.countAfkTime",
                 true);
-        switch (database.get().getString("database")){
+        switch (database.get().getString("database")) {
             case "mysql":
                 storage = new MysqlDatabase();
                 break;
@@ -364,7 +364,7 @@ public final class Playtime {
         long extraTime = System.currentTimeMillis() - lastCheckedData.getTime();
         lastCheckedTime.replace(uuid,
                 new LastCheckedData(System.currentTimeMillis(), Objects.requireNonNull(Bukkit.getPlayer(uuid)).getLocation()));
-        if(isAfk(Bukkit.getPlayer(uuid), lastCheckedData)){
+        if (isAfk(Bukkit.getPlayer(uuid), lastCheckedData)) {
             return;
         }
         playTimeEarned += extraTime;
@@ -386,16 +386,17 @@ public final class Playtime {
 
     /**
      * Check if a player is afk
-     * @param player The player to check
+     *
+     * @param player          The player to check
      * @param lastCheckedData The last checked data of the player
      * @return Whether the player is afk
      */
-    public boolean isAfk(Player player, LastCheckedData lastCheckedData){
-        if(countAfkTime){
+    public boolean isAfk(Player player, LastCheckedData lastCheckedData) {
+        if (countAfkTime) {
             return false;
         }
         FileManager.Config config = fileManager.getConfig("config.yml");
-        if(config.get().getBoolean("settings.afk.useEssentialsApi", false)){
+        if (config.get().getBoolean("settings.afk.useEssentialsApi", false)) {
             if (Bukkit.getPluginManager().getPlugin("Essentials") != null) {
                 Essentials essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
                 return essentials.getUser(player).isAfk();
@@ -435,7 +436,7 @@ public final class Playtime {
      */
     private void checkMileStones(UUID uuid, Long oldtime, long newtime) {
         for (Long i = oldtime; i < newtime; i++) {
-            if(i > 0){
+            if (i > 0) {
                 for (RepeatingMilestone repeatingMilestone : repeatedMilestoneList) {
                     if (i % (repeatingMilestone.getOnlineTime() * 1000) == 1) {
                         if (repeatingMilestone.isOverrideMe() && milestoneMap.containsKey(i)) {
@@ -461,7 +462,7 @@ public final class Playtime {
      * @return The message.
      */
     public String getMessage(String key, Replacement... replacements) {
-        if(this.langFile == null){
+        if (this.langFile == null) {
             this.langFile = fileManager.getConfig("lang/" + fileManager.getConfig("config.yml").get().getString("language") + ".yml");
         }
         if (!keyMessageMap.containsKey(key)) {
@@ -469,7 +470,7 @@ public final class Playtime {
                 return ChatColor.RED + "No translation found for : " + key;
             }
             keyMessageMap.put(key,
-                    MessageUtil.translateHexColorCodes("<",">",ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key)))));
+                    MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(langFile.get().getString(key)))));
         }
         String message = keyMessageMap.get(key);
 
@@ -482,6 +483,7 @@ public final class Playtime {
 
     /**
      * Get the mccore instance
+     *
      * @return The mccore instance
      */
     public Mccore getMccore() {
@@ -517,6 +519,7 @@ public final class Playtime {
 
     /**
      * Get the repeating milestones.
+     *
      * @return A list with the repeating milestones.
      */
     public List<RepeatingMilestone> getRepeatedMilestoneList() {
@@ -525,6 +528,7 @@ public final class Playtime {
 
     /**
      * Set the repeating milestones.
+     *
      * @param repeatedMilestoneList A list with the repeating milestones.
      */
     public void setRepeatedMilestoneList(List<RepeatingMilestone> repeatedMilestoneList) {
@@ -551,6 +555,7 @@ public final class Playtime {
 
     /**
      * Set the milestone map.
+     *
      * @param milestoneMap
      */
     public void setMilestoneMap(Map<Long, Milestone> milestoneMap) {
@@ -558,7 +563,6 @@ public final class Playtime {
     }
 
     /**
-     *
      * @return
      */
     public FileManager.Config getLangFile() {
@@ -654,7 +658,7 @@ public final class Playtime {
     /**
      * Generate the Dutch translations.
      */
-    public void  generateDutchTranslations() {
+    public void generateDutchTranslations() {
         FileManager.Config config = fileManager.getConfig("lang/nl_NL.yml");
         if (!config.get().contains("version")) {
             getPluginInstance().getLogger().info("Generate Dutch translations");
@@ -833,7 +837,9 @@ public final class Playtime {
         }
     }
 
-    /** Get the key message map.
+    /**
+     * Get the key message map.
+     *
      * @return The key message map.
      */
     public Map<String, String> getKeyMessageMap() {

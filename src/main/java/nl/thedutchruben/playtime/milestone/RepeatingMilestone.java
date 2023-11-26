@@ -78,9 +78,9 @@ public class RepeatingMilestone {
             });
 
         }
-        if (messages != null){
+        if (messages != null) {
             messages.forEach(s -> {
-                String formattedString = MessageUtil.translateHexColorCodes("<",">", ChatColor.translateAlternateColorCodes('&',s));
+                String formattedString = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', s));
                 player.sendMessage(formattedString);
             });
         }
@@ -140,7 +140,7 @@ public class RepeatingMilestone {
     }
 
     public List<String> getMessages() {
-        if(messages == null)
+        if (messages == null)
             messages = new ArrayList<>();
 
         return messages;

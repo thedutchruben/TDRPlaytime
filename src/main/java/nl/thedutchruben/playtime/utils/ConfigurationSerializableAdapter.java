@@ -13,7 +13,8 @@ import java.util.Map;
 
 public class ConfigurationSerializableAdapter implements JsonSerializer<ConfigurationSerializable>, JsonDeserializer<ConfigurationSerializable> {
 
-    final Type objectStringMapType = new TypeToken<LinkedHashMap<String, Object>>() {}.getType();
+    final Type objectStringMapType = new TypeToken<LinkedHashMap<String, Object>>() {
+    }.getType();
 
     @Override
     public ConfigurationSerializable deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -24,18 +25,18 @@ public class ConfigurationSerializableAdapter implements JsonSerializer<Configur
 
             if (value.isJsonObject()) {
                 JsonObject jsonObject = value.getAsJsonObject();
-                if(jsonObject.has(ConfigurationSerialization.SERIALIZED_TYPE_KEY)) {
+                if (jsonObject.has(ConfigurationSerialization.SERIALIZED_TYPE_KEY)) {
                     map.put(name, deserialize(value, value.getClass(), context));
                 } else {
                     LinkedHashMap<String, Object> mapInMap = new LinkedHashMap<>();
                     for (Map.Entry<String, JsonElement> secondEntry : jsonObject.entrySet()) {
                         JsonElement element = secondEntry.getValue();
-                        if(element.isJsonObject()) {
+                        if (element.isJsonObject()) {
                             mapInMap.put(secondEntry.getKey(), deserialize(secondEntry.getValue(), secondEntry.getClass(), context));
-                        } else if(element.isJsonArray()) {
+                        } else if (element.isJsonArray()) {
                             JsonArray array = element.getAsJsonArray();
                             List<Object> objectsList = new ArrayList<>();
-                            for(JsonElement arrayElement : array) {
+                            for (JsonElement arrayElement : array) {
                                 objectsList.add(deserialize(arrayElement, arrayElement.getClass(), context));
                             }
                             mapInMap.put(secondEntry.getKey(), objectsList);
@@ -45,11 +46,11 @@ public class ConfigurationSerializableAdapter implements JsonSerializer<Configur
                     }
                     map.put(name, mapInMap);
                 }
-            } else if(value.isJsonArray()) {
+            } else if (value.isJsonArray()) {
                 JsonArray array = value.getAsJsonArray();
                 List<Object> objectsList = new ArrayList<>();
-                for(JsonElement element : array) {
-                    if(element.isJsonObject() && element.getAsJsonObject().has(ConfigurationSerialization.SERIALIZED_TYPE_KEY)) {
+                for (JsonElement element : array) {
+                    if (element.isJsonObject() && element.getAsJsonObject().has(ConfigurationSerialization.SERIALIZED_TYPE_KEY)) {
                         objectsList.add(deserialize(element, element.getClass(), context));
                     } else {
                         objectsList.add(context.deserialize(element, Object.class));

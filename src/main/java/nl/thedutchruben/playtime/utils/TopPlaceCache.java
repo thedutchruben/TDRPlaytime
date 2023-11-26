@@ -66,7 +66,7 @@ public class TopPlaceCache extends CachingObject {
     @Override
     public Date getExpireDate() {
         int minuteCache = Playtime.getInstance().getFileManager().getConfig("config.yml").get()
-                .getInt("settings.cacheTime",5);
+                .getInt("settings.cacheTime", 5);
         return new Date(createDate.getTime() + (minuteCache * 60000L));
     }
 

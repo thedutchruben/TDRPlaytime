@@ -46,7 +46,7 @@ public class MongoDatabase extends Storage {
     @SneakyThrows
     @Override
     public boolean setup() {
-        YamlConfiguration databaseConfig =  Playtime.getInstance().getFileManager().getConfig("database.yml").get();
+        YamlConfiguration databaseConfig = Playtime.getInstance().getFileManager().getConfig("database.yml").get();
         // build the connection string from config values
         String connectionString = "mongodb://";
         if (!Objects.equals(databaseConfig.getString("mongodb.user"), "") && databaseConfig.getString("mongodb.user") != null && !Playtime.getPluginInstance().getConfig().getString("mongodb.user").isEmpty()) {
@@ -86,7 +86,7 @@ public class MongoDatabase extends Storage {
     public CompletableFuture<Long> getPlayTimeByUUID(String uuid) {
         return CompletableFuture.supplyAsync(() -> {
             Document player = this.database.getCollection("playtime").find(new Document("uuid", uuid)).first();
-            if(player == null){
+            if (player == null) {
                 return 0L;
             }
             return player.get("playtime", Long.class);
@@ -103,7 +103,7 @@ public class MongoDatabase extends Storage {
     public CompletableFuture<Long> getPlayTimeByName(String name) {
         return CompletableFuture.supplyAsync(() -> {
             Document player = this.database.getCollection("playtime").find(new Document("name", name)).first();
-            if(player == null){
+            if (player == null) {
                 return 0L;
             }
             return player.get("playtime", Long.class);
@@ -121,10 +121,10 @@ public class MongoDatabase extends Storage {
     public CompletableFuture<Boolean> savePlayTime(String uuid, long playtime) {
         return CompletableFuture.supplyAsync(() -> {
             Document player = this.database.getCollection("playtime").find(new Document("uuid", uuid)).first();
-            if(player == null){
-                this.database.getCollection("playtime").insertOne(new Document("uuid",uuid).append("name", Bukkit.getPlayer(UUID.fromString(uuid)).getName()).append("playtime",playtime));
-            }else{
-                this.database.getCollection("playtime").updateOne(new Document("uuid",uuid),new Document("$set",new Document("playtime",playtime).append("name", Bukkit.getPlayer(UUID.fromString(uuid)).getName())));
+            if (player == null) {
+                this.database.getCollection("playtime").insertOne(new Document("uuid", uuid).append("name", Bukkit.getPlayer(UUID.fromString(uuid)).getName()).append("playtime", playtime));
+            } else {
+                this.database.getCollection("playtime").updateOne(new Document("uuid", uuid), new Document("$set", new Document("playtime", playtime).append("name", Bukkit.getPlayer(UUID.fromString(uuid)).getName())));
             }
             return true;
         });
@@ -242,7 +242,7 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public CompletableFuture<List<Milestone>> getMilestones() {
-        return CompletableFuture.supplyAsync(() -> this.database.getCollection("milestones").find().map(document -> gson.fromJson(document.toJson(),Milestone.class)).into(new ArrayList<>()));
+        return CompletableFuture.supplyAsync(() -> this.database.getCollection("milestones").find().map(document -> gson.fromJson(document.toJson(), Milestone.class)).into(new ArrayList<>()));
     }
 
     /**
@@ -286,7 +286,8 @@ public class MongoDatabase extends Storage {
         return CompletableFuture.supplyAsync(() -> {
             DeleteResult insertOneResult = this.database.getCollection("repeatingmilestones").deleteOne(new Document("_id", milestone.getMilestoneName()));
             return insertOneResult.wasAcknowledged();
-        });    }
+        });
+    }
 
     /**
      * Get all repeating milestones
@@ -296,7 +297,7 @@ public class MongoDatabase extends Storage {
      */
     @Override
     public CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones() {
-        return CompletableFuture.supplyAsync(() -> this.database.getCollection("repeatingmilestones").find().map(document -> gson.fromJson(document.toJson(),RepeatingMilestone.class)).into(new ArrayList<>()));
+        return CompletableFuture.supplyAsync(() -> this.database.getCollection("repeatingmilestones").find().map(document -> gson.fromJson(document.toJson(), RepeatingMilestone.class)).into(new ArrayList<>()));
     }
 
     /**
@@ -308,7 +309,7 @@ public class MongoDatabase extends Storage {
     @Override
     public CompletableFuture<Boolean> reset(String name) {
         return CompletableFuture.supplyAsync(() -> {
-            this.database.getCollection("playtime").updateOne(new Document("name",name),new Document("$set",new Document("playtime",0L)));
+            this.database.getCollection("playtime").updateOne(new Document("name", name), new Document("$set", new Document("playtime", 0L)));
             return true;
         });
     }

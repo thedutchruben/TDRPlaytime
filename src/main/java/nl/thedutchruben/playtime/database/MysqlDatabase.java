@@ -238,7 +238,7 @@ public class MysqlDatabase extends Storage {
     public String getTopPlace(int place) {
 
         TopPlaceCache topListCache = (TopPlaceCache) Mccore.getInstance().getCachingManager().getCachingObject("tdrplaytime-topplace-" + place);
-        if(topListCache != null){
+        if (topListCache != null) {
             return topListCache.getName();
         }
 
@@ -246,8 +246,8 @@ public class MysqlDatabase extends Storage {
                 + "playtime`ORDER BY `time` DESC LIMIT " + (place) + "," + (place + 1))) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    String name =  resultSet.getString("name");
-                    Mccore.getInstance().getCachingManager().addCachingObject("tdrplaytime-topplace-" + place,new TopPlaceCache("tdrplaytime-topplace-" + place,new Date(),name,"",resultSet.getLong("time")));
+                    String name = resultSet.getString("name");
+                    Mccore.getInstance().getCachingManager().addCachingObject("tdrplaytime-topplace-" + place, new TopPlaceCache("tdrplaytime-topplace-" + place, new Date(), name, "", resultSet.getLong("time")));
                     return name;
                 }
             } catch (Exception e) {
@@ -264,7 +264,7 @@ public class MysqlDatabase extends Storage {
     @Override
     public String getTopPlaceTime(int place) {
         TopPlaceCache topListCache = (TopPlaceCache) Mccore.getInstance().getCachingManager().getCachingObject("tdrplaytime-topplace-" + place);
-        if(topListCache != null){
+        if (topListCache != null) {
             return String.valueOf(topListCache.getTime());
         }
 
@@ -274,7 +274,7 @@ public class MysqlDatabase extends Storage {
                 if (resultSet.next()) {
                     long time = resultSet.getLong("time");
 
-                    Mccore.getInstance().getCachingManager().addCachingObject("tdrplaytime-topplace-" + place,new TopPlaceCache("tdrplaytime-topplace-" + place,new Date(),resultSet.getString("name"),"",time));
+                    Mccore.getInstance().getCachingManager().addCachingObject("tdrplaytime-topplace-" + place, new TopPlaceCache("tdrplaytime-topplace-" + place, new Date(), resultSet.getString("name"), "", time));
 
                     return String.valueOf(time);
                 }

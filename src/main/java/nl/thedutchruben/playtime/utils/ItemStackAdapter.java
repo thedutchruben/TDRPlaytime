@@ -17,7 +17,7 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
         Map<String, Object> map = new Gson().fromJson(json, TypeToken.get(Map.class).getType());
         map.putIfAbsent("v", Bukkit.getUnsafe().getDataVersion());
 
-        if(map.containsKey("meta")) {
+        if (map.containsKey("meta")) {
             Map<String, Object> meta = (Map<String, Object>) map.get("meta");
             ConfigurationSerializable deserializedMeta = context.deserialize(new Gson().toJsonTree(meta), ConfigurationSerializable.class);
             map.remove("meta");
@@ -33,7 +33,7 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         Map<String, Object> map = src.serialize();
         map.putIfAbsent("v", Bukkit.getUnsafe().getDataVersion());
-        if(src.hasItemMeta()) {
+        if (src.hasItemMeta()) {
             JsonElement meta = context.serialize(src.getItemMeta(), ConfigurationSerializable.class);
             map.put("meta", meta.getAsJsonObject());
         }

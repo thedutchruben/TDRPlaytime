@@ -20,7 +20,7 @@ public final class PlaytimePlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if(playtime != null){
+        if (playtime != null) {
             playtime.onDisable();
 
         }

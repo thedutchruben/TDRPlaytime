@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DependencyLoader {
 
-    public static void load(Plugin plugin){
+    public static void load(Plugin plugin) {
         System.out.println("Loading dependencies");
 
         BukkitLibraryManager libraryManager = new BukkitLibraryManager(plugin);
@@ -18,15 +18,15 @@ public class DependencyLoader {
         libraryManager.addJitPack();
         libraryManager.addRepository("https://nexus.thedutchservers.com/repository/maven-public/");
         //build array with all the dependencies as liberies
-        List<Library>libraries = new ArrayList<>();
+        List<Library> libraries = new ArrayList<>();
         for (Dependency dependency : Dependency.values()) {
             Library.Builder builder = Library.builder()
                     .groupId(dependency.groupId) // "{}" is replaced with ".", useful to avoid unwanted changes made by maven-shade-plugin
                     .artifactId(dependency.artifactID)
                     .version(dependency.version);
 
-            if(dependency.relocation != null){
-                builder.relocate(dependency.groupId,dependency.relocation);
+            if (dependency.relocation != null) {
+                builder.relocate(dependency.groupId, dependency.relocation);
             }
             libraries.add(builder.build());
         }
@@ -39,20 +39,19 @@ public class DependencyLoader {
 
 
     private enum Dependency {
-        BSON("org{}mongodb", "bson", "4.11.1",null),
-        MONGODB("org{}mongodb", "mongodb-driver-sync", "4.11.1",null),
-        MONGODB_CORE("org{}mongodb", "mongodb-driver-core", "4.11.1",null),
-        MCCORE("nl{}thedutchruben", "mccore", "1.4.1",null),
-        BSTATS("org{}bstats", "bstats-bukkit", "3.0.2","nl{}thedutchruben{}playtime{}bstats"),
-        BSTATS_BASE("org{}bstats", "bstats-base", "3.0.2","nl{}thedutchruben{}playtime{}bstats");
+        BSON("org{}mongodb", "bson", "4.11.1", null),
+        MONGODB("org{}mongodb", "mongodb-driver-sync", "4.11.1", null),
+        MONGODB_CORE("org{}mongodb", "mongodb-driver-core", "4.11.1", null),
+        MCCORE("nl{}thedutchruben", "mccore", "1.4.1", null),
+        BSTATS("org{}bstats", "bstats-bukkit", "3.0.2", "nl{}thedutchruben{}playtime{}bstats"),
+        BSTATS_BASE("org{}bstats", "bstats-base", "3.0.2", "nl{}thedutchruben{}playtime{}bstats");
 
+        public final String version;
+        public final String relocation;
         private final String groupId;
         private final String artifactID;
-        public final String version;
 
-        public final String relocation;
-
-        Dependency(String groupId, String artifactID, String version,String relocation){
+        Dependency(String groupId, String artifactID, String version, String relocation) {
             this.groupId = groupId;
             this.artifactID = artifactID;
             this.version = version;

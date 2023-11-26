@@ -20,8 +20,7 @@ public class Milestone {
     /**
      * The name of the milestone.
      * -- GETTER --
-     *  get the name of the milestone
-
+     * get the name of the milestone
      */
     @Getter
     @SerializedName("_id")
@@ -29,8 +28,7 @@ public class Milestone {
     /**
      * The time the player has to be online to get the milestone
      * -- GETTER --
-     *  get the time the player has to be online to get the milestone
-
+     * get the time the player has to be online to get the milestone
      */
     @Getter
     @SerializedName("online_time")
@@ -53,8 +51,7 @@ public class Milestone {
     /**
      * if there shall be a firework show
      * -- GETTER --
-     *  get if there is a firework show
-
+     * get if there is a firework show
      */
     @Getter
     @SerializedName("firework_show")
@@ -62,8 +59,7 @@ public class Milestone {
     /**
      * The amount of fireworks to spawn
      * -- GETTER --
-     *  get the amount of fireworks to spawn
-
+     * get the amount of fireworks to spawn
      */
     @Getter
     @SerializedName("firework_show_amount")
@@ -104,9 +100,9 @@ public class Milestone {
             });
         }
 
-        if (messages != null){
+        if (messages != null) {
             messages.forEach(s -> {
-                String formattedString = MessageUtil.translateHexColorCodes("<",">", ChatColor.translateAlternateColorCodes('&',s));
+                String formattedString = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', s));
                 player.sendMessage(formattedString);
             });
         }
@@ -188,7 +184,7 @@ public class Milestone {
      * get the list of messages to send
      */
     public List<String> getMessages() {
-        if(messages == null)
+        if (messages == null)
             messages = new ArrayList<>();
 
         return messages;

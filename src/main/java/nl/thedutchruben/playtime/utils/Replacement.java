@@ -17,7 +17,6 @@ public class Replacement {
      * -- GETTER --
      *
      * @return The string to replace.
-
      */
     private final String from;
 
@@ -26,7 +25,6 @@ public class Replacement {
      * -- GETTER --
      *
      * @return The string to replace with.
-
      */
     private final String to;
 

@@ -73,7 +73,7 @@ public class PlayTimeCommand {
     }
 
     @SneakyThrows
-    @SubCommand(subCommand = "add", permission = "playtime.playtime.add", minParams = 3, maxParams = 3, console = true, description = "Add playtime to a user",usage = "<player> <time>")
+    @SubCommand(subCommand = "add", permission = "playtime.playtime.add", minParams = 3, maxParams = 3, console = true, description = "Add playtime to a user", usage = "<player> <time>")
     public void add(CommandSender commandSender, List<String> args) {
         String playerName = args.get(1);
         long time = Long.parseLong(args.get(2));
@@ -90,7 +90,7 @@ public class PlayTimeCommand {
     }
 
     @SneakyThrows
-    @SubCommand(subCommand = "set", permission = "playtime.playtime.set", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>", description = "Set a players playtime"  )
+    @SubCommand(subCommand = "set", permission = "playtime.playtime.set", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>", description = "Set a players playtime")
     public void set(CommandSender commandSender, List<String> args) {
         String playerName = args.get(1);
         long time = Long.parseLong(args.get(2));

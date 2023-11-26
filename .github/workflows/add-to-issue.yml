@@ -2,7 +2,7 @@ name: Add me to issue
 
 on:
   issues:
-    types: [opened]
+    types: [ opened ]
 jobs:
   label_issues:
     runs-on: ubuntu-latest

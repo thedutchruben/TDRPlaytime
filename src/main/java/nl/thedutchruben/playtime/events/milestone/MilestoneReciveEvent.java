@@ -9,11 +9,12 @@ public class MilestoneReciveEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
     private Player player;
     private Milestone milestone;
+
     /**
      * The default constructor is defined for cleaner code. This constructor
      * assumes the event is synchronous.
      */
-    public MilestoneReciveEvent(Player player,Milestone milestone) {
+    public MilestoneReciveEvent(Player player, Milestone milestone) {
         this.player = player;
         this.milestone = milestone;
     }
