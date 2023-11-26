@@ -1,12 +1,12 @@
 name: TDRPlaytime
 version: ${project.version}
 main: nl.thedutchruben.playtime.PlaytimePlugin
+api-version: 1.13
 authors: [ TheDutchRuben ]
 softdepend:
-  - PlaceholderApi
+  - PlaceholderAPI
   - EssentialsX
 description: Playtime plugin with milestone support
-website: www.thedutchruben.nl/nl/projects/tdrplaytime
 commands:
   playtime:
     aliases:

@@ -1,7 +1,6 @@
 package nl.thedutchruben.playtime.utils;
 
 import com.google.gson.*;
-
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;

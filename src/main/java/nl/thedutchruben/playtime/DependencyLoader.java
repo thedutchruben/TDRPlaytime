@@ -4,9 +4,7 @@ import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bukkit.plugin.Plugin;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DependencyLoader {
@@ -59,6 +57,7 @@ public class DependencyLoader {
             this.artifactID = artifactID;
             this.version = version;
             this.relocation = relocation;
+
         }
     }
 }

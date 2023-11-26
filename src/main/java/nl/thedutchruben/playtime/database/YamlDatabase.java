@@ -2,8 +2,6 @@ package nl.thedutchruben.playtime.database;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import nl.thedutchruben.mccore.Mccore;
-import nl.thedutchruben.mccore.global.caching.CachingObject;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.milestone.Milestone;
 import nl.thedutchruben.playtime.milestone.RepeatingMilestone;
@@ -109,10 +107,6 @@ public class YamlDatabase extends Storage {
 
     @Override
     public String getTopPlace(int place) {
-//        CachingObject cache = Mccore.getInstance().getCachingManager().getCachingObject("top-place-" + place);
-//        if (cache != null) {
-//
-//        }
         Map<String, Long> hashMap = new HashMap<>();
         for (final File fileEntry : Objects
                 .requireNonNull(new File(Playtime.getPluginInstance().getDataFolder(), "players/").listFiles())) {
@@ -126,8 +120,6 @@ public class YamlDatabase extends Storage {
                                 Bukkit.getOfflinePlayer(UUID.fromString(fileEntry.getName().replace(".yaml", "")))
                                         .getName(),
                                 config.getLong("onlinetime"));
-                        Mccore.getInstance().getCachingManager().addCachingObject("top-place-" + place,
-                                null);
                     } else {
                         hashMap.put("",
                                 config.getLong("onlinetime"));

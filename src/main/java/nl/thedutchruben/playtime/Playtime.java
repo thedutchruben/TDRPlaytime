@@ -25,7 +25,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -290,7 +289,7 @@ public final class Playtime {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.SPIGOT::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.GITHUB::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getPluginInstance().getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
@@ -462,7 +461,9 @@ public final class Playtime {
      * @return The message.
      */
     public String getMessage(String key, Replacement... replacements) {
-
+        if(this.langFile == null){
+            this.langFile = fileManager.getConfig("lang/" + fileManager.getConfig("config.yml").get().getString("language") + ".yml");
+        }
         if (!keyMessageMap.containsKey(key)) {
             if (langFile.get().getString(key) == null) {
                 return ChatColor.RED + "No translation found for : " + key;

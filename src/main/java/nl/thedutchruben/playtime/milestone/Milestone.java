@@ -2,9 +2,9 @@ package nl.thedutchruben.playtime.milestone;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import nl.thedutchruben.mccore.utils.firework.FireworkUtil;
 import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
-import nl.thedutchruben.mccore.utils.firework.FireworkUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
