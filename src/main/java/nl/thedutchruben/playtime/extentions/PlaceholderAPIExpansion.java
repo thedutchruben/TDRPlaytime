@@ -29,7 +29,8 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @SneakyThrows
     @Override
-    public String onPlaceholderRequest(Player p, String params) {
+    public String onPlaceholderRequest(Player p, String par) {
+        String params = par.toLowerCase().replace('-','_');
         Playtime.getInstance().update(p.getUniqueId(), false);
         long time = Playtime.getInstance().getPlayerOnlineTime().get(p.getUniqueId());
         time = time / 1000;
