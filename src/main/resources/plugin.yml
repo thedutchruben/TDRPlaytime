@@ -2,6 +2,7 @@ name: TDRPlaytime
 version: ${project.version}
 main: nl.thedutchruben.playtime.PlaytimePlugin
 api-version: 1.13
+downloadSource: 'GITHUB'
 authors: [ TheDutchRuben ]
 softdepend:
   - PlaceholderAPI

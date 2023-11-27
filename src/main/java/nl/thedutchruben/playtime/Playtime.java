@@ -289,7 +289,7 @@ public final class Playtime {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.GITHUB::name));
+            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.SPIGOT::name));
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getPluginInstance().getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
