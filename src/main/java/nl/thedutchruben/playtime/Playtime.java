@@ -24,13 +24,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Ruben
@@ -288,8 +293,29 @@ public final class Playtime {
             if (Bukkit.getPluginManager().getPlugin("JoinAndQuitMessages") != null) {
                 metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
             }
+            InputStream inputStream = getPluginInstance().getClass().getResourceAsStream("/plugin.yml");
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+            String pluginYml = new String(buffer);
 
-            metrics.addCustomChart(new SimplePie("download_source", DownloadSource.SPIGOT::name));
+
+            Pattern pattern = Pattern.compile("downloadSource:\\s*'([^']+)'");
+
+            // Create a matcher with the input string
+            Matcher matcher = pattern.matcher(pluginYml);
+
+            // Check if a match is found
+            if (matcher.find()) {
+                // Extract the downloadSource value from the first group
+                String downloadSource = matcher.group(1);
+
+                // Print the result
+                metrics.addCustomChart(new SimplePie("download_source", () -> downloadSource));
+            } else {
+                // Print a message if no match is found
+                metrics.addCustomChart(new SimplePie("download_source", () -> "unknown"));
+
+            }
 
             metrics.addCustomChart(new SimplePie("bungeecord",
                     () -> String.valueOf(getPluginInstance().getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
@@ -848,29 +874,7 @@ public final class Playtime {
 
     /**
      *
-     */
-    enum DownloadSource {
-        /**
-         * Spigot.org
-         */
-        SPIGOT,
-        /**
-         * curseforge
-         */
-        CURSE_FORGE,
-        /**
-         * github.com
-         */
-        GITHUB,
-        /**
-         * <a href="https://hangar.papermc.io/">...</a>
-         */
-        HANGAR,
-        /**
-         * modrinth.com
-         */
-        MODRINTH,
-    }
+
 
     /**
      * Small simple class to save the temporary data of a player.

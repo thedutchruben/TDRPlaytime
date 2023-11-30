@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the array of values
-values=("SPIGOT" "HANGAR" "CURSE_FORGE" "MODRITH")
+values=("SPIGOT" "HANGAR" "CURSE_FORGE" "MODRINTH")
 mvn install
 
 # Specify the path to your pom.xml file
@@ -23,8 +23,9 @@ for value in "${values[@]}"; do
     # Specify the path to the input JAR file
     INPUT_JAR="target/playtime-$version.jar"
 
+    mkdir -p target/$value
     # Specify the path to the output JAR file
-    OUTPUT_JAR="target/playtime-$version-$value.jar"
+    OUTPUT_JAR="target/$value/playtime-$version.jar"
 
     # Extract the contents of the JAR
     jar xf "$INPUT_JAR" plugin.yml

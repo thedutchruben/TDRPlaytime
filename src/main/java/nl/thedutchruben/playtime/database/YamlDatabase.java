@@ -130,7 +130,7 @@ public class YamlDatabase extends Storage {
         }
 
         String name = "";
-        if (sortHashMapByValues(hashMap).toArray()[place] != null) {
+        if (sortHashMapByValues(hashMap).toArray().length >= place + 1) {
             name = (String) sortHashMapByValues(hashMap).toArray()[place];
         }
         return name;
@@ -151,7 +151,7 @@ public class YamlDatabase extends Storage {
             }
         }
         String name = "";
-        if (sortHashMapByValues(hashMap).toArray()[place] != null) {
+        if (sortHashMapByValues(hashMap).toArray().length >= place + 1) {
             name = (String) sortHashMapByValues(hashMap).toArray()[place];
         }
         return name;
