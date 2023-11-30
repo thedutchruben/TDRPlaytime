@@ -1,4 +1,4 @@
-package nl.thedutchruben.playtime;
+package nl.thedutchruben.playtime.core;
 
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
