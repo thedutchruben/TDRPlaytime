@@ -9,7 +9,7 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
      */
     @Override
     public @NotNull String getIdentifier() {
-        return null;
+        return "tdrplaytime";
     }
 
     /**
@@ -17,7 +17,7 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
      */
     @Override
     public @NotNull String getAuthor() {
-        return null;
+        return "TheDutchRuben";
     }
 
     /**
@@ -25,6 +25,6 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
      */
     @Override
     public @NotNull String getVersion() {
-        return null;
+        return "1.0";
     }
 }

@@ -1,6 +1,6 @@
 name: TDRPlaytime
 version: ${project.version}
-main: nl.thedutchruben.playtime.PlaytimePlugin
+main: nl.thedutchruben.playtime.PlayTimePlugin
 api-version: 1.13
 downloadSource: 'GITHUB'
 authors: [ TheDutchRuben ]

@@ -2,11 +2,9 @@ package nl.thedutchruben.playtime.modules.player.runnables;
 
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
-import org.bukkit.Bukkit;
 
-import java.util.logging.Level;
+public class UpdatePlayTimeRunnable implements Runnable{
 
-public class SavePlayTimeRunnable implements Runnable{
     /**
      * When an object implementing interface {@code Runnable} is used
      * to create a thread, starting the thread causes the object's
@@ -20,11 +18,8 @@ public class SavePlayTimeRunnable implements Runnable{
      */
     @Override
     public void run() {
-        if(Playtime.getInstance().getPlaytimeUsers().isEmpty()) return;
-        Bukkit.getLogger().log(Level.INFO, "Saving playtime of all players");
         for (PlaytimeUser value : Playtime.getInstance().getPlaytimeUsers().values()) {
-            Playtime.getInstance().getStorage().saveUser(value);
+            value.updatePlaytime();
         }
-        Bukkit.getLogger().log(Level.INFO, "Saved playtime of all players");
     }
 }

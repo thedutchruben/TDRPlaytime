@@ -1,5 +1,6 @@
 package nl.thedutchruben.playtime.core;
 
+import lombok.Getter;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bukkit.plugin.Plugin;
@@ -22,12 +23,12 @@ public class DependencyLoader {
         List<Library> libraries = new ArrayList<>();
         for (Dependency dependency : Dependency.values()) {
             Library.Builder builder = Library.builder()
-                    .groupId(dependency.groupId) // "{}" is replaced with ".", useful to avoid unwanted changes made by maven-shade-plugin
-                    .artifactId(dependency.artifactID)
-                    .version(dependency.version);
+                    .groupId(dependency.getGroupId()) // "{}" is replaced with ".", useful to avoid unwanted changes made by maven-shade-plugin
+                    .artifactId(dependency.getArtifactID())
+                    .version(dependency.getVersion());
 
-            if (dependency.relocation != null) {
-                builder.relocate(dependency.groupId, dependency.relocation);
+            if (dependency.getRelocation() != null) {
+                builder.relocate(dependency.getGroupId(), dependency.getRelocation());
             }
             libraries.add(builder.build());
         }
@@ -39,13 +40,15 @@ public class DependencyLoader {
     }
 
 
+    @Getter
     private enum Dependency {
         BSON("org{}mongodb", "bson", "4.11.1", null),
         MONGODB("org{}mongodb", "mongodb-driver-sync", "4.11.1", null),
         MONGODB_CORE("org{}mongodb", "mongodb-driver-core", "4.11.1", null),
         MCCORE("nl{}thedutchruben", "mccore", "1.4.1", null),
         BSTATS("org{}bstats", "bstats-bukkit", "3.0.2", "nl{}thedutchruben{}playtime{}bstats"),
-        BSTATS_BASE("org{}bstats", "bstats-base", "3.0.2", "nl{}thedutchruben{}playtime{}bstats");
+        BSTATS_BASE("org{}bstats", "bstats-base", "3.0.2", "nl{}thedutchruben{}playtime{}bstats"),
+        HIKARI_CP("com{}zaxxer", "HikariCP", "5.1.0", null);
 
         public final String version;
         public final String relocation;

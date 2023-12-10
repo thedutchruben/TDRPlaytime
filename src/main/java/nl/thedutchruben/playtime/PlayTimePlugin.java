@@ -21,14 +21,14 @@ public class PlayTimePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-//        playtime = new Playtime(this);
-//        playtime.onEnable(this);
+        playtime = new Playtime(this);
+        playtime.onEnable(this);
     }
 
     @Override
     public void onDisable() {
         if (playtime != null) {
-//            playtime.onDisable();
+            playtime.onDisable();
         }
     }
 
