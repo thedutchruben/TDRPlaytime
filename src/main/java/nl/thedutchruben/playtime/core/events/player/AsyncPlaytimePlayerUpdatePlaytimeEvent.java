@@ -13,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public class AsyncPlaytimePlayerUpdatePlaytimeEvent extends Event {
     private final PlaytimeUser player;
-    private final long oldPlaytime;
-    private final long newPlaytime;
+    private final float oldPlaytime;
+    private final float newPlaytime;
     private static final HandlerList handlers = new HandlerList();
 
-    public AsyncPlaytimePlayerUpdatePlaytimeEvent(PlaytimeUser player, long oldPlaytime, long newPlaytime) {
+    public AsyncPlaytimePlayerUpdatePlaytimeEvent(PlaytimeUser player, float oldPlaytime, float newPlaytime) {
         super(true);
         this.player = player;
         this.oldPlaytime = oldPlaytime;

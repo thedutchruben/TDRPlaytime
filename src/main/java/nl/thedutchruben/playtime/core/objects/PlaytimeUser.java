@@ -12,7 +12,7 @@ public class PlaytimeUser {
     @SerializedName("_id")
     public String uuid;
     public String name;
-    public long time;
+    public float time;
     private transient long lastChecked;
 
 
@@ -34,15 +34,15 @@ public class PlaytimeUser {
         lastChecked = System.currentTimeMillis();
     }
 
-    public void addPlaytime(long time){
+    public void addPlaytime(float time){
         this.time = this.time + time;
     }
 
-    public void removePlaytime(long time){
+    public void removePlaytime(float time){
         this.time = this.time - time;
     }
 
-    public void setPlaytime(long time){
+    public void setPlaytime(float time){
         this.time = time;
     }
 
@@ -51,4 +51,16 @@ public class PlaytimeUser {
         return Bukkit.getPlayer(getUuid());
     }
 
+    public int[] translateTime() {
+        float tempTime = this.time;
+        tempTime = tempTime / 1000;
+        int days = (int) (tempTime / 86400);
+        tempTime = tempTime - days * 86400L;
+        int hours = (int) (tempTime / 3600);
+        tempTime = tempTime - hours * 3600L;
+        int minutes = (int) (time / 60);
+        tempTime = tempTime - minutes * 60L;
+        int seconds = (int) tempTime;
+        return new int[]{days, hours, minutes, seconds};
+    }
 }

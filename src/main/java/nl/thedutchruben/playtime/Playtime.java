@@ -21,10 +21,7 @@ import nl.thedutchruben.playtime.modules.player.runnables.UpdatePlayTimeRunnable
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Playtime {
 
@@ -109,8 +106,11 @@ public class Playtime {
      * @param uuid The uuid of the player
      * @return The playtime user
      */
-    public PlaytimeUser getPlaytimeUser(UUID uuid){
-        if(playtimeUsers.containsKey(uuid)) return playtimeUsers.get(uuid);
-        return storage.loadUser(uuid).join();
+    public Optional<PlaytimeUser> getPlaytimeUser(UUID uuid){
+        return Optional.of(playtimeUsers.get(uuid));
+    }
+
+    public Optional<PlaytimeUser> getPlaytimeUser(String name){
+        return playtimeUsers.values().stream().filter(item -> item.getName().equalsIgnoreCase(name)).findFirst();
     }
 }

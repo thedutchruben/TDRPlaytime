@@ -18,7 +18,7 @@ public class UpdatePlaytimeListener implements Listener {
             }
         });
 
-        for (long i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
+        for (float i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
             if (i > 0) {
                 for (RepeatingMilestone repeatingMilestone : Playtime.getInstance().getRepeatingMilestones()) {
                     if (i % (repeatingMilestone.getOnlineTime() * 1000) == 1) {

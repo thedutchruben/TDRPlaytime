@@ -79,6 +79,23 @@ public class Mongodb extends Storage {
     }
 
     /**
+     * Load user loaded by name
+     *
+     * @param name
+     * @return
+     */
+    @Override
+    public CompletableFuture<PlaytimeUser> loadUserByName(String name) {
+        return CompletableFuture.supplyAsync(() -> {
+            Document document = this.database.getCollection("playtime").find(new Document("name", name)).first();
+            if (document == null) {
+                return null;
+            }
+            return new PlaytimeUser(document.getString("uuid"),document.getString("name"),document.getLong("playtime"));
+        });
+    }
+
+    /**
      * Save the user to the storage
      *
      * @param playtimeUser The playtime user

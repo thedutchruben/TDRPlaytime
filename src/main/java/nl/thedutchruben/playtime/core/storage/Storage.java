@@ -52,6 +52,14 @@ public abstract class Storage {
 
     public abstract CompletableFuture<PlaytimeUser> loadUser(UUID uuid);
 
+
+    /**
+     * Load user loaded by name
+     * @param name
+     * @return
+     */
+    public abstract CompletableFuture<PlaytimeUser> loadUserByName(String name);
+
     /**
      * Save the user to the storage
      *

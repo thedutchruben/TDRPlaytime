@@ -101,6 +101,31 @@ public class SqlLite extends Storage {
     }
 
     /**
+     * Load user loaded by name
+     *
+     * @param name
+     * @return
+     */
+    @Override
+    public CompletableFuture<PlaytimeUser> loadUserByName(String name) {
+        return CompletableFuture.supplyAsync(() -> {
+
+            try (PreparedStatement preparedStatement = connection
+                    .prepareStatement("SELECT * FROM `playtime` WHERE `name` = ?")) {
+                preparedStatement.setString(1, name);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return new PlaytimeUser(resultSet.getString("uuid"),resultSet.getString("name"), resultSet.getLong("time"));
+                    }
+                }
+            } catch (SQLException sqlException) {
+                Playtime.getPlugin().getLogger().severe("Error while loading user from database: " + sqlException.getMessage());
+            }
+            return null;
+        });
+    }
+
+    /**
      * Save the user to the storage
      *
      * @param playtimeUser The playtime user
