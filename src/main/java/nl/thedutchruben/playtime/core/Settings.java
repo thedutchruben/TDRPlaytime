@@ -13,6 +13,7 @@ public enum Settings {
     AFK_COUNT_TIME("settings.afk.countAfkTime",true,1.0,"config.yml"),
     AFK_USE_ESSENTIALS_API("settings.afk.useEssentialsApi",false,1.0,"config.yml"),
     AFK_EVENTS_CHAT("settings.afk.events.chatResetAfkTime",true,1.0,"config.yml"),
+    TOP_10_PLACEHOLDER_CACHE_TIME("settings.top_10_placeholdler_cache_time",600,1.0,"config.yml"),
     STORAGE_TYPE("type","sqllite",1.0,"storage.yml");
 
     private final String path;
@@ -34,5 +35,9 @@ public enum Settings {
 
     public Object getValue(){
         return getConfig(this.fileName).get(path,defaultValue);
+    }
+
+    public Object getValueAsString(){
+        return getConfig(this.fileName).getString(path,(String)defaultValue);
     }
 }

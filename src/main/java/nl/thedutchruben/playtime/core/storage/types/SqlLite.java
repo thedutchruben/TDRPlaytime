@@ -71,7 +71,12 @@ public class SqlLite extends Storage {
      * Stops the storage such things as the database connection
      */
     @Override
-    public void stop() {
+    public void stop()  {
+        try {
+            this.connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         ds.close();
     }
 
@@ -137,8 +142,8 @@ public class SqlLite extends Storage {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE `playtime` SET `name` = ?, `time` = ? WHERE `uuid` = ?")) {
                 preparedStatement.setString(1, playtimeUser.getName());
-                preparedStatement.setLong(2, playtimeUser.getTime());
-                preparedStatement.setString(3, playtimeUser.getUuid());
+                preparedStatement.setFloat(2, playtimeUser.getTime());
+                preparedStatement.setString(3, playtimeUser.getUUID().toString());
                 preparedStatement.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {
@@ -159,9 +164,9 @@ public class SqlLite extends Storage {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO `playtime` (`uuid`, `name`, `time`) VALUES (?, ?, ?)")) {
-                preparedStatement.setString(1, playtimeUser.getUuid());
+                preparedStatement.setString(1, playtimeUser.getUUID().toString());
                 preparedStatement.setString(2, playtimeUser.getName());
-                preparedStatement.setLong(3, playtimeUser.getTime());
+                preparedStatement.setFloat(3, playtimeUser.getTime());
                 preparedStatement.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {

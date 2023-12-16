@@ -12,20 +12,25 @@ public class UpdatePlaytimeListener implements Listener {
 
     @EventHandler
     public void updatePlaytime(AsyncPlaytimePlayerUpdatePlaytimeEvent event){
-        Playtime.getInstance().getMilestones().forEach(milestone -> {
-            if(milestone.getOnlineTime() <= event.getNewPlaytime() && milestone.getOnlineTime() > event.getOldPlaytime()){
-               milestone.apply(event.getPlayer().getBukkitPlayer());
-            }
-        });
+        if(!Playtime.getInstance().getMilestones().isEmpty()){
+            Playtime.getInstance().getMilestones().forEach(milestone -> {
+                if(milestone.getOnlineTime() <= event.getNewPlaytime() && milestone.getOnlineTime() > event.getOldPlaytime()){
+                    milestone.apply(event.getPlayer().getBukkitPlayer());
+                }
+            });
+        }
 
-        for (float i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
-            if (i > 0) {
-                for (RepeatingMilestone repeatingMilestone : Playtime.getInstance().getRepeatingMilestones()) {
-                    if (i % (repeatingMilestone.getOnlineTime() * 1000) == 1) {
-                        repeatingMilestone.apply(event.getPlayer().getBukkitPlayer());
+        if(!Playtime.getInstance().getRepeatingMilestones().isEmpty()){
+            for (float i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
+                if (i > 0) {
+                    for (RepeatingMilestone repeatingMilestone : Playtime.getInstance().getRepeatingMilestones()) {
+                        if (i % (repeatingMilestone.getOnlineTime() * 1000) == 1) {
+                            repeatingMilestone.apply(event.getPlayer().getBukkitPlayer());
+                        }
                     }
                 }
             }
         }
+
     }
 }

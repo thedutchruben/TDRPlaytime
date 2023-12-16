@@ -104,10 +104,10 @@ public class Mongodb extends Storage {
     @Override
     public CompletableFuture<Boolean> saveUser(PlaytimeUser playtimeUser) {
         return CompletableFuture.supplyAsync(() -> {
-            Document document = new Document("uuid", playtimeUser.getUuid().toString())
+            Document document = new Document("uuid", playtimeUser.getUUID().toString())
                     .append("name", playtimeUser.getName())
                     .append("playtime", playtimeUser.getTime());
-            UpdateResult updateResult = this.database.getCollection("playtime").updateOne(new Document("uuid", playtimeUser.getUuid().toString()), new Document("$set", document));
+            UpdateResult updateResult = this.database.getCollection("playtime").updateOne(new Document("uuid", playtimeUser.getUUID().toString()), new Document("$set", document));
             return updateResult.wasAcknowledged();
         });
     }
@@ -122,7 +122,7 @@ public class Mongodb extends Storage {
     @Override
     public CompletableFuture<Boolean> createUser(PlaytimeUser playtimeUser) {
         return CompletableFuture.supplyAsync(() -> {
-            Document document = new Document("uuid", playtimeUser.getUuid().toString())
+            Document document = new Document("uuid", playtimeUser.getUUID().toString())
                     .append("name", playtimeUser.getName())
                     .append("playtime", playtimeUser.getTime());
             InsertOneResult result = this.database.getCollection("playtime").insertOne(document);

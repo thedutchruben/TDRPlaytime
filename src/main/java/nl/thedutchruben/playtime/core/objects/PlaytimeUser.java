@@ -2,9 +2,16 @@ package nl.thedutchruben.playtime.core.objects;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import nl.thedutchruben.playtime.PlayTimePlugin;
+import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.player.AsyncPlaytimePlayerUpdatePlaytimeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.sql.Time;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 public class PlaytimeUser {
@@ -30,16 +37,27 @@ public class PlaytimeUser {
 
     public void updatePlaytime(){
         time = time + (System.currentTimeMillis() - lastChecked);
-        Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this,time - (System.currentTimeMillis() - lastChecked),time));
+        Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),() -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this,time - (System.currentTimeMillis() - lastChecked),time)));
         lastChecked = System.currentTimeMillis();
     }
 
-    public void addPlaytime(float time){
-        this.time = this.time + time;
+    public UUID getUUID(){
+        return UUID.fromString(this.uuid);
     }
 
-    public void removePlaytime(float time){
-        this.time = this.time - time;
+    public void addPlaytime(float time, TimeUnit timeUnit){
+        this.time = this.time + timeUnit.toMillis((long) time);
+        lastChecked = System.currentTimeMillis();
+    }
+
+
+    public CompletableFuture<Boolean> save(){
+        return Playtime.getInstance().getStorage().saveUser(this);
+    }
+
+    public void removePlaytime(float time, TimeUnit timeUnit){
+        this.time = this.time - timeUnit.toMillis((long) time);
+        lastChecked = System.currentTimeMillis();
     }
 
     public void setPlaytime(float time){
@@ -48,7 +66,7 @@ public class PlaytimeUser {
 
 
     public Player getBukkitPlayer(){
-        return Bukkit.getPlayer(getUuid());
+        return Bukkit.getPlayer(getUUID());
     }
 
     public int[] translateTime() {
@@ -58,7 +76,7 @@ public class PlaytimeUser {
         tempTime = tempTime - days * 86400L;
         int hours = (int) (tempTime / 3600);
         tempTime = tempTime - hours * 3600L;
-        int minutes = (int) (time / 60);
+        int minutes = (int) (tempTime / 60);
         tempTime = tempTime - minutes * 60L;
         int seconds = (int) tempTime;
         return new int[]{days, hours, minutes, seconds};

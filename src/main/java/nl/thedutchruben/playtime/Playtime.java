@@ -16,9 +16,8 @@ import nl.thedutchruben.playtime.core.storage.types.SqlLite;
 import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.extentions.BStatsExtension;
 import nl.thedutchruben.playtime.extentions.PlaceholderAPIExtension;
-import nl.thedutchruben.playtime.modules.player.runnables.SavePlayTimeRunnable;
-import nl.thedutchruben.playtime.modules.player.runnables.UpdatePlayTimeRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -53,8 +52,8 @@ public class Playtime {
         instance = this;
         this.fileManager = new FileManager(plugin);
 
-        //setup the storage
-        this.storage = getStorage();
+        //set up the storage
+        this.storage = getSelectedStorage();
         this.storage.setup();
 
         // todo check if migration is needed
@@ -78,13 +77,20 @@ public class Playtime {
         this.storage.getMilestones().thenAccept(milestones -> this.milestones = milestones).join();
         this.storage.getRepeatingMilestones().thenAccept(repeatingMilestones -> this.repeatingMilestones = repeatingMilestones).join();
 
-        // Update the playtime every 15 seconds
-        Bukkit.getScheduler().runTaskTimerAsynchronously(playTimePlugin,new UpdatePlayTimeRunnable(), 20L * 15L, 20L * 15L);
-        // Save the playtime every 5 minutes
-        Bukkit.getScheduler().runTaskTimerAsynchronously(playTimePlugin,new SavePlayTimeRunnable(), 20L * 60L * 5L, 20L * 60L * 5L);
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            Playtime.getInstance().getStorage().loadUser(onlinePlayer.getUniqueId()).thenAccept(playtimeUser -> {
+                if(playtimeUser != null){
+                    Playtime.getInstance().getPlaytimeUsers().put(onlinePlayer.getUniqueId(),playtimeUser);
+                }else{
+                    PlaytimeUser playtimeUser1 = new PlaytimeUser(onlinePlayer.getUniqueId().toString(),onlinePlayer.getName());
+                    Playtime.getInstance().getStorage().createUser(playtimeUser1);
+                    Playtime.getInstance().getPlaytimeUsers().put(onlinePlayer.getUniqueId(),playtimeUser1);
+                }
+            });
+        }
     }
 
-    public Storage getStorage(){
+    public Storage getSelectedStorage(){
         String value = (String) Settings.STORAGE_TYPE.getValue();
         if (value.equals("mongodb")) {
             return new Mongodb();
@@ -110,6 +116,11 @@ public class Playtime {
         return Optional.of(playtimeUsers.get(uuid));
     }
 
+    /**
+     * Get a playtime user by name
+     * @param name The name of the player
+     * @return The playtime user if exist
+     */
     public Optional<PlaytimeUser> getPlaytimeUser(String name){
         return playtimeUsers.values().stream().filter(item -> item.getName().equalsIgnoreCase(name)).findFirst();
     }

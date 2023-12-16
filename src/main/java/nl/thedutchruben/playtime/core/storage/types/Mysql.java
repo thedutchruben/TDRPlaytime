@@ -23,7 +23,7 @@ public class Mysql extends Storage {
     private HikariDataSource ds;
     private Connection connection;
 
-    private String tablePrefix = "";
+    private final String tablePrefix = "";
     /**
      * Get the name of the storage type
      *
@@ -134,8 +134,8 @@ public class Mysql extends Storage {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE `" + tablePrefix + "playtime` SET `name` = ?, `time` = ? WHERE `uuid` = ?")) {
                 preparedStatement.setString(1, playtimeUser.getName());
-                preparedStatement.setLong(2, playtimeUser.getTime());
-                preparedStatement.setString(3, playtimeUser.getUuid());
+                preparedStatement.setFloat(2, playtimeUser.getTime());
+                preparedStatement.setString(3, playtimeUser.getUUID().toString());
                 preparedStatement.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {
@@ -156,9 +156,9 @@ public class Mysql extends Storage {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO `" + tablePrefix + "playtime` (`uuid`, `name`, `time`) VALUES (?, ?, ?)")) {
-                preparedStatement.setString(1, playtimeUser.getUuid());
+                preparedStatement.setString(1, playtimeUser.getUUID().toString());
                 preparedStatement.setString(2, playtimeUser.getName());
-                preparedStatement.setLong(3, playtimeUser.getTime());
+                preparedStatement.setFloat(3, playtimeUser.getTime());
                 preparedStatement.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {

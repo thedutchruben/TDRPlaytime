@@ -33,7 +33,7 @@ public abstract class Storage {
     public abstract String getName();
 
     /**
-     * Setup the storage such as the database connection
+     * Set up the storage such as the database connection
      */
     public abstract boolean setup();
 

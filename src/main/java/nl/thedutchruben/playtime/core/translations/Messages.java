@@ -15,8 +15,11 @@ public enum Messages {
 
 
     PLAYTIME_INFO_OWN("command.playtime.timemessage","&8[&6PlayTime&8] &7Your playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)"),
-    PLAYTIME_INFO_OTHER("playtime.info.other",""),
-    PLAYTIME_INFO_TO_PLAYER("playtime.info.to_player","");
+    PLAYTIME_INFO_OTHER("command.playtime.usertimemessage","&8[&6PlayTime&8] &7%NAME% ''s playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)"),
+    PLAYER_RESET_CONFIRM("command.playtime.resettimeconfirm",""),
+    PLAYER_DOES_NOT_EXIST("command.playtime.player_does_not_exist",""),
+    TIME_ADDED_TO_USER("command.playtime.timeadded",""),
+    TIME_REMOVED_FROM_USER("command.playtime.timeremoved","");
 
 
     private final String path;
@@ -34,12 +37,12 @@ public enum Messages {
      * @return
      */
     public String getMessage(Replacement... replacements){
-        YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig(Settings.LANGUAGE.getPath()).get();
+        YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/" + Settings.LANGUAGE.getValueAsString() + ".yml").get();
         if(!messages.containsKey(path)){
             messages.put(path,file.getString(path,fallBack));
         }
         String message = MessageUtil.translateHexColorCodes("<", ">",ChatColor.translateAlternateColorCodes('&',messages.get(path)));
-        for(Replacement replacement : replacements ){
+        for(Replacement replacement : replacements){
             message = message.replace(replacement.getFrom(),replacement.getTo());
         }
         return message;

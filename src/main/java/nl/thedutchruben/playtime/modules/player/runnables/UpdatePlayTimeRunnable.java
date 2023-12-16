@@ -1,8 +1,10 @@
 package nl.thedutchruben.playtime.modules.player.runnables;
 
+import nl.thedutchruben.mccore.spigot.runnables.ASyncRepeatingTask;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 
+@ASyncRepeatingTask(repeatTime = 300, startTime = 300)
 public class UpdatePlayTimeRunnable implements Runnable{
 
     /**
