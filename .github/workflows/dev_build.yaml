@@ -43,7 +43,7 @@ jobs:
         id: project
 
       - name: Upload Plugin jar
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Plugin-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
           path: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
