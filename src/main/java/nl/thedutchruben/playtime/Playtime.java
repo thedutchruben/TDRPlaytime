@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class Playtime {
 
@@ -61,9 +62,12 @@ public class Playtime {
             new FourteenToFiveteenMigration();
         }
 
+
+        Settings.setupDefaults();
+
         // Register the mc core
         mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
-        mccore.startUpdateChecker(new UpdateCheckerConfig("",60));
+        mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin",60));
 
         // Register the bstats
         new BStatsExtension().startBStats(playTimePlugin);
@@ -75,8 +79,10 @@ public class Playtime {
 
         // Load the messages
         this.storage.getMilestones().thenAccept(milestones -> this.milestones = milestones).join();
+        getPlugin().getLogger().log(Level.INFO,"Loaded {} milestones",this.milestones.size());
         this.storage.getRepeatingMilestones().thenAccept(repeatingMilestones -> this.repeatingMilestones = repeatingMilestones).join();
-
+        getPlugin().getLogger().log(Level.INFO,"Loaded {} repeatingmilestones",this.repeatingMilestones.size());
+        
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             Playtime.getInstance().getStorage().loadUser(onlinePlayer.getUniqueId()).thenAccept(playtimeUser -> {
                 if(playtimeUser != null){

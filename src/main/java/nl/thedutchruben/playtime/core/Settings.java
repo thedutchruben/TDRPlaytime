@@ -2,6 +2,7 @@ package nl.thedutchruben.playtime.core;
 
 
 import lombok.Getter;
+import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.Playtime;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -39,5 +40,20 @@ public enum Settings {
 
     public Object getValueAsString(){
         return getConfig(this.fileName).getString(path,(String)defaultValue);
+    }
+
+    /**
+     * Setup the default config
+     */
+    public static void setupDefaults(){
+        for (Settings value : Settings.values()) {
+            YamlConfiguration yamlConfiguration = Playtime.getInstance().getFileManager().getConfig(value.getFileName()).get();
+            yamlConfiguration.addDefault(value.getPath(),value.getValue());
+        }
+
+        for (FileManager.Config value : Playtime.getInstance().getFileManager().getConfigs().values()) {
+            value.copyDefaults(false);
+            value.saveDefaultConfig();
+        }
     }
 }

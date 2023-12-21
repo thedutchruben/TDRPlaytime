@@ -6,6 +6,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
@@ -18,31 +19,21 @@ public class BStatsExtension {
     public void startBStats(JavaPlugin plugin) {
         Metrics metrics = new Metrics(plugin, 9404);
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "PlaceholderAPI"));
-        }
+        String[] pluginNames = {"PlaceholderAPI", "HolographicDisplay", "DecentHolograms", "WorldGuard", "JoinAndQuitMessages"};
 
-        if (Bukkit.getPluginManager().getPlugin("HolographicDisplay") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "HolographicDisplay"));
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("DecentHolograms") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "DecentHolograms"));
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "WorldGuard"));
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("JoinAndQuitMessages") != null) {
-            metrics.addCustomChart(new SimplePie("addons_use", () -> "JoinAndQuitMessages"));
+        for (String pluginName : pluginNames) {
+            Plugin pl = Bukkit.getPluginManager().getPlugin(pluginName);
+            if (pl != null) {
+                metrics.addCustomChart(new SimplePie("addons_use", () -> pluginName));
+            }
         }
 
         try {
 
-            InputStream inputStream = plugin.getClass().getResourceAsStream("/plugin.yml");
-            byte[] buffer = inputStream != null ? new byte[inputStream.available()] : new byte[0];
-//            Objects.requireNonNull(inputStream).read(buffer);
+            byte[] buffer;
+            try (InputStream inputStream = plugin.getClass().getResourceAsStream("/plugin.yml")) {
+                buffer = inputStream != null ? new byte[inputStream.available()] : new byte[0];
+            }
             String pluginYml = new String(buffer);
 
 

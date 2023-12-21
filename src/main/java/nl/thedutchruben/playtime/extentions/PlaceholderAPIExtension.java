@@ -10,8 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
@@ -42,10 +41,30 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
 
 
     @Override
+    public @NotNull List<String> getPlaceholders() {
+        List<String> placeholders = new ArrayList<>();
+        placeholders.add("%tdrplaytime_time%");
+        placeholders.add("%tdrplaytime_time_days_number%");
+        placeholders.add("%tdrplaytime_time_hour_number%");
+        placeholders.add("%tdrplaytime_time_minutes_number%");
+        placeholders.add("%tdrplaytime_time%");
+        placeholders.add("%tdrplaytime_time_seconds_number%");
+        for(int i = 1; i <= 10; i++){
+            placeholders.add("%tdrplaytime_top_names_"+i+"%");
+            placeholders.add("%tdrplaytime_top_time_"+i+"_days%");
+            placeholders.add("%tdrplaytime_top_time_"+i+"_hours%");
+            placeholders.add("%tdrplaytime_top_time_"+i+"_minutes%");
+            placeholders.add("%tdrplaytime_top_time_"+i+"_seconds%");
+        }
+
+
+        return placeholders;
+    }
+
+    @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         String dummyProofParams = params.toLowerCase().replace('-','_');
         PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(player.getUniqueId());
-        user.updatePlaytime();
 
         // %tdrplaytime_time%
         if (dummyProofParams.equals("time")) {
@@ -57,13 +76,13 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
             );
         }
 
-        if ("days_number".equals(dummyProofParams)) {
+        if ("days_number".contains(dummyProofParams)) {
             return String.valueOf(user.translateTime()[0]);
-        } else if ("hour_number".equals(dummyProofParams)) {
+        } else if ("hour_number".contains(dummyProofParams)) {
             return String.valueOf(user.translateTime()[1]);
-        } else if ("minutes_number".equals(dummyProofParams)) {
+        } else if ("minutes_number".contains(dummyProofParams)) {
             return String.valueOf(user.translateTime()[2]);
-        } else if ("seconds_number".equals(dummyProofParams)) {
+        } else if ("seconds_number".contains(dummyProofParams)) {
             return String.valueOf(user.translateTime()[3]);
         }
 
@@ -130,4 +149,5 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
 
         return super.onPlaceholderRequest(player, params);
     }
+
 }

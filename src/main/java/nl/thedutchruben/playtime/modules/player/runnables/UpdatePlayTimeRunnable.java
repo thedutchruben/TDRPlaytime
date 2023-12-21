@@ -4,6 +4,9 @@ import nl.thedutchruben.mccore.spigot.runnables.ASyncRepeatingTask;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 
+/**
+ * Every 15 seconds the playtime will update for scoreboards and for getting the milestones
+ */
 @ASyncRepeatingTask(repeatTime = 300, startTime = 300)
 public class UpdatePlayTimeRunnable implements Runnable{
 
