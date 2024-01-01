@@ -2,9 +2,11 @@ package nl.thedutchruben.playtime.core.objects;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import lombok.Setter;
 import nl.thedutchruben.mccore.utils.firework.FireworkUtil;
 import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneReceiveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -21,7 +23,11 @@ public class Milestone {
      * The name of the milestone.
      * -- GETTER --
      * get the name of the milestone
+     * -- SETTER --
+     *  set the name of the milestone
+
      */
+    @Setter
     @Getter
     @SerializedName("_id")
     private String milestoneName;
@@ -29,7 +35,11 @@ public class Milestone {
      * The time the player has to be online to get the milestone
      * -- GETTER --
      * get the time the player has to be online to get the milestone
+     * -- SETTER --
+     *  set the time the player has to be online to get the milestone
+
      */
+    @Setter
     @Getter
     @SerializedName("online_time")
     private long onlineTime;
@@ -45,14 +55,22 @@ public class Milestone {
     private List<String> commands;
     /**
      * The list of messages to send
+     * -- SETTER --
+     *  set the list of messages to send
+
      */
+    @Setter
     @SerializedName("messages")
     private List<String> messages;
     /**
      * if there shall be a firework show
      * -- GETTER --
      * get if there is a firework show
+     * -- SETTER --
+     *  set if there is a firework show
+
      */
+    @Setter
     @Getter
     @SerializedName("firework_show")
     private boolean fireworkShow = false;
@@ -60,13 +78,21 @@ public class Milestone {
      * The amount of fireworks to spawn
      * -- GETTER --
      * get the amount of fireworks to spawn
+     * -- SETTER --
+     *  set the amount of fireworks to spawn
+
      */
+    @Setter
     @Getter
     @SerializedName("firework_show_amount")
     private int fireworkShowAmount = 1;
     /**
      * The seconds between the fireworks
+     * -- SETTER --
+     *  set the seconds between the fireworks
+
      */
+    @Setter
     @SerializedName("firework_show_seconds_between_firework")
     private int fireworkShowSecondsBetween = 0;
 
@@ -76,6 +102,7 @@ public class Milestone {
      * @param player The player to apply the milestone to
      */
     public void apply(Player player) {
+        Bukkit.getScheduler().runTask(Playtime.getPlugin(),() -> Bukkit.getPluginManager().callEvent(new MilestoneReceiveEvent(this,Playtime.getInstance().getPlaytimeUser(player.getUniqueId()).get())));
         if (itemStacks != null) {
             if (itemStackObjects == null) {
                 itemStackObjects = new ArrayList<>();
@@ -146,41 +173,6 @@ public class Milestone {
     }
 
     /**
-     * set the name of the milestone
-     */
-    public void setMilestoneName(String milestoneName) {
-        this.milestoneName = milestoneName;
-    }
-
-    /**
-     * set the time the player has to be online to get the milestone
-     */
-    public void setOnlineTime(long onlineTime) {
-        this.onlineTime = onlineTime;
-    }
-
-    /**
-     * set if there is a firework show
-     */
-    public void setFireworkShow(boolean fireworkShow) {
-        this.fireworkShow = fireworkShow;
-    }
-
-    /**
-     * set the amount of fireworks to spawn
-     */
-    public void setFireworkShowAmount(int fireworkShowAmount) {
-        this.fireworkShowAmount = fireworkShowAmount;
-    }
-
-    /**
-     * set the seconds between the fireworks
-     */
-    public void setFireworkShowSecondsBetween(int fireworkShowSecondsBetween) {
-        this.fireworkShowSecondsBetween = fireworkShowSecondsBetween;
-    }
-
-    /**
      * get the list of messages to send
      */
     public List<String> getMessages() {
@@ -190,10 +182,4 @@ public class Milestone {
         return messages;
     }
 
-    /**
-     * set the list of messages to send
-     */
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
-    }
 }

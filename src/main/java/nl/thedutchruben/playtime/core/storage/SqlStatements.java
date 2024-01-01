@@ -35,7 +35,7 @@ public class SqlStatements {
                     "`date` DATE NOT NULL , \n" +
                     "PRIMARY KEY (`id`)) ENGINE = InnoDB;");
         }else{
-            strings.add("CREATE TABLE IF NOT EXISTS \"playtime_history\" (\n" +
+            strings.add("CREATE TABLE IF NOT EXISTS \""+tablePrefix+"playtime_history\" (\n" +
                     "\t\"id\"\tINTEGER,\n" +
                     "\t\"uuid\"\tVARCHAR(40),\n" +
                     "\t\"start_time\"\tBIGINT,\n" +

@@ -1,18 +1,20 @@
 package nl.thedutchruben.playtime.core.events.player;
 
 import lombok.Getter;
+import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-@Getter
-public class PlaytimePlayerLoadedEvent extends Event {
-    private final PlaytimeUser player;
-
+public abstract class PlaytimePlayerEvent extends Event {
+    @Getter
+    private PlaytimeUser user;
     private static final HandlerList handlers = new HandlerList();
 
-    public PlaytimePlayerLoadedEvent(PlaytimeUser player) {
-        this.player = player;
+
+    public PlaytimePlayerEvent(PlaytimeUser user,boolean async) {
+        super(async);
+        this.user = user;
     }
 
     @Override

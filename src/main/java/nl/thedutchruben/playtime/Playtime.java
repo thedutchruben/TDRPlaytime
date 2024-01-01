@@ -23,25 +23,57 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 import java.util.logging.Level;
 
+/**
+ * Tdrplaytime is the playtime plugin you need to track the time of your players
+ * and reward them for beeing online
+ */
 public class Playtime {
 
+    /**
+     * Instance of playtime
+     */
     @Getter
     private static Playtime instance;
+
+    /**
+     * Instance of the JavaPlugin
+     */
     @Getter
     private static JavaPlugin plugin;
 
+    /**
+     * Instance of the core
+     */
     @Getter
     private Mccore mccore;
 
+    /**
+     * Instance of the FileManager
+     */
     @Getter
     private FileManager fileManager;
 
+    /**
+     * Cache of the PlaytimeUsers
+     */
     @Getter
     public Map<UUID, PlaytimeUser> playtimeUsers = new HashMap<>();
+
+    /**
+     * The selected storage method
+     */
     @Getter
     public Storage storage;
+
+    /**
+     * Cache of the Milestones
+     */
     @Getter
     public List<Milestone> milestones;
+
+    /**
+     * Cache of the RepeatingMilestones
+     */
     @Getter
     public List<RepeatingMilestone> repeatingMilestones;
 
@@ -68,7 +100,7 @@ public class Playtime {
         // Register the mc core
         mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
         mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin",60));
-
+        mccore.registerCompleters();
         // Register the bstats
         new BStatsExtension().startBStats(playTimePlugin);
 

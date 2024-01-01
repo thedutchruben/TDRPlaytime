@@ -1,6 +1,7 @@
 package nl.thedutchruben.playtime.core.objects;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
 import nl.thedutchruben.mccore.utils.firework.FireworkUtil;
 import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
@@ -41,6 +42,7 @@ public class RepeatingMilestone {
     private int fireworkShowAmount = 1;
     @SerializedName("firework_show_seconds_between_firework")
     private int fireworkShowSecondsBetween = 0;
+    @Getter
     @SerializedName("normal_milestone_override_me")
     private boolean overrideMe = false;
     @SerializedName("messages")
@@ -180,10 +182,6 @@ public class RepeatingMilestone {
 
     public void setFireworkShowSecondsBetween(int fireworkShowSecondsBetween) {
         this.fireworkShowSecondsBetween = fireworkShowSecondsBetween;
-    }
-
-    public boolean isOverrideMe() {
-        return overrideMe;
     }
 
     public void setOverrideMe(boolean overrideMe) {
