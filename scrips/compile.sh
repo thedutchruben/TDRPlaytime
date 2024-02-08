@@ -21,20 +21,20 @@ for value in "${values[@]}"; do
     OLD_WORD="GITHUB"
 
     # Specify the path to the input JAR file
-    INPUT_JAR="target/playtime-$version.jar"
+    INPUT_JAR="target/TDRPlaytime-$version.jar"
 
     mkdir -p target/$value
     # Specify the path to the output JAR file
     OUTPUT_JAR="target/$value/playtime-$version.jar"
 
     # Extract the contents of the JAR
-    jar xf "$INPUT_JAR" plugin.yml
+    jar xf "$INPUT_JAR"  -C tmp
 
     # Replace the word in the plugin.yml file
-    sed -i "s/$OLD_WORD/$value/g" plugin.yml
+    sed -i "s/$OLD_WORD/$value/g" "tmp/plugin.yml"
 
     # Package the modified files back into a JAR
-    jar cf "$OUTPUT_JAR" plugin.yml
+    jar cf "$OUTPUT_JAR" -C tmp
 
     # Clean up temporary files
     rm plugin.yml
