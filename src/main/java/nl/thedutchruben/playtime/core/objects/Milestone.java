@@ -110,21 +110,17 @@ public class Milestone {
                     itemStackObjects.add(ItemStack.deserialize(itemStack));
                 }
             }
-            for (ItemStack itemStack : itemStackObjects) {
-                player.getInventory().addItem(itemStack);
+            if(!itemStackObjects.isEmpty()){
+                Bukkit.getScheduler().runTask(Playtime.getPlugin(),() -> player.getInventory().addItem(itemStackObjects.toArray(ItemStack[]::new)));
             }
         }
 
         if (commands != null) {
-            Bukkit.getScheduler().runTask(Playtime.getPlugin(), () -> {
-                for (String command : commands) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                            command.replaceAll("%playername%", player.getName())
-                                    .replaceAll("%player_name%", player.getName())
-                                    .replaceAll("%playeruuid%", player.getUniqueId().toString())
-                                    .replaceAll("%player_uuid%", player.getUniqueId().toString()));
-                }
-            });
+            Bukkit.getScheduler().runTask(Playtime.getPlugin(), () -> commands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                    command.replaceAll("%playername%", player.getName())
+                            .replaceAll("%player_name%", player.getName())
+                            .replaceAll("%playeruuid%", player.getUniqueId().toString())
+                            .replaceAll("%player_uuid%", player.getUniqueId().toString()))));
         }
 
         if (messages != null) {
@@ -137,9 +133,7 @@ public class Milestone {
         if (fireworkShow) {
             Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(), () -> {
                 for (int i = 0; i < fireworkShowAmount; i++) {
-                    Bukkit.getScheduler().runTask(Playtime.getPlugin(), () -> {
-                        FireworkUtil.spawnRandomFirework(player.getLocation());
-                    });
+                    Bukkit.getScheduler().runTask(Playtime.getPlugin(), () -> FireworkUtil.spawnRandomFirework(player.getLocation()));
                     try {
                         Thread.sleep(fireworkShowSecondsBetween * 1000L);
                     } catch (InterruptedException e) {
