@@ -226,33 +226,31 @@ public class PlayTimeCommand {
             playtimeUser.save().thenAcceptAsync(test -> {
                 commandSender.sendMessage( Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%",playerName)));
             });
-        },() -> {
-            Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(playtimeUser -> {
-                if(timeMap.isEmpty()){
-                    playtimeUser.removePlaytime(Float.parseFloat(time), TimeUnit.SECONDS);
-                }else{
-                    timeMap.forEach((s, integer) -> {
-                        switch (s.toUpperCase(Locale.ROOT)){
-                            case "S":
-                                playtimeUser.removePlaytime(integer, TimeUnit.SECONDS);
-                                break;
-                            case "M":
-                                playtimeUser.removePlaytime(integer, TimeUnit.MINUTES);
-                                break;
-                            case "H":
-                                playtimeUser.removePlaytime(integer, TimeUnit.HOURS);
-                                break;
-                            case "D":
-                                playtimeUser.removePlaytime(integer, TimeUnit.DAYS);
-                                break;
-                        }
-                    });
-                }
-                playtimeUser.save().thenAcceptAsync(test -> {
-                    commandSender.sendMessage( Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%",playerName)));
+        },() -> Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(playtimeUser -> {
+            if(timeMap.isEmpty()){
+                playtimeUser.removePlaytime(Float.parseFloat(time), TimeUnit.SECONDS);
+            }else{
+                timeMap.forEach((s, integer) -> {
+                    switch (s.toUpperCase(Locale.ROOT)){
+                        case "S":
+                            playtimeUser.removePlaytime(integer, TimeUnit.SECONDS);
+                            break;
+                        case "M":
+                            playtimeUser.removePlaytime(integer, TimeUnit.MINUTES);
+                            break;
+                        case "H":
+                            playtimeUser.removePlaytime(integer, TimeUnit.HOURS);
+                            break;
+                        case "D":
+                            playtimeUser.removePlaytime(integer, TimeUnit.DAYS);
+                            break;
+                    }
                 });
+            }
+            playtimeUser.save().thenAcceptAsync(test -> {
+                commandSender.sendMessage( Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%",playerName)));
             });
-        });
+        }));
     }
 
     @SubCommand(subCommand = "pluginInfo", permission = "playtime.playtime.pluginInfo", console = true, description = "Show info about the plugin")
