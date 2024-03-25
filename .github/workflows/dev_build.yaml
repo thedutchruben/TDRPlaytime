@@ -20,7 +20,7 @@ jobs:
 
       - name: Debug
         run: echo ${{ env.BRANCH_NAME }}
-      - uses: actions/checkout@v4.1.2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
