@@ -13,4 +13,5 @@ nl.thedutchruben.playtime.modules.milestones.listeners
 nl.thedutchruben.playtime.modules.player.commands
 nl.thedutchruben.playtime.modules.player.listeners
 nl.thedutchruben.playtime.modules.player.runnables
+nl.thedutchruben.playtime.modules.playtime_history.listeners
 nl.thedutchruben.playtime.utils
