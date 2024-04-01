@@ -143,6 +143,9 @@ public class PlayTimeCommand {
                         case "D":
                             playtimeUser.addPlaytime(integer, TimeUnit.DAYS);
                             break;
+                        case "W":
+                            playtimeUser.addPlaytime(integer * 7, TimeUnit.DAYS);
+                            break;
                     }
                 });
             }
@@ -167,6 +170,9 @@ public class PlayTimeCommand {
                                 break;
                             case "D":
                                 playtimeUser.addPlaytime(integer, TimeUnit.DAYS);
+                                break;
+                            case "W":
+                                playtimeUser.addPlaytime(integer * 7, TimeUnit.DAYS);
                                 break;
                         }
                     });
@@ -220,6 +226,9 @@ public class PlayTimeCommand {
                         case "D":
                             playtimeUser.removePlaytime(integer, TimeUnit.DAYS);
                             break;
+                        case "W":
+                            playtimeUser.removePlaytime(integer * 7, TimeUnit.DAYS);
+                            break;
                     }
                 });
             }
@@ -243,6 +252,9 @@ public class PlayTimeCommand {
                             break;
                         case "D":
                             playtimeUser.removePlaytime(integer, TimeUnit.DAYS);
+                            break;
+                        case "W":
+                            playtimeUser.removePlaytime(integer * 7, TimeUnit.DAYS);
                             break;
                     }
                 });

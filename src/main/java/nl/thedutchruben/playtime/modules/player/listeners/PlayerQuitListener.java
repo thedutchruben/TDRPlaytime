@@ -18,9 +18,9 @@ public class PlayerQuitListener implements Listener {
         Bukkit.getPluginManager().callEvent(new PlaytimePlayerSaveEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId())));
         Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),() -> {
             Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()).updatePlaytime();
-            Playtime.getInstance().getStorage().saveUser(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId())).thenAccept(aBoolean -> {
+            Playtime.getInstance().getStorage().saveUser(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId())).thenAcceptAsync(aBoolean -> {
                 if(aBoolean){
-                    Bukkit.getPluginManager().callEvent(new PlaytimePlayerUnLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()),false));
+                    Bukkit.getPluginManager().callEvent(new PlaytimePlayerUnLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()),true));
                     Playtime.getInstance().getPlaytimeUsers().remove(event.getPlayer().getUniqueId());
                 }else{
                     Playtime.getPlugin().getLogger().warning("Could not save the user " + event.getPlayer().getName() + " to the storage");

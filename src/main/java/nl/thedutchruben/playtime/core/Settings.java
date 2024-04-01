@@ -25,6 +25,9 @@ public enum Settings {
     STORAGE_MYSQL_PASSWORD("mysql.password","password",1.0,"storage.yml"),
     STORAGE_MYSQL_SSL("mysql.ssl",true,1.0,"storage.yml"),
     STORAGE_MYSQL_SCHEMA("mysql.schema","playtime",1.0,"storage.yml"),
+    STORAGE_MYSQL_PREFIX("mysql.prefix","",1.0,"storage.yml"),
+    STORAGE_MYSQL_POOL("mysql.pool",20,1.0,"storage.yml"),
+    STORAGE_MYSQL_DRIVER("mysql.driver","jdbc:mysql://",1.0,"storage.yml"),
 
     STORAGE_MONGO_HOST("mongo.hostname","localhost",1.0,"storage.yml"),
     STORAGE_MONGO_PORT("mongo.port",27017,1.0,"storage.yml"),
@@ -73,12 +76,8 @@ public enum Settings {
         for (Settings value : Settings.values()) {
             YamlConfiguration yamlConfiguration = Playtime.getInstance().getFileManager().getConfig(value.getFileName()).get();
             if(yamlConfiguration.get(value.getPath()) == null){
-                yamlConfiguration.set(value.getPath(),value.getValue());
-                try {
-                    yamlConfiguration.save(value.getFileName());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                yamlConfiguration.set(value.getPath(),value.getDefaultValue());
+                Playtime.getInstance().getFileManager().getConfig(value.getFileName()).save();
             }
         }
 

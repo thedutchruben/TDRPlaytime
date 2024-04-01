@@ -274,4 +274,9 @@ public class Mongodb extends Storage {
             return insertOneResult.wasAcknowledged();
         });
     }
+
+    @Override
+    public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
+        return null;
+    }
 }

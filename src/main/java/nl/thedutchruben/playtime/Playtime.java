@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 /**
@@ -81,9 +82,11 @@ public class Playtime {
         plugin = playTimePlugin;
     }
 
-    public void onEnable(JavaPlugin playTimePlugin){
+    public void onEnable(JavaPlugin playTimePlugin)  {
         instance = this;
         this.fileManager = new FileManager(plugin);
+
+        Settings.setupDefaults();
 
         //set up the storage
         this.storage = getSelectedStorage();
@@ -94,15 +97,12 @@ public class Playtime {
             new FourteenToFiveteenMigration();
         }
 
-
-        Settings.setupDefaults();
-
         // Register the mc core
         mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
         if(Settings.UPDATE_CHECK.getValueAsBoolean()){
             mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin",60));
-
         }
+
         mccore.registerCompleters();
         // Register the bstats
         new BStatsExtension().startBStats(playTimePlugin);

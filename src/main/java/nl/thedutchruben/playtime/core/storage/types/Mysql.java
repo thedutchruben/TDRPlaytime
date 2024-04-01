@@ -15,16 +15,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Mysql extends Storage {
     private HikariDataSource ds;
     private Connection connection;
 
-    private final String tablePrefix = "";
+    private String tablePrefix = "";
     /**
      * Get the name of the storage type
      *
@@ -40,12 +42,14 @@ public class Mysql extends Storage {
      */
     @Override
     public boolean setup() {
+        this.tablePrefix = Settings.STORAGE_MYSQL_PREFIX.getValueAsString();
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mariadb://" + Settings.STORAGE_MYSQL_HOST.getValueAsString() + ":" + Settings.STORAGE_MYSQL_PORT.getValueAsInteger() + "/" + Settings.STORAGE_MYSQL_SCHEMA.getValueAsString());
+        config.setJdbcUrl(Settings.STORAGE_MYSQL_DRIVER.getValueAsString() + Settings.STORAGE_MYSQL_HOST.getValueAsString() + ":" + Settings.STORAGE_MYSQL_PORT.getValueAsInteger() + "/" + Settings.STORAGE_MYSQL_SCHEMA.getValueAsString());
         config.setConnectionTestQuery("SELECT 1");
         config.setUsername(Settings.STORAGE_MYSQL_USERNAME.getValueAsString());
         config.setPassword(Settings.STORAGE_MYSQL_PASSWORD.getValueAsString());
-        config.setMaximumPoolSize(Integer.MAX_VALUE);
+        config.setMaximumPoolSize(Settings.STORAGE_MYSQL_POOL.getValueAsInteger());
+
         config.setPoolName("PlaytimePool");
         config.addDataSourceProperty("useSSl", (Settings.STORAGE_MYSQL_SSL.getValueAsBoolean()));
         ds = new HikariDataSource(config);
@@ -55,7 +59,7 @@ public class Mysql extends Storage {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for(String statement : SqlStatements.getStatements("",true)){
+        for(String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(),true)){
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             } catch (SQLException sqlException) {
@@ -281,7 +285,7 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> deleteMilestone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("DELETE FROM `" + tablePrefix + "milestones` WHERE `name`=?")) {
+                    .prepareStatement("DELETE FROM " + getTableName("milestones") + " WHERE `name`=?")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
                 preparedStatement.executeUpdate();
                 return true;
@@ -302,7 +306,7 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> updateMilestone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE `" + tablePrefix + "milestones` SET `data`=? WHERE `name`=?")) {
+                    .prepareStatement("UPDATE " + getTableName("milestones") + " SET `data`=? WHERE `name`=?")) {
                 preparedStatement.setString(1, getGson().toJson(milestone));
                 preparedStatement.setString(2, milestone.getMilestoneName());
                 preparedStatement.executeUpdate();
@@ -323,7 +327,7 @@ public class Mysql extends Storage {
     public CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones() {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("SELECT * FROM `" + tablePrefix + "repeating_milestones`")) {
+                    .prepareStatement("SELECT * FROM " + getTableName("repeating_milestones"))) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     List<RepeatingMilestone> repeatingMilestones = new ArrayList<>();
                     while (resultSet.next()) {
@@ -348,7 +352,7 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> saveRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement( "INSERT INTO `" + tablePrefix + "repeating_milestones`(`name`, `data`) VALUES (?,?)")) {
+                    .prepareStatement( "INSERT INTO " + getTableName("repeating_milestones") + "`(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, repeatingMilestone.getMilestoneName());
                 preparedStatement.setString(2, getGson().toJson(repeatingMilestone));
                 preparedStatement.executeUpdate();
@@ -370,7 +374,7 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> deleteRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("DELETE FROM `" + tablePrefix + "repeating_milestones` WHERE `name`=?")) {
+                    .prepareStatement("DELETE FROM " + getTableName("repeating_milestones") + " WHERE `name`=?")) {
                 preparedStatement.setString(1, repeatingMilestone.getMilestoneName());
                 preparedStatement.executeUpdate();
                 return true;
@@ -391,7 +395,7 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> updateRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE `" + tablePrefix + "repeating_milestones` SET `data`=? WHERE `name`=?")) {
+                    .prepareStatement("UPDATE " + getTableName("repeating_milestones") + " SET `data`=? WHERE `name`=?")) {
                 preparedStatement.setString(1, getGson().toJson(repeatingMilestone));
                 preparedStatement.setString(2, repeatingMilestone.getMilestoneName());
                 preparedStatement.executeUpdate();
@@ -401,5 +405,57 @@ public class Mysql extends Storage {
             }
             return false;
         });
+    }
+
+    @Override
+    public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
+        return CompletableFuture.supplyAsync(() -> {
+            Calendar date = new GregorianCalendar();
+            date.set(Calendar.HOUR_OF_DAY, 0);
+            date.set(Calendar.MINUTE, 0);
+            date.set(Calendar.SECOND, 0);
+            date.set(Calendar.MILLISECOND, 0);
+            java.sql.Date sqlDate = new java.sql.Date(date.getTimeInMillis());
+
+            try {
+                if (event == Event.JOIN) {
+                    if (!playtimeRecordExists(uuid, sqlDate)) {
+                        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                                "INSERT INTO " + getTableName("playtime_history") + " (`uuid`, `start_time`, `end_time`, `date`) VALUES (?, ?, ?, ?)")) {
+                            preparedStatement.setString(1, uuid.toString());
+                            preparedStatement.setInt(2, time);
+                            preparedStatement.setInt(3, time);
+                            preparedStatement.setDate(4, sqlDate);
+                            preparedStatement.executeUpdate();
+                            return true;
+                        }
+                    }
+                } else {
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(
+                            "UPDATE " + getTableName("playtime_history") + " SET `end_time` = ? WHERE `uuid` = ? AND `date` = ?")) {
+                        preparedStatement.setInt(1, time);
+                        preparedStatement.setString(2, uuid.toString());
+                        preparedStatement.setDate(3, sqlDate);
+
+                        preparedStatement.executeUpdate();
+                        return true;
+                    }
+                }
+            } catch (SQLException sqlException) {
+                Playtime.getPlugin().getLogger().severe("Error while updating playtime history: " + sqlException.getMessage());
+            }
+            return false;
+        });
+    }
+
+    private boolean playtimeRecordExists(UUID uuid, java.sql.Date date) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM " + getTableName("playtime_history") + " WHERE `uuid` = ? AND `date` = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setDate(2, date);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
     }
 }
