@@ -405,4 +405,12 @@ public class SqlLite extends Storage {
             return false;
         });
     }
+
+    @Override
+    public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid,Event event, int time) {
+        return CompletableFuture.supplyAsync(() -> {
+
+            return true;
+        });
+    }
 }

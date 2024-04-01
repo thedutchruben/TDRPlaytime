@@ -144,8 +144,15 @@ public abstract class Storage {
      */
     public abstract CompletableFuture<Boolean> updateRepeatingMilestone(RepeatingMilestone repeatingMilestone);
 
+    public abstract CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid,Event event, int time);
+
 
     public Gson getGson() {
         return gson;
+    }
+
+    public enum Event {
+        JOIN,
+        QUIT
     }
 }

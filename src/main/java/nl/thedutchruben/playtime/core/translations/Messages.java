@@ -37,7 +37,7 @@ public enum Messages {
      * @return
      */
     public String getMessage(Replacement... replacements){
-        YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/" + Settings.LANGUAGE.getValueAsString() + ".yml").get();
+        YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").get();
         if(!messages.containsKey(path)){
             messages.put(path,file.getString(path,fallBack));
         }

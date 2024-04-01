@@ -99,7 +99,10 @@ public class Playtime {
 
         // Register the mc core
         mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
-        mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin",60));
+        if(Settings.UPDATE_CHECK.getValueAsBoolean()){
+            mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin",60));
+
+        }
         mccore.registerCompleters();
         // Register the bstats
         new BStatsExtension().startBStats(playTimePlugin);
@@ -111,9 +114,9 @@ public class Playtime {
 
         // Load the messages
         this.storage.getMilestones().thenAccept(milestones -> this.milestones = milestones).join();
-        getPlugin().getLogger().log(Level.INFO,"Loaded {} milestones",this.milestones.size());
+        getPlugin().getLogger().log(Level.INFO,"Loaded {0} milestones",this.milestones.size());
         this.storage.getRepeatingMilestones().thenAccept(repeatingMilestones -> this.repeatingMilestones = repeatingMilestones).join();
-        getPlugin().getLogger().log(Level.INFO,"Loaded {} repeatingmilestones",this.repeatingMilestones.size());
+        getPlugin().getLogger().log(Level.INFO,"Loaded {0} repeatingmilestones",this.repeatingMilestones.size());
         
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             Playtime.getInstance().getStorage().loadUser(onlinePlayer.getUniqueId()).thenAccept(playtimeUser -> {

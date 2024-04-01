@@ -4,6 +4,7 @@ package nl.thedutchruben.playtime.modules.player.listeners;
 import nl.thedutchruben.mccore.spigot.listeners.TDRListener;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.player.PlaytimePlayerSaveEvent;
+import nl.thedutchruben.playtime.core.events.player.PlaytimePlayerUnLoadedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +20,7 @@ public class PlayerQuitListener implements Listener {
             Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()).updatePlaytime();
             Playtime.getInstance().getStorage().saveUser(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId())).thenAccept(aBoolean -> {
                 if(aBoolean){
+                    Bukkit.getPluginManager().callEvent(new PlaytimePlayerUnLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()),false));
                     Playtime.getInstance().getPlaytimeUsers().remove(event.getPlayer().getUniqueId());
                 }else{
                     Playtime.getPlugin().getLogger().warning("Could not save the user " + event.getPlayer().getName() + " to the storage");

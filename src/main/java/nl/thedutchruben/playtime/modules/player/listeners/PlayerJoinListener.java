@@ -24,7 +24,7 @@ public class PlayerJoinListener  implements Listener{
                 Playtime.getInstance().getStorage().createUser(playtimeUser1);
                 Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(),playtimeUser1);
             }
-            Bukkit.getPluginManager().callEvent(new PlaytimePlayerLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId())));
+            Bukkit.getPluginManager().callEvent(new PlaytimePlayerLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()),false));
         });
     }
 }

@@ -23,10 +23,10 @@ public class SavePlayTimeRunnable implements Runnable{
     @Override
     public void run() {
         if(Playtime.getInstance().getPlaytimeUsers().isEmpty()) return;
-        Playtime.getPlugin().getLogger().log(Level.INFO, "Saving playtime of all players");
+        Playtime.getPlugin().getLogger().log(Level.INFO, "Saving playtime...");
         for (PlaytimeUser value : Playtime.getInstance().getPlaytimeUsers().values()) {
             Playtime.getInstance().getStorage().saveUser(value);
         }
-        Playtime.getPlugin().getLogger().log(Level.INFO, "Saved playtime of all players");
+        Playtime.getPlugin().getLogger().log(Level.INFO, "Saved playtime of {0} players",Playtime.getInstance().getPlaytimeUsers().size());
     }
 }
