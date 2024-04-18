@@ -23,8 +23,8 @@ public class UpdatePlayTimeRunnable implements Runnable{
      */
     @Override
     public void run() {
-        for (PlaytimeUser value : Playtime.getInstance().getPlaytimeUsers().values()) {
-            value.updatePlaytime();
+        for (PlaytimeUser playtimeUser : Playtime.getInstance().getPlaytimeUsers().values()) {
+            playtimeUser.updatePlaytime();
         }
     }
 }

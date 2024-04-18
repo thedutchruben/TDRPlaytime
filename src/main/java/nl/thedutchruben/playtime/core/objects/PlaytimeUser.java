@@ -45,8 +45,8 @@ public class PlaytimeUser {
         return UUID.fromString(this.uuid);
     }
 
-    public void addPlaytime(float time, TimeUnit timeUnit){
-        this.time = this.time + timeUnit.toMillis((long) time);
+    public void addPlaytime(long time, TimeUnit timeUnit){
+        this.time = this.time + timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
 
@@ -55,8 +55,8 @@ public class PlaytimeUser {
         return Playtime.getInstance().getStorage().saveUser(this);
     }
 
-    public void removePlaytime(float time, TimeUnit timeUnit){
-        this.time = this.time - timeUnit.toMillis((long) time);
+    public void removePlaytime(long time, TimeUnit timeUnit){
+        this.time = this.time - timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
 

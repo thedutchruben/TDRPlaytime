@@ -127,7 +127,7 @@ public class PlayTimeCommand {
 
        Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(playtimeUser -> {
             if(timeMap.isEmpty()){
-                playtimeUser.addPlaytime(Float.parseFloat(time), TimeUnit.SECONDS);
+                playtimeUser.addPlaytime(Long.parseLong(time), TimeUnit.SECONDS);
             }else{
                 timeMap.forEach((s, integer) -> {
                     switch (s.toUpperCase(Locale.ROOT)){
@@ -144,7 +144,7 @@ public class PlayTimeCommand {
                             playtimeUser.addPlaytime(integer, TimeUnit.DAYS);
                             break;
                         case "W":
-                            playtimeUser.addPlaytime(integer * 7, TimeUnit.DAYS);
+                            playtimeUser.addPlaytime(integer * 7L, TimeUnit.DAYS);
                             break;
                     }
                 });
@@ -155,7 +155,7 @@ public class PlayTimeCommand {
        },() -> {
             Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(playtimeUser -> {
                 if(timeMap.isEmpty()){
-                    playtimeUser.addPlaytime(Float.parseFloat(time), TimeUnit.SECONDS);
+                    playtimeUser.addPlaytime(Long.parseLong(time), TimeUnit.SECONDS);
                 }else{
                     timeMap.forEach((s, integer) -> {
                         switch (s.toUpperCase(Locale.ROOT)){
@@ -172,7 +172,7 @@ public class PlayTimeCommand {
                                 playtimeUser.addPlaytime(integer, TimeUnit.DAYS);
                                 break;
                             case "W":
-                                playtimeUser.addPlaytime(integer * 7, TimeUnit.DAYS);
+                                playtimeUser.addPlaytime(integer * 7L, TimeUnit.DAYS);
                                 break;
                         }
                     });
@@ -210,7 +210,7 @@ public class PlayTimeCommand {
 
         Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(playtimeUser -> {
             if(timeMap.isEmpty()){
-                playtimeUser.removePlaytime(Float.parseFloat(time), TimeUnit.SECONDS);
+                playtimeUser.removePlaytime(Long.parseLong(time), TimeUnit.SECONDS);
             }else{
                 timeMap.forEach((s, integer) -> {
                     switch (s.toUpperCase(Locale.ROOT)){
@@ -227,7 +227,7 @@ public class PlayTimeCommand {
                             playtimeUser.removePlaytime(integer, TimeUnit.DAYS);
                             break;
                         case "W":
-                            playtimeUser.removePlaytime(integer * 7, TimeUnit.DAYS);
+                            playtimeUser.removePlaytime(integer * 7L, TimeUnit.DAYS);
                             break;
                     }
                 });
@@ -237,7 +237,7 @@ public class PlayTimeCommand {
             });
         },() -> Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(playtimeUser -> {
             if(timeMap.isEmpty()){
-                playtimeUser.removePlaytime(Float.parseFloat(time), TimeUnit.SECONDS);
+                playtimeUser.removePlaytime(Long.parseLong(time), TimeUnit.SECONDS);
             }else{
                 timeMap.forEach((s, integer) -> {
                     switch (s.toUpperCase(Locale.ROOT)){
@@ -254,7 +254,7 @@ public class PlayTimeCommand {
                             playtimeUser.removePlaytime(integer, TimeUnit.DAYS);
                             break;
                         case "W":
-                            playtimeUser.removePlaytime(integer * 7, TimeUnit.DAYS);
+                            playtimeUser.removePlaytime(integer * 7L, TimeUnit.DAYS);
                             break;
                     }
                 });
@@ -280,25 +280,4 @@ public class PlayTimeCommand {
         Playtime.getInstance().getMccore().getUpdate(commandSender, true);
     }
 
-    /**
-     * Sorts a given HashMap by values in descending order and returns the top 10 entries.
-     *
-     * @param passedMap The input HashMap to be sorted.
-     * @return A LinkedHashMap containing the top 10 entries sorted by values in descending order.
-     */
-    public LinkedHashMap<String, Long> sortHashMapByValues(HashMap<String, Long> passedMap) {
-        // Use Java streams to sort the entries by values in descending order and limit to the top 10
-        return passedMap.entrySet()
-                .stream()
-                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-                .limit(10)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        // Merge function to resolve conflicts (not used in this case)
-                        (e1, e2) -> e1,
-                        // Use LinkedHashMap to preserve the order of insertion
-                        LinkedHashMap::new
-                ));
-    }
 }
