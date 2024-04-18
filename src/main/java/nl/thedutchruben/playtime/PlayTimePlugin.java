@@ -3,8 +3,6 @@ package nl.thedutchruben.playtime;
 import nl.thedutchruben.playtime.core.DependencyLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * The main class of the plugin
  * Tdrplaytime is the playtime plugin for tracking the playtime of players and rewarding them!

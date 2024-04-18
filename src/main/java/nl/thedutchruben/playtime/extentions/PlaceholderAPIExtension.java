@@ -10,7 +10,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
@@ -43,12 +44,14 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
     @Override
     public @NotNull List<String> getPlaceholders() {
         List<String> placeholders = new ArrayList<>();
+
         placeholders.add("%tdrplaytime_time%");
         placeholders.add("%tdrplaytime_time_days_number%");
         placeholders.add("%tdrplaytime_time_hour_number%");
         placeholders.add("%tdrplaytime_time_minutes_number%");
         placeholders.add("%tdrplaytime_time%");
         placeholders.add("%tdrplaytime_time_seconds_number%");
+
         for(int i = 1; i <= 10; i++){
             placeholders.add("%tdrplaytime_top_names_"+i+"%");
             placeholders.add("%tdrplaytime_top_time_"+i+"_days%");
@@ -56,7 +59,6 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
             placeholders.add("%tdrplaytime_top_time_"+i+"_minutes%");
             placeholders.add("%tdrplaytime_top_time_"+i+"_seconds%");
         }
-
 
         return placeholders;
     }

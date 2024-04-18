@@ -2,13 +2,11 @@ package nl.thedutchruben.playtime.core.objects;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
-import nl.thedutchruben.playtime.PlayTimePlugin;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.player.AsyncPlaytimePlayerUpdatePlaytimeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.Time;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +35,7 @@ public class PlaytimeUser {
 
     public void updatePlaytime(){
         time = time + (System.currentTimeMillis() - lastChecked);
-        Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),() -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this,time - (System.currentTimeMillis() - lastChecked),time)));
+        Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),() -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this,true,time - (System.currentTimeMillis() - lastChecked),time)));
         lastChecked = System.currentTimeMillis();
     }
 

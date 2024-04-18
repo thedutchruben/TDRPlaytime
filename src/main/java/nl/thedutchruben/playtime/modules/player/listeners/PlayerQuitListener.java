@@ -18,7 +18,7 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
-        Bukkit.getPluginManager().callEvent(new PlaytimePlayerSaveEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId())));
+        Bukkit.getPluginManager().callEvent(new PlaytimePlayerSaveEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()),false));
         Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),() -> {
             PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId());
             user.updatePlaytime();

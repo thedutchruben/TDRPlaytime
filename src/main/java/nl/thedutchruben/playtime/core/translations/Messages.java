@@ -3,7 +3,6 @@ package nl.thedutchruben.playtime.core.translations;
 import lombok.Getter;
 import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
-import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;

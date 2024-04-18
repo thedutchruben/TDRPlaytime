@@ -4,7 +4,6 @@ package nl.thedutchruben.playtime.modules.player.listeners;
 import nl.thedutchruben.mccore.spigot.listeners.TDRListener;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.player.PlaytimePlayerLoadedEvent;
-import nl.thedutchruben.playtime.core.events.player.PlaytimePlayerSaveEvent;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

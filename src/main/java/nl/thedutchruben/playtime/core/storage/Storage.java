@@ -6,7 +6,6 @@ import com.google.gson.stream.JsonReader;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.List;
 import java.util.UUID;

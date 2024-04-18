@@ -3,7 +3,6 @@ package nl.thedutchruben.playtime.modules.player.commands;
 import nl.thedutchruben.mccore.spigot.commands.Command;
 import nl.thedutchruben.mccore.spigot.commands.Default;
 import nl.thedutchruben.mccore.spigot.commands.Fallback;
-
 import nl.thedutchruben.mccore.spigot.commands.SubCommand;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
@@ -14,11 +13,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Command(command = "playtime", description = "Main playtime command", permission = "playtime.playtime", console = true)
 public class PlayTimeCommand {

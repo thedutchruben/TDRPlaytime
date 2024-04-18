@@ -2,11 +2,8 @@ package nl.thedutchruben.playtime.core;
 
 
 import lombok.Getter;
-import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.Playtime;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import java.io.IOException;
 
 @Getter
 public enum Settings {
