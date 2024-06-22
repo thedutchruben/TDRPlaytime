@@ -5,7 +5,7 @@ import nl.thedutchruben.mccore.Mccore;
 import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.core.Settings;
-import nl.thedutchruben.playtime.core.migrations.FourteenToFiveteenMigration;
+import nl.thedutchruben.playtime.core.migrations.TwoPointZeroMigration;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
@@ -93,7 +93,7 @@ public class Playtime {
 
         // todo check if migration is needed
         if(fileManager.getConfig("config.yml").get().getString("version") == null){
-            new FourteenToFiveteenMigration();
+            new TwoPointZeroMigration();
         }
 
         // Register the mc core

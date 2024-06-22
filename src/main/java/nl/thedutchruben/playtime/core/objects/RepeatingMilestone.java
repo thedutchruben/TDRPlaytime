@@ -23,7 +23,7 @@ public class RepeatingMilestone {
     /**
      * The list of items to give the player.
      */
-    private transient List<ItemStack> itemStackObjects;
+    private transient List<ItemStack> _itemStackObjects;
 
     /**
      * The name of the milestone.
@@ -56,14 +56,14 @@ public class RepeatingMilestone {
      */
     public void apply(Player player) {
         if (itemStacks != null) {
-            if (itemStackObjects == null) {
-                itemStackObjects = new ArrayList<>();
+            if (_itemStackObjects == null) {
+                _itemStackObjects = new ArrayList<>();
                 for (Map<String, Object> itemStack : itemStacks) {
-                    itemStackObjects.add(ItemStack.deserialize(itemStack));
+                    _itemStackObjects.add(ItemStack.deserialize(itemStack));
                 }
             }
 
-            for (ItemStack itemStack : itemStackObjects) {
+            for (ItemStack itemStack : _itemStackObjects) {
                 player.getInventory().addItem(itemStack);
             }
         }
@@ -152,12 +152,8 @@ public class RepeatingMilestone {
         this.messages = messages;
     }
 
-    public List<ItemStack> getItemStackObjects() {
-        return itemStackObjects;
-    }
-
     public void setItemStackObjects(List<ItemStack> itemStackObjects) {
-        this.itemStackObjects = itemStackObjects;
+        this._itemStackObjects = itemStackObjects;
     }
 
     public boolean isFireworkShow() {

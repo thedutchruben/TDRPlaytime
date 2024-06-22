@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Milestone {
-    private transient List<ItemStack> itemStackObjects;
+    private transient List<ItemStack> _itemStackObjects;
 
     /**
      * The name of the milestone.
@@ -104,14 +104,14 @@ public class Milestone {
     public void apply(Player player) {
         Bukkit.getScheduler().runTask(Playtime.getPlugin(),() -> Bukkit.getPluginManager().callEvent(new MilestoneReceiveEvent(this,Playtime.getInstance().getPlaytimeUser(player.getUniqueId()).get())));
         if (itemStacks != null) {
-            if (itemStackObjects == null) {
-                itemStackObjects = new ArrayList<>();
+            if (_itemStackObjects == null) {
+                _itemStackObjects = new ArrayList<>();
                 for (Map<String, Object> itemStack : itemStacks) {
-                    itemStackObjects.add(ItemStack.deserialize(itemStack));
+                    _itemStackObjects.add(ItemStack.deserialize(itemStack));
                 }
             }
-            if(!itemStackObjects.isEmpty()){
-                Bukkit.getScheduler().runTask(Playtime.getPlugin(),() -> player.getInventory().addItem(itemStackObjects.toArray(ItemStack[]::new)));
+            if(!_itemStackObjects.isEmpty()){
+                Bukkit.getScheduler().runTask(Playtime.getPlugin(),() -> player.getInventory().addItem(_itemStackObjects.toArray(ItemStack[]::new)));
             }
         }
 

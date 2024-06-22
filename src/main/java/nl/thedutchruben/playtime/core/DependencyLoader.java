@@ -10,7 +10,6 @@ import java.util.List;
 
 public class DependencyLoader {
 
-
     public static void load(Plugin plugin) {
         System.out.println("Loading dependencies");
 
@@ -38,7 +37,6 @@ public class DependencyLoader {
         }
 
     }
-
 
     @Getter
     private enum Dependency {

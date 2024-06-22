@@ -6,6 +6,7 @@ import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.player.AsyncPlaytimePlayerUpdatePlaytimeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -19,8 +20,6 @@ public class PlaytimeUser {
     public String name;
     public float time;
     private transient long lastChecked;
-
-
 
     public PlaytimeUser(String uuid, String name, long time) {
         this.uuid = uuid;
@@ -43,17 +42,16 @@ public class PlaytimeUser {
         return UUID.fromString(this.uuid);
     }
 
-    public void addPlaytime(long time, TimeUnit timeUnit){
+    public void addPlaytime(long time, @NotNull TimeUnit timeUnit){
         this.time = this.time + timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
-
 
     public CompletableFuture<Boolean> save(){
         return Playtime.getInstance().getStorage().saveUser(this);
     }
 
-    public void removePlaytime(long time, TimeUnit timeUnit){
+    public void removePlaytime(long time, @NotNull TimeUnit timeUnit){
         this.time = this.time - timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
@@ -78,5 +76,9 @@ public class PlaytimeUser {
         tempTime = tempTime - minutes * 60L;
         int seconds = (int) tempTime;
         return new int[]{days, hours, minutes, seconds};
+    }
+
+    public static CompletableFuture<PlaytimeUser> loadUser(UUID uuid){
+        return Playtime.getInstance().getStorage().loadUser(uuid);
     }
 }

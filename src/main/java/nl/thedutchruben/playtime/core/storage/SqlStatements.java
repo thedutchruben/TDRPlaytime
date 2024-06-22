@@ -6,7 +6,7 @@ import java.util.List;
 public class SqlStatements {
 
 
-    public static List<String> getStatements(String tablePrefix,boolean mysql){
+    public static List<String> getStatements(String tablePrefix, boolean mysql){
         List<String> strings = new ArrayList<>();
         strings.add("CREATE TABLE IF NOT EXISTS `" + tablePrefix + "playtime` (\n" +
                 "  `uuid` varchar(36),\n" +

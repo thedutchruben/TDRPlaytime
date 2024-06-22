@@ -32,5 +32,4 @@ public class PlayTimePlugin extends JavaPlugin {
         }
     }
 
-
 }
