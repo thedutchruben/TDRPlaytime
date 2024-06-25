@@ -15,7 +15,7 @@ public class UpdatePlaytimeListener implements Listener {
         if(!Playtime.getInstance().getMilestones().isEmpty()){
             Playtime.getInstance().getMilestones().forEach(milestone -> {
                 if(milestone.getOnlineTime() <= event.getNewPlaytime() && milestone.getOnlineTime() > event.getOldPlaytime()){
-                    milestone.apply(event.getPlayer().getBukkitPlayer());
+                    milestone.apply(event.getUser().getBukkitPlayer());
                 }
             });
         }
@@ -25,7 +25,7 @@ public class UpdatePlaytimeListener implements Listener {
                 if (i > 0) {
                     for (RepeatingMilestone repeatingMilestone : Playtime.getInstance().getRepeatingMilestones()) {
                         if (i % (repeatingMilestone.getOnlineTime() * 1000) == 1) {
-                            repeatingMilestone.apply(event.getPlayer().getBukkitPlayer());
+                            repeatingMilestone.apply(event.getUser().getBukkitPlayer());
                         }
                     }
                 }
