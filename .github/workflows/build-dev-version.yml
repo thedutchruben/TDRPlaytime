@@ -19,7 +19,7 @@ jobs:
         architecture: x64
     - name: Build with Maven
       run: |
-        mvn package
+        mvn install
         git_hash=$(git rev-parse --short "$GITHUB_SHA")
         echo "git_hash=$git_hash" >> $GITHUB_ENV
         echo "artifactPath=$(pwd)/target" >> $GITHUB_ENV
