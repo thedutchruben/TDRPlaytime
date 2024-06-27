@@ -131,13 +131,14 @@ public class Playtime {
     }
 
     public Storage getSelectedStorage(){
-        String value = (String) Settings.STORAGE_TYPE.getValue();
-        if (value.equals("mongodb")) {
-            return new Mongodb();
-        } else if (value.equals("mysql")) {
-            return new Mysql();
+        switch (Settings.STORAGE_TYPE.getValueAsString().toLowerCase()){
+            case "mongodb":
+                return new Mongodb();
+            case "mysql":
+                return new Mysql();
+            default:
+                return new SqlLite();
         }
-        return new SqlLite();
     }
 
     public void onDisable(){

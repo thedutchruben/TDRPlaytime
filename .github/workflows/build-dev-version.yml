@@ -30,7 +30,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Plugin-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
-        path: ${{ env.artifactPath }}/playtime-${{ steps.project.outputs.version }}.jar
+        path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
     - name: Sleep for 5 seconds
       uses: jakejarvis/wait-action@master
       with:
