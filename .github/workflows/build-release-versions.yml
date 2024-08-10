@@ -43,7 +43,7 @@ jobs:
       - name: Copy plugin to server plugins folder
         run: |
           mkdir -p plugins
-          cp ${{ env.artifactPath }}/TDRPlaytime-${{ steps.build-and-upload.outputs.version }}.jar plugins/
+          cp ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar plugins/
       - name: Start Minecraft server
         run: |
           java -Xmx1024M -Xms1024M -jar server.jar nogui &
