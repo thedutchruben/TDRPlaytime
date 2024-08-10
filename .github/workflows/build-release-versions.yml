@@ -36,24 +36,45 @@ jobs:
         with:
           name: Plugin-${{ env.snapshotVersion }}-${{ matrix.downloadSource }}.jar
           path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
-      - name: Get release by tag
-        id: get_release
-        uses: actions/github-script@v4
+  test-plugin:
+    name: Test Plugin
+    runs-on: ubuntu-latest
+    needs: build-and-upload
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { data: release } = await github.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag: context.ref.replace('refs/tags/', '')
-            });
-            console.log(JSON.stringify(release, null, 2));
-            return release
-      - name: Upload Plugin jar to release
-        uses: actions/upload-release-asset@v1
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4.2.2
         with:
-            upload_url: ${{ steps.get_release.outputs.upload_url }}
-            asset_path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
-            asset_name: TDRPlaytime-${{ steps.project.outputs.version }}.jar
-            asset_content_type: application/java-archive
-            asset_label: TDRPlaytime-${{ steps.project.outputs.version }}.jar
+          distribution: 'adopt'
+          java-version: '17'
+          java-package: jdk
+          architecture: x64
+      - name: Download Minecraft server
+        run: |
+          curl -o server.jar https://cdn.thedutchservers.com/spigot/paper-1.21.1-3.jar
+          echo "eula=true" > eula.txt
+      - name: Copy plugin to server plugins folder
+        run: |
+          mkdir -p plugins
+          cp ${{ env.artifactPath }}/TDRPlaytime-${{ steps.build-and-upload.outputs.version }}.jar plugins/
+      - name: Start Minecraft server
+        run: |
+          java -Xmx1024M -Xms1024M -jar server.jar nogui &
+          sleep 60
+          if grep -q "Done" server.log; then
+            echo "Server started successfully"
+          else
+            echo "Server failed to start"
+            exit 1
+          fi
+      - name: Check plugin startup
+        run: |
+          if grep -q "TDRPlaytime" server.log; then
+            echo "Plugin started successfully"
+          else
+            echo "Plugin failed to start"
+            exit 1
+          fi
