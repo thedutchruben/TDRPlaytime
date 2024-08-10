@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-java@v4.2.2
         with:
           distribution: 'adopt'
-          java-version: '17'
+          java-version: '22'
           java-package: jdk
           architecture: x64
       - name: Set downloadSource in plugin.yml
