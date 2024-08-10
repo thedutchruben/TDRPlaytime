@@ -13,6 +13,7 @@ import nl.thedutchruben.playtime.core.storage.Storage;
 import nl.thedutchruben.playtime.core.storage.types.Mongodb;
 import nl.thedutchruben.playtime.core.storage.types.Mysql;
 import nl.thedutchruben.playtime.core.storage.types.SqlLite;
+import nl.thedutchruben.playtime.core.storage.types.Yaml;
 import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.extentions.BStatsExtension;
 import nl.thedutchruben.playtime.extentions.PlaceholderAPIExtension;
@@ -136,6 +137,9 @@ public class Playtime {
                 return new Mongodb();
             case "mysql":
                 return new Mysql();
+            case "yaml":
+                getPlugin().getLogger().log(Level.WARNING, "Yaml storage is not recommended. If you have a lot of players it can cause lag. Please use sqlLite, mysql or mongodb");
+                return new Yaml();
             default:
                 return new SqlLite();
         }
