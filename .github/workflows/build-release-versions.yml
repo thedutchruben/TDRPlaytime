@@ -40,6 +40,9 @@ jobs:
     name: Test Plugin
     runs-on: ubuntu-latest
     needs: build-and-upload
+    strategy:
+      matrix:
+        downloadSource: [ GITHUB, SPIGOT, HANGAR, MODRINTH, CURSE_FORGE ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
