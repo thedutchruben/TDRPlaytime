@@ -82,7 +82,7 @@
     <repositories>
         <repository>
             <id>thedutchruben-repo</id>
-            <url>https://nexus.thedutchservers.com/repository/maven-public/</url>
+              <url>https://maven.thedutchservers.com/releases</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
