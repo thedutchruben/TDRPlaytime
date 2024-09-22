@@ -1,6 +1,5 @@
 package nl.thedutchruben.playtime.modules.player.listeners;
 
-
 import com.google.gson.Gson;
 import nl.thedutchruben.mccore.spigot.listeners.TDRListener;
 import nl.thedutchruben.mccore.utils.config.FileManager;

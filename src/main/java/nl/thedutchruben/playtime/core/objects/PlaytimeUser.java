@@ -6,7 +6,6 @@ import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.player.AsyncPlaytimePlayerUpdatePlaytimeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -72,7 +71,7 @@ public class PlaytimeUser {
      * @param time The amount of time to add.
      * @param timeUnit The unit of time.
      */
-    public void addPlaytime(long time, @NotNull TimeUnit timeUnit){
+    public void addPlaytime(long time, TimeUnit timeUnit){
         this.time = this.time + timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
@@ -92,7 +91,7 @@ public class PlaytimeUser {
      * @param time The amount of time to remove.
      * @param timeUnit The unit of time.
      */
-    public void removePlaytime(long time, @NotNull TimeUnit timeUnit){
+    public void removePlaytime(long time, TimeUnit timeUnit){
         this.time = this.time - timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }

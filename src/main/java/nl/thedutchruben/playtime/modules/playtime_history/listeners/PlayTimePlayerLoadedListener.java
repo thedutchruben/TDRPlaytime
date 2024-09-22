@@ -20,5 +20,4 @@ public class PlayTimePlayerLoadedListener implements Listener {
     public void onQuit(PlaytimePlayerUnLoadedEvent event){
         Playtime.getInstance().getStorage().updatePlaytimeHistory(event.getUser().getUUID(), Storage.Event.QUIT, (int) event.getUser().getTime());
     }
-
 }
