@@ -11,6 +11,13 @@ public class AsyncPlaytimePlayerUpdatePlaytimeEvent extends PlaytimePlayerEvent 
     private final float oldPlaytime;
     private final float newPlaytime;
 
+    /**
+     * Create a new PlaytimePlayerUpdatePlaytimeEvent
+     * @param user the user that is updated
+     * @param async if the event is async
+     * @param oldPlaytime the old playtime
+     * @param newPlaytime the new playtime
+     */
     public AsyncPlaytimePlayerUpdatePlaytimeEvent(PlaytimeUser user, boolean async, float oldPlaytime, float newPlaytime) {
         super(user, async);
         this.oldPlaytime = oldPlaytime;

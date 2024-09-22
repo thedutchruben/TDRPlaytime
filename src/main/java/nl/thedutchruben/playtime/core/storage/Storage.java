@@ -23,7 +23,6 @@ public abstract class Storage {
                 .create();
     }
 
-
     /**
      * Get the name of the storage type
      *
@@ -41,7 +40,6 @@ public abstract class Storage {
      */
     public abstract void stop();
 
-
     /**
      * Load the user from the storage
      *
@@ -50,7 +48,6 @@ public abstract class Storage {
      */
 
     public abstract CompletableFuture<PlaytimeUser> loadUser(UUID uuid);
-
 
     /**
      * Load user loaded by name
@@ -80,7 +77,7 @@ public abstract class Storage {
      * @param skip The amount of users to skip
      * @return The list of users
      */
-    public abstract CompletableFuture<List<PlaytimeUser>> getTopUsers(int amount,int skip);
+    public abstract CompletableFuture<List<PlaytimeUser>> getTopUsers(int amount, int skip);
 
     /**
      * Get the top user

@@ -21,6 +21,13 @@ public class PlaytimeUser {
     public float time;
     private transient long lastChecked;
 
+    /**
+     * Constructs a PlaytimeUser with the specified UUID, name, and playtime.
+     *
+     * @param uuid The UUID of the user.
+     * @param name The name of the user.
+     * @param time The initial playtime of the user in milliseconds.
+     */
     public PlaytimeUser(String uuid, String name, long time) {
         this.uuid = uuid;
         this.name = name;
@@ -28,43 +35,91 @@ public class PlaytimeUser {
         this.lastChecked = System.currentTimeMillis();
     }
 
+    /**
+     * Constructs a PlaytimeUser with the specified UUID and name.
+     * The initial playtime is set to 0.
+     *
+     * @param uuid The UUID of the user.
+     * @param name The name of the user.
+     */
     public PlaytimeUser(String uuid, String name) {
-        this(uuid,name,0);
+        this(uuid, name, 0);
     }
 
+    /**
+     * Updates the playtime of the user based on the time elapsed since the last check.
+     * Fires an AsyncPlaytimePlayerUpdatePlaytimeEvent asynchronously.
+     */
     public void updatePlaytime(){
         time = time + (System.currentTimeMillis() - lastChecked);
-        Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),() -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this,true,time - (System.currentTimeMillis() - lastChecked),time)));
+        Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),
+                () -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this, true, time - (System.currentTimeMillis() - lastChecked), time)));
         lastChecked = System.currentTimeMillis();
     }
 
+    /**
+     * Returns the UUID of the user.
+     *
+     * @return The UUID of the user.
+     */
     public UUID getUUID(){
         return UUID.fromString(this.uuid);
     }
 
+    /**
+     * Adds the specified amount of playtime to the user's total playtime.
+     *
+     * @param time The amount of time to add.
+     * @param timeUnit The unit of time.
+     */
     public void addPlaytime(long time, @NotNull TimeUnit timeUnit){
         this.time = this.time + timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
 
+    /**
+     * Saves the user's playtime data asynchronously.
+     *
+     * @return A CompletableFuture that completes when the save operation is done.
+     */
     public CompletableFuture<Boolean> save(){
         return Playtime.getInstance().getStorage().saveUser(this);
     }
 
+    /**
+     * Removes the specified amount of playtime from the user's total playtime.
+     *
+     * @param time The amount of time to remove.
+     * @param timeUnit The unit of time.
+     */
     public void removePlaytime(long time, @NotNull TimeUnit timeUnit){
         this.time = this.time - timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
 
+    /**
+     * Sets the user's total playtime to the specified value.
+     *
+     * @param time The new total playtime in milliseconds.
+     */
     public void setPlaytime(float time){
         this.time = time;
     }
 
-
+    /**
+     * Returns the Bukkit Player object associated with the user.
+     *
+     * @return The Bukkit Player object.
+     */
     public Player getBukkitPlayer(){
         return Bukkit.getPlayer(getUUID());
     }
 
+    /**
+     * Translates the user's total playtime into an array of days, hours, minutes, and seconds.
+     *
+     * @return An array containing the days, hours, minutes, and seconds of playtime.
+     */
     public int[] translateTime() {
         float tempTime = this.time;
         tempTime = tempTime / 1000;
@@ -78,6 +133,12 @@ public class PlaytimeUser {
         return new int[]{days, hours, minutes, seconds};
     }
 
+    /**
+     * Loads a PlaytimeUser asynchronously based on the specified UUID.
+     *
+     * @param uuid The UUID of the user to load.
+     * @return A CompletableFuture that completes with the loaded PlaytimeUser.
+     */
     public static CompletableFuture<PlaytimeUser> loadUser(UUID uuid){
         return Playtime.getInstance().getStorage().loadUser(uuid);
     }

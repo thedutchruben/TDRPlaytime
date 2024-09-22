@@ -7,20 +7,30 @@ import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+/**
+ * Listener class that handles the update of player playtime milestones.
+ */
 @TDRListener
 public class UpdatePlaytimeListener implements Listener {
 
+    /**
+     * Event handler for updating player playtime.
+     *
+     * @param event The event that contains the old and new playtime of the player.
+     */
     @EventHandler
-    public void updatePlaytime(AsyncPlaytimePlayerUpdatePlaytimeEvent event){
-        if(!Playtime.getInstance().getMilestones().isEmpty()){
+    public void updatePlaytime(AsyncPlaytimePlayerUpdatePlaytimeEvent event) {
+        // Check and apply milestones that are not repeating
+        if (!Playtime.getInstance().getMilestones().isEmpty()) {
             Playtime.getInstance().getMilestones().forEach(milestone -> {
-                if(milestone.getOnlineTime() <= event.getNewPlaytime() && milestone.getOnlineTime() > event.getOldPlaytime()){
+                if (milestone.getOnlineTime() <= event.getNewPlaytime() && milestone.getOnlineTime() > event.getOldPlaytime()) {
                     milestone.apply(event.getUser().getBukkitPlayer());
                 }
             });
         }
 
-        if(!Playtime.getInstance().getRepeatingMilestones().isEmpty()){
+        // Check and apply repeating milestones
+        if (!Playtime.getInstance().getRepeatingMilestones().isEmpty()) {
             for (float i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
                 if (i > 0) {
                     for (RepeatingMilestone repeatingMilestone : Playtime.getInstance().getRepeatingMilestones()) {
@@ -31,6 +41,5 @@ public class UpdatePlaytimeListener implements Listener {
                 }
             }
         }
-
     }
 }

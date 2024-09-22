@@ -10,6 +10,7 @@ jobs:
       issues: write
     steps:
       - uses: actions/github-script@v7
+        name: Add assignee
         with:
           script: |
             github.rest.issues.addAssignees({
@@ -18,3 +19,11 @@ jobs:
               repo: context.repo.repo,
               assignees: ["TheDutchRuben"]
             })
+      - name: send message
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.ISSUE_DISCORD_ID }}
+          webhook_token: ${{ secrets.ISSUE_WEBHOOK_TOKEN }}
+          message: "New issue opened: ${{ github.event.issue.title }}\n${{ github.event.issue.html_url }}"
+          color: "#48f442"
+          username: "Playtime Builds"

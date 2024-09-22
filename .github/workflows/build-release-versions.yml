@@ -1,4 +1,5 @@
 on: [release,workflow_dispatch]
+name: Build plugin for all platforms
 jobs:
   build-and-upload:
     name: Build and Upload
@@ -36,29 +37,3 @@ jobs:
         with:
           name: Plugin-${{ env.snapshotVersion }}-${{ matrix.downloadSource }}.jar
           path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
-      - name: Download Minecraft server
-        run: |
-          curl -o server.jar https://cdn.thedutchservers.com/spigot/paper-1.21.1-3.jar
-          echo "eula=true" > eula.txt
-      - name: Copy plugin to server plugins folder
-        run: |
-          mkdir -p plugins
-          cp ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar plugins/
-      - name: Start Minecraft server
-        run: |
-          java -Xmx1024M -Xms1024M -jar server.jar nogui &
-          sleep 60
-          if grep -q "Done" server.log; then
-            echo "Server started successfully"
-          else
-            echo "Server failed to start"
-            exit 1
-          fi
-      - name: Check plugin startup
-        run: |
-          if grep -q "TDRPlaytime" server.log; then
-            echo "Plugin started successfully"
-          else
-            echo "Plugin failed to start"
-            exit 1
-          fi

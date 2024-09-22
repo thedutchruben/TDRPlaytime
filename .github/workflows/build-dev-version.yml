@@ -2,6 +2,7 @@ on:
   - push
   - pull_request
   - workflow_dispatch
+name: Build DEV jars
 jobs:
   build_dev_jar:
     name: Build DEV jars

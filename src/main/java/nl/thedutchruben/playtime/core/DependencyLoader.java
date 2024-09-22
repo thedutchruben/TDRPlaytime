@@ -17,7 +17,7 @@ public class DependencyLoader {
         // setup repo's
         libraryManager.addMavenCentral();
         libraryManager.addJitPack();
-        libraryManager.addRepository("https://nexus.thedutchservers.com/repository/maven-public/");
+        libraryManager.addRepository("https://maven.thedutchservers.com/releases");
         //build array with all the dependencies as liberies
         List<Library> libraries = new ArrayList<>();
         for (Dependency dependency : Dependency.values()) {
@@ -40,9 +40,9 @@ public class DependencyLoader {
 
     @Getter
     private enum Dependency {
-        BSON("org{}mongodb", "bson", "5.1.3", null),
-        MONGODB("org{}mongodb", "mongodb-driver-sync", "5.1.3", null),
-        MONGODB_CORE("org{}mongodb", "mongodb-driver-core", "5.1.3", null),
+        BSON("org{}mongodb", "bson", "5.1.4", null),
+        MONGODB("org{}mongodb", "mongodb-driver-sync", "5.1.4", null),
+        MONGODB_CORE("org{}mongodb", "mongodb-driver-core", "5.1.4", null),
         MCCORE("nl{}thedutchruben", "mccore", "1.4.7", null),
         BSTATS("org{}bstats", "bstats-bukkit", "3.0.2", "nl{}thedutchruben{}playtime{}bstats"),
         BSTATS_BASE("org{}bstats", "bstats-base", "3.0.2", "nl{}thedutchruben{}playtime{}bstats"),
