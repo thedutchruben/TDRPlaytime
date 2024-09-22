@@ -26,259 +26,173 @@ public class PlayTimeCommand {
 
     @Default
     @SubCommand(subCommand = "", description = "Show your own playtime")
-    public void myTime(CommandSender commandSender, List<String> args) {
-        if (commandSender instanceof Player) {
-            PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(((Player) commandSender).getUniqueId());
+    public void myTime(CommandSender sender, List<String> args) {
+        if (sender instanceof Player) {
+            PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(((Player) sender).getUniqueId());
             user.updatePlaytime();
-            commandSender.sendMessage(Messages.PLAYTIME_INFO_OWN.getMessage(
-                    new Replacement("%D%",String.valueOf(user.translateTime()[0])),
-                    new Replacement("%H%",String.valueOf(user.translateTime()[1])),
-                    new Replacement("%M%",String.valueOf(user.translateTime()[2])),
-                    new Replacement("%S%",String.valueOf(user.translateTime()[3]))
+            sender.sendMessage(Messages.PLAYTIME_INFO_OWN.getMessage(
+                    new Replacement("%D%", String.valueOf(user.translateTime()[0])),
+                    new Replacement("%H%", String.valueOf(user.translateTime()[1])),
+                    new Replacement("%M%", String.valueOf(user.translateTime()[2])),
+                    new Replacement("%S%", String.valueOf(user.translateTime()[3]))
             ));
-        }else{
-            commandSender.sendMessage("You need to be a player to use this command");
+        } else {
+            sender.sendMessage("You need to be a player to use this command");
         }
     }
 
     @Fallback(minParams = 1, maxParams = 2)
-    @SubCommand(subCommand = "", minParams = 1, maxParams = 2, usage = "<player>", description = "Show a players playtime")
-    public void see(CommandSender commandSender, List<String> args) {
+    @SubCommand(subCommand = "", minParams = 1, maxParams = 2, usage = "<player>", description = "Show a player's playtime")
+    public void see(CommandSender sender, List<String> args) {
         String playerName = args.get(0);
+        Player player = Bukkit.getPlayer(playerName);
 
-        if (Bukkit.getPlayer(playerName) == null) {
-            Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(playtimeUser -> {
-                if(playtimeUser == null){
-                    commandSender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
-                }else{
-                    commandSender.sendMessage(Messages.PLAYTIME_INFO_OTHER.getMessage(new Replacement("%NAME%",playtimeUser.getName()),
-                            new Replacement("%D%",String.valueOf(playtimeUser.translateTime()[0])),
-                            new Replacement("%H%",String.valueOf(playtimeUser.translateTime()[1])),
-                            new Replacement("%M%",String.valueOf(playtimeUser.translateTime()[2])),
-                            new Replacement("%S%",String.valueOf(playtimeUser.translateTime()[3]))));
+        if (player == null) {
+            Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(user -> {
+                if (user == null) {
+                    sender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
+                } else {
+                    sendPlaytimeInfo(sender, user);
                 }
-
             });
-
         } else {
-            Playtime.getInstance().getPlaytimeUser(playerName).ifPresent(playtimeUser -> {
-                commandSender.sendMessage(Messages.PLAYTIME_INFO_OTHER.getMessage(new Replacement("%NAME%",playtimeUser.getName()),
-                        new Replacement("%D%",String.valueOf(playtimeUser.translateTime()[0])),
-                        new Replacement("%H%",String.valueOf(playtimeUser.translateTime()[1])),
-                        new Replacement("%M%",String.valueOf(playtimeUser.translateTime()[2])),
-                        new Replacement("%S%",String.valueOf(playtimeUser.translateTime()[3]))));
-            });
-
-
+            Playtime.getInstance().getPlaytimeUser(playerName).ifPresent(user -> sendPlaytimeInfo(sender, user));
         }
     }
 
     @SubCommand(subCommand = "top", permission = "playtime.playtime.top", console = true, description = "Show the top 10 players")
-    public void top(CommandSender commandSender, List<String> args) {
-        Playtime.getInstance().getStorage().getTopUsers(10,0).whenCompleteAsync((playerMap, throwable) -> {
-            for(PlaytimeUser playtimeUser : playerMap){
-                commandSender.sendMessage(Messages.PLAYTIME_INFO_OTHER.getMessage(new Replacement("%NAME%",playtimeUser.getName()),
-                        new Replacement("%D%",String.valueOf(playtimeUser.translateTime()[0])),
-                        new Replacement("%H%",String.valueOf(playtimeUser.translateTime()[1])),
-                        new Replacement("%M%",String.valueOf(playtimeUser.translateTime()[2])),
-                        new Replacement("%S%",String.valueOf(playtimeUser.translateTime()[3]))));
-            }
+    public void top(CommandSender sender, List<String> args) {
+        Playtime.getInstance().getStorage().getTopUsers(10, 0).whenCompleteAsync((users, throwable) -> {
+            users.forEach(user -> sendPlaytimeInfo(sender, user));
         });
     }
 
-    @SubCommand(subCommand = "reset", permission = "playtime.playtime.reset", minParams = 2, maxParams = 2, console = true, usage = "<player>", description = "Reset a players playtime")
-    public void reset(CommandSender commandSender, List<String> args) {
+    @SubCommand(subCommand = "reset", permission = "playtime.playtime.reset", minParams = 2, maxParams = 2, console = true, usage = "<player>", description = "Reset a player's playtime")
+    public void reset(CommandSender sender, List<String> args) {
         String playerName = args.get(1);
-        Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(playtimeUser -> {
-            if(playtimeUser != null){
-                playtimeUser.setPlaytime(0);
+        Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(user -> {
+            if (user != null) {
+                user.setPlaytime(0);
                 Playtime.getInstance().getPlaytimeUser(playerName).ifPresent(u -> u.setPlaytime(0));
-                Playtime.getInstance().getStorage().saveUser(playtimeUser).thenAcceptAsync(u -> {
-                    commandSender.sendMessage(Messages.PLAYER_RESET_CONFIRM.getMessage());
+                Playtime.getInstance().getStorage().saveUser(user).thenAcceptAsync(u -> {
+                    sender.sendMessage(Messages.PLAYER_RESET_CONFIRM.getMessage());
                 });
-            }else{
-                commandSender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
-
+            } else {
+                sender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
             }
         });
     }
 
     @SubCommand(subCommand = "add", permission = "playtime.playtime.add", minParams = 3, maxParams = 3, console = true, description = "Add playtime to a user", usage = "<player> <time>")
-    public void add(CommandSender commandSender, List<String> args) {
+    public void add(CommandSender sender, List<String> args) {
         String playerName = args.get(1);
         String time = args.get(2);
+        Map<String, Integer> timeMap = parseTime(time);
 
-        // Define a pattern to match numbers and letters
-        Pattern pattern = Pattern.compile("(\\d+)([A-Za-z]+)");
-
-        // Create a map to store the mappings
-        Map<String, Integer> timeMap = new HashMap<>();
-
-        // Use a Matcher to find matches in the input string
-        Matcher matcher = pattern.matcher(time);
-
-        // Iterate through matches and populate the map
-        while (matcher.find()) {
-            int value = Integer.parseInt(matcher.group(1));
-            String unit = matcher.group(2);
-
-            // Map the unit (letter) with the corresponding numeric value
-            timeMap.put(unit, value);
-        }
-
-       Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(playtimeUser -> {
-            if(timeMap.isEmpty()){
-                playtimeUser.addPlaytime(Long.parseLong(time), TimeUnit.SECONDS);
-            }else{
-                timeMap.forEach((s, integer) -> {
-                    switch (s.toUpperCase(Locale.ROOT)){
-                        case "S":
-                            playtimeUser.addPlaytime(integer, TimeUnit.SECONDS);
-                            break;
-                        case "M":
-                            playtimeUser.addPlaytime(integer, TimeUnit.MINUTES);
-                            break;
-                        case "H":
-                            playtimeUser.addPlaytime(integer, TimeUnit.HOURS);
-                            break;
-                        case "D":
-                            playtimeUser.addPlaytime(integer, TimeUnit.DAYS);
-                            break;
-                        case "W":
-                            playtimeUser.addPlaytime(integer * 7L, TimeUnit.DAYS);
-                            break;
-                    }
-                });
-            }
-            playtimeUser.save().thenAcceptAsync(test -> {
-               commandSender.sendMessage( Messages.TIME_ADDED_TO_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%",playerName)));
+        Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(user -> {
+            addPlaytime(user, timeMap, time);
+            user.save().thenAcceptAsync(test -> {
+                sender.sendMessage(Messages.TIME_ADDED_TO_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
             });
-       },() -> {
-            Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(playtimeUser -> {
-                if(timeMap.isEmpty()){
-                    playtimeUser.addPlaytime(Long.parseLong(time), TimeUnit.SECONDS);
-                }else{
-                    timeMap.forEach((s, integer) -> {
-                        switch (s.toUpperCase(Locale.ROOT)){
-                            case "S":
-                                playtimeUser.addPlaytime(integer, TimeUnit.SECONDS);
-                                break;
-                            case "M":
-                                playtimeUser.addPlaytime(integer, TimeUnit.MINUTES);
-                                break;
-                            case "H":
-                                playtimeUser.addPlaytime(integer, TimeUnit.HOURS);
-                                break;
-                            case "D":
-                                playtimeUser.addPlaytime(integer, TimeUnit.DAYS);
-                                break;
-                            case "W":
-                                playtimeUser.addPlaytime(integer * 7L, TimeUnit.DAYS);
-                                break;
-                        }
-                    });
-                }
-                playtimeUser.save().thenAcceptAsync(test -> {
-                    commandSender.sendMessage( Messages.TIME_ADDED_TO_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%",playerName)));
+        }, () -> {
+            Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(user -> {
+                addPlaytime(user, timeMap, time);
+                user.save().thenAcceptAsync(test -> {
+                    sender.sendMessage(Messages.TIME_ADDED_TO_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
                 });
             });
-       });
+        });
     }
 
-
     @SubCommand(subCommand = "remove", permission = "playtime.playtime.remove", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>", description = "Remove playtime from a user")
-    public void remove(CommandSender commandSender, List<String> args) {
+    public void remove(CommandSender sender, List<String> args) {
         String playerName = args.get(1);
         String time = args.get(2);
+        Map<String, Integer> timeMap = parseTime(time);
 
-        // Define a pattern to match numbers and letters
-        Pattern pattern = Pattern.compile("(\\d+)([A-Za-z]+)");
-
-        // Create a map to store the mappings
-        Map<String, Integer> timeMap = new HashMap<>();
-
-        // Use a Matcher to find matches in the input string
-        Matcher matcher = pattern.matcher(time);
-
-        // Iterate through matches and populate the map
-        while (matcher.find()) {
-            int value = Integer.parseInt(matcher.group(1));
-            String unit = matcher.group(2);
-
-            // Map the unit (letter) with the corresponding numeric value
-            timeMap.put(unit, value);
-        }
-
-        Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(playtimeUser -> {
-            if(timeMap.isEmpty()){
-                playtimeUser.removePlaytime(Long.parseLong(time), TimeUnit.SECONDS);
-            }else{
-                timeMap.forEach((s, integer) -> {
-                    switch (s.toUpperCase(Locale.ROOT)){
-                        case "S":
-                            playtimeUser.removePlaytime(integer, TimeUnit.SECONDS);
-                            break;
-                        case "M":
-                            playtimeUser.removePlaytime(integer, TimeUnit.MINUTES);
-                            break;
-                        case "H":
-                            playtimeUser.removePlaytime(integer, TimeUnit.HOURS);
-                            break;
-                        case "D":
-                            playtimeUser.removePlaytime(integer, TimeUnit.DAYS);
-                            break;
-                        case "W":
-                            playtimeUser.removePlaytime(integer * 7L, TimeUnit.DAYS);
-                            break;
-                    }
-                });
-            }
-            playtimeUser.save().thenAcceptAsync(test -> {
-                commandSender.sendMessage( Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%",playerName)));
+        Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(user -> {
+            removePlaytime(user, timeMap, time);
+            user.save().thenAcceptAsync(test -> {
+                sender.sendMessage(Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
             });
-        },() -> Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(playtimeUser -> {
-            if(timeMap.isEmpty()){
-                playtimeUser.removePlaytime(Long.parseLong(time), TimeUnit.SECONDS);
-            }else{
-                timeMap.forEach((s, integer) -> {
-                    switch (s.toUpperCase(Locale.ROOT)){
-                        case "S":
-                            playtimeUser.removePlaytime(integer, TimeUnit.SECONDS);
-                            break;
-                        case "M":
-                            playtimeUser.removePlaytime(integer, TimeUnit.MINUTES);
-                            break;
-                        case "H":
-                            playtimeUser.removePlaytime(integer, TimeUnit.HOURS);
-                            break;
-                        case "D":
-                            playtimeUser.removePlaytime(integer, TimeUnit.DAYS);
-                            break;
-                        case "W":
-                            playtimeUser.removePlaytime(integer * 7L, TimeUnit.DAYS);
-                            break;
-                    }
+        }, () -> {
+            Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(user -> {
+                removePlaytime(user, timeMap, time);
+                user.save().thenAcceptAsync(test -> {
+                    sender.sendMessage(Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
                 });
-            }
-            playtimeUser.save().thenAcceptAsync(test -> {
-                commandSender.sendMessage( Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%",playerName)));
             });
-        }));
+        });
     }
 
     @SubCommand(subCommand = "pluginInfo", permission = "playtime.playtime.pluginInfo", console = true, description = "Show info about the plugin")
-    public void pluginInfo(CommandSender commandSender, List<String> args) {
-        commandSender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
-        commandSender.sendMessage(ChatColor.GREEN + "Version: " + Playtime.getPlugin().getDescription().getVersion());
-        commandSender.sendMessage(ChatColor.GREEN + "Author: " + Playtime.getPlugin().getDescription().getAuthors());
-        commandSender.sendMessage(ChatColor.GREEN + "Website: " + Playtime.getPlugin().getDescription().getWebsite());
+    public void pluginInfo(CommandSender sender, List<String> args) {
+        sender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
+        sender.sendMessage(ChatColor.GREEN + "Version: " + Playtime.getPlugin().getDescription().getVersion());
+        sender.sendMessage(ChatColor.GREEN + "Author: " + Playtime.getPlugin().getDescription().getAuthors());
+        sender.sendMessage(ChatColor.GREEN + "Website: " + Playtime.getPlugin().getDescription().getWebsite());
         Playtime.getInstance().getStorage().getMilestones().whenComplete((milestones, throwable) -> {
-            commandSender.sendMessage(ChatColor.GREEN + "Milestones: " + milestones.size());
+            sender.sendMessage(ChatColor.GREEN + "Milestones: " + milestones.size());
         });
         Playtime.getInstance().getStorage().getRepeatingMilestones().whenComplete((milestones, throwable) -> {
-            commandSender.sendMessage(ChatColor.GREEN + "Repeating Milestones: " + milestones.size());
+            sender.sendMessage(ChatColor.GREEN + "Repeating Milestones: " + milestones.size());
         });
-        Playtime.getInstance().getMccore().getUpdate(commandSender, true);
+        Playtime.getInstance().getMccore().getUpdate(sender, true);
+    }
+
+    private void sendPlaytimeInfo(CommandSender sender, PlaytimeUser user) {
+        sender.sendMessage(Messages.PLAYTIME_INFO_OTHER.getMessage(
+                new Replacement("%NAME%", user.getName()),
+                new Replacement("%D%", String.valueOf(user.translateTime()[0])),
+                new Replacement("%H%", String.valueOf(user.translateTime()[1])),
+                new Replacement("%M%", String.valueOf(user.translateTime()[2])),
+                new Replacement("%S%", String.valueOf(user.translateTime()[3]))
+        ));
+    }
+
+    private Map<String, Integer> parseTime(String time) {
+        Pattern pattern = Pattern.compile("(\\d+)([A-Za-z]+)");
+        Matcher matcher = pattern.matcher(time);
+        Map<String, Integer> timeMap = new HashMap<>();
+
+        while (matcher.find()) {
+            int value = Integer.parseInt(matcher.group(1));
+            String unit = matcher.group(2);
+            timeMap.put(unit, value);
+        }
+        return timeMap;
+    }
+
+    private void addPlaytime(PlaytimeUser user, Map<String, Integer> timeMap, String time) {
+        if (timeMap.isEmpty()) {
+            user.addPlaytime(Long.parseLong(time), TimeUnit.SECONDS);
+        } else {
+            timeMap.forEach((unit, value) -> {
+                switch (unit.toUpperCase(Locale.ROOT)) {
+                    case "S": user.addPlaytime(value, TimeUnit.SECONDS); break;
+                    case "M": user.addPlaytime(value, TimeUnit.MINUTES); break;
+                    case "H": user.addPlaytime(value, TimeUnit.HOURS); break;
+                    case "D": user.addPlaytime(value, TimeUnit.DAYS); break;
+                    case "W": user.addPlaytime(value * 7L, TimeUnit.DAYS); break;
+                }
+            });
+        }
+    }
+
+    private void removePlaytime(PlaytimeUser user, Map<String, Integer> timeMap, String time) {
+        if (timeMap.isEmpty()) {
+            user.removePlaytime(Long.parseLong(time), TimeUnit.SECONDS);
+        } else {
+            timeMap.forEach((unit, value) -> {
+                switch (unit.toUpperCase(Locale.ROOT)) {
+                    case "S": user.removePlaytime(value, TimeUnit.SECONDS); break;
+                    case "M": user.removePlaytime(value, TimeUnit.MINUTES); break;
+                    case "H": user.removePlaytime(value, TimeUnit.HOURS); break;
+                    case "D": user.removePlaytime(value, TimeUnit.DAYS); break;
+                    case "W": user.removePlaytime(value * 7L, TimeUnit.DAYS); break;
+                }
+            });
+        }
     }
 
 }

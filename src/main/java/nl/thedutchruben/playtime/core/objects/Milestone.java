@@ -176,4 +176,10 @@ public class Milestone {
         return messages;
     }
 
+    public static Milestone getMilestone(String name){
+        return Playtime.getInstance()
+                .getMilestones().stream()
+                .filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(name))
+                .findFirst().orElse(null);
+    }
 }
