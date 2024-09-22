@@ -3,6 +3,7 @@ package nl.thedutchruben.playtime;
 import lombok.Getter;
 import nl.thedutchruben.mccore.Mccore;
 import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
+import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.migrations.TwoPointZeroMigration;
@@ -23,6 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Tdrplaytime is the playtime plugin you need to track the time of your players
@@ -129,6 +131,16 @@ public class Playtime {
                 }
             });
         }
+
+        CommandRegistry.getTabCompletable().put("milestone", commandSender ->
+            this.milestones.stream().map(Milestone::getMilestoneName)
+                    .collect(Collectors.toSet())
+        );
+
+        CommandRegistry.getTabCompletable().put("repeatingMilestone", commandSender ->
+                this.repeatingMilestones.stream().map(RepeatingMilestone::getMilestoneName)
+                        .collect(Collectors.toSet())
+        );
     }
 
     public Storage getSelectedStorage(){
