@@ -19,7 +19,7 @@ public enum Settings {
     STORAGE_MYSQL_HOST("mysql.hostname", "localhost", 1.0, "storage.yml"),
     STORAGE_MYSQL_PORT("mysql.port", 3306, 1.0, "storage.yml"),
     STORAGE_MYSQL_USERNAME("mysql.username", "username", 1.0, "storage.yml"),
-    STORAGE_MYSQL_PASSWORD("mysql.password", "password", 1.0," storage.yml"),
+    STORAGE_MYSQL_PASSWORD("mysql.password", "password", 1.0, "storage.yml"),
     STORAGE_MYSQL_SSL("mysql.ssl", true, 1.0, "storage.yml"),
     STORAGE_MYSQL_SCHEMA("mysql.schema", "playtime", 1.0, "storage.yml"),
     STORAGE_MYSQL_PREFIX("mysql.prefix", "", 1.0, "storage.yml"),

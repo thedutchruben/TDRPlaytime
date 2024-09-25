@@ -7,9 +7,6 @@ import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -20,7 +17,7 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
      * @return
      */
     @Override
-    public @NotNull String getIdentifier() {
+    public String getIdentifier() {
         return "tdrplaytime";
     }
 
@@ -28,7 +25,7 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
      * @return
      */
     @Override
-    public @NotNull String getAuthor() {
+    public String getAuthor() {
         return "TheDutchRuben";
     }
 
@@ -36,13 +33,13 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
      * @return
      */
     @Override
-    public @NotNull String getVersion() {
+    public String getVersion() {
         return "1.0";
     }
 
 
     @Override
-    public @NotNull List<String> getPlaceholders() {
+    public List<String> getPlaceholders() {
         List<String> placeholders = new ArrayList<>();
 
         placeholders.add("%tdrplaytime_time%");
@@ -64,7 +61,7 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
     }
 
     @Override
-    public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
+    public String onPlaceholderRequest(Player player,  String params) {
         String dummyProofParams = params.toLowerCase().replace('-','_');
         PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(player.getUniqueId());
 

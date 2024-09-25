@@ -5,7 +5,6 @@ import java.util.List;
 
 public class SqlStatements {
 
-
     public static List<String> getStatements(String tablePrefix, boolean mysql){
         List<String> strings = new ArrayList<>();
         strings.add("CREATE TABLE IF NOT EXISTS `" + tablePrefix + "playtime` (\n" +
@@ -26,7 +25,7 @@ public class SqlStatements {
                 "  `milestone` varchar(40),\n" +
                 "  `claimed` BOOLEAN \n" +
                 ");\n");
-        if(mysql){
+        if (mysql) {
             strings.add("CREATE TABLE IF NOT EXISTS `" + tablePrefix + "playtime_history` (\n" +
                     "`id` INT NOT NULL AUTO_INCREMENT , \n" +
                     "`uuid` VARCHAR(40) NOT NULL , \n" +
@@ -34,7 +33,7 @@ public class SqlStatements {
                     "`end_time` BIGINT NOT NULL , \n" +
                     "`date` DATE NOT NULL , \n" +
                     "PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-        }else{
+        } else {
             strings.add("CREATE TABLE IF NOT EXISTS \""+tablePrefix+"playtime_history\" (\n" +
                     "\t\"id\"\tINTEGER,\n" +
                     "\t\"uuid\"\tVARCHAR(40),\n" +
@@ -47,6 +46,4 @@ public class SqlStatements {
 
         return strings;
     }
-
-
 }

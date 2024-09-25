@@ -21,24 +21,17 @@ public class UpdatePlaytimeListener implements Listener {
     @EventHandler
     public void updatePlaytime(AsyncPlaytimePlayerUpdatePlaytimeEvent event) {
         // Check and apply milestones that are not repeating
-        if (!Playtime.getInstance().getMilestones().isEmpty()) {
-            Playtime.getInstance().getMilestones().forEach(milestone -> {
-                if (milestone.getOnlineTime() <= event.getNewPlaytime() && milestone.getOnlineTime() > event.getOldPlaytime()) {
-                    milestone.apply(event.getUser().getBukkitPlayer());
-                }
-            });
-        }
+        Playtime.getInstance().getMilestones().stream()
+                .filter(milestone -> milestone.getOnlineTime() <= event.getNewPlaytime() && milestone.getOnlineTime() > event.getOldPlaytime())
+                .forEach(milestone -> milestone.apply(event.getUser().getBukkitPlayer()));
 
         // Check and apply repeating milestones
-        if (!Playtime.getInstance().getRepeatingMilestones().isEmpty()) {
-            for (float i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
-                if (i > 0) {
-                    for (RepeatingMilestone repeatingMilestone : Playtime.getInstance().getRepeatingMilestones()) {
-                        if (i % (repeatingMilestone.getOnlineTime() * 1000) == 1) {
-                            repeatingMilestone.apply(event.getUser().getBukkitPlayer());
-                        }
-                    }
-                }
+        for (float i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
+            if (i > 0) {
+                float finalI = i;
+                Playtime.getInstance().getRepeatingMilestones().stream()
+                    .filter(repeatingMilestone -> finalI % (repeatingMilestone.getOnlineTime() * 1000) == 1)
+                    .forEach(repeatingMilestone -> repeatingMilestone.apply(event.getUser().getBukkitPlayer()));
             }
         }
     }

@@ -145,7 +145,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -176,13 +176,13 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>5.1.4</version>
+            <version>5.1.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>bson</artifactId>
-            <version>5.1.4</version>
+            <version>5.1.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

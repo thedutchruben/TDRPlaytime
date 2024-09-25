@@ -262,7 +262,7 @@ public class SqlLite extends Storage {
     public CompletableFuture<Boolean> saveMilestone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement( "INSERT INTO `repeating_milestones`(`name`, `data`) VALUES (?,?)")) {
+                    .prepareStatement("INSERT INTO `milestones`(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
                 preparedStatement.setString(2, getGson().toJson(milestone));
                 preparedStatement.executeUpdate();

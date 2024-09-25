@@ -146,6 +146,50 @@ public class Milestone {
 
     }
 
+    public void addItemStack(ItemStack itemStack) {
+        if (itemStacks == null) {
+            itemStacks = new ArrayList<>();
+        }
+        itemStacks.add(itemStack.serialize());
+        _itemStackObjects = null;
+    }
+
+    public void addCommand(String command) {
+        if (commands == null) {
+            commands = new ArrayList<>();
+        }
+        commands.add(command);
+    }
+
+    public void addMessage(String message) {
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
+        messages.add(message);
+    }
+
+    public void removeItemStack(ItemStack itemStack) {
+        if (itemStacks == null) {
+            return;
+        }
+        itemStacks.remove(itemStack.serialize());
+        _itemStackObjects = null;
+    }
+
+    public void removeCommand(String command) {
+        if (commands == null) {
+            return;
+        }
+        commands.remove(command);
+    }
+
+    public void removeMessage(String message) {
+        if (messages == null) {
+            return;
+        }
+        messages.remove(message);
+    }
+
     /**
      * @return The list of items to give the player.
      */
