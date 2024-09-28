@@ -92,13 +92,13 @@ public class PlayTimeCommand {
         Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(user -> {
             addPlaytime(user, timeMap, time);
             user.save().thenAcceptAsync(test -> {
-                sender.sendMessage(Messages.TIME_ADDED_TO_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
+                sender.sendMessage(Messages.TIME_ADDED.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
             });
         }, () -> {
             Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(user -> {
                 addPlaytime(user, timeMap, time);
                 user.save().thenAcceptAsync(test -> {
-                    sender.sendMessage(Messages.TIME_ADDED_TO_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
+                    sender.sendMessage(Messages.TIME_ADDED.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
                 });
             });
         });
@@ -113,13 +113,13 @@ public class PlayTimeCommand {
         Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(user -> {
             removePlaytime(user, timeMap, time);
             user.save().thenAcceptAsync(test -> {
-                sender.sendMessage(Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
+                sender.sendMessage(Messages.TIME_REMOVED.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
             });
         }, () -> {
             Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(user -> {
                 removePlaytime(user, timeMap, time);
                 user.save().thenAcceptAsync(test -> {
-                    sender.sendMessage(Messages.TIME_REMOVED_FROM_USER.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
+                    sender.sendMessage(Messages.TIME_REMOVED.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
                 });
             });
         });
