@@ -264,6 +264,13 @@ public class Yaml extends Storage {
 
     @Override
     public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("players/history/" + uuid + ".yaml");
+            List<String> history = config.get().getStringList("history");
+            history.add(event.name() + ":" + time);
+            config.set("history", history);
+            config.save();
+            return true;
+        });
     }
 }

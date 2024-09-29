@@ -11,6 +11,7 @@ import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.storage.Storage;
+import nl.thedutchruben.playtime.core.storage.exceptions.StorageTypeNotFoundException;
 import nl.thedutchruben.playtime.core.storage.types.Mongodb;
 import nl.thedutchruben.playtime.core.storage.types.Mysql;
 import nl.thedutchruben.playtime.core.storage.types.SqlLite;
@@ -84,7 +85,7 @@ public class Playtime {
         plugin = playTimePlugin;
     }
 
-    public void onEnable(JavaPlugin playTimePlugin)  {
+    public void onEnable(JavaPlugin playTimePlugin) {
         instance = this;
         this.fileManager = new FileManager(plugin);
 
@@ -143,23 +144,27 @@ public class Playtime {
         );
     }
 
-    public Storage getSelectedStorage(){
-        switch (Settings.STORAGE_TYPE.getValueAsString().toLowerCase()){
+    public Storage getSelectedStorage() {
+        String storageType = Settings.STORAGE_TYPE.getValueAsString().toLowerCase();
+        switch (storageType){
             case "mongodb":
                 return new Mongodb();
             case "mysql":
                 return new Mysql();
             case "yaml":
+            case "yml":
                 getPlugin().getLogger().log(Level.WARNING, "Yaml storage is not recommended. If you have a lot of players it can cause lag. Please use sqlLite, mysql or mongodb");
                 return new Yaml();
-            case "postgresql":
-                throw new UnsupportedOperationException("Postgresql is not supported yet");
-            default:
+            case "sqlite":
                 return new SqlLite();
+            case "postgresql":
+                throw new StorageTypeNotFoundException("Postgresql is not supported yet");
+            default:
+                throw new StorageTypeNotFoundException("Storage type " + storageType + " not found");
         }
     }
 
-    public void onDisable(){
+    public void onDisable() {
         this.storage.stop();
         this.milestones.clear();
         this.repeatingMilestones.clear();
@@ -171,7 +176,7 @@ public class Playtime {
      * @param uuid The uuid of the player
      * @return The playtime user
      */
-    public Optional<PlaytimeUser> getPlaytimeUser(UUID uuid){
+    public Optional<PlaytimeUser> getPlaytimeUser(UUID uuid) {
         return Optional.of(playtimeUsers.get(uuid));
     }
 
@@ -180,7 +185,7 @@ public class Playtime {
      * @param name The name of the player
      * @return The playtime user if exist
      */
-    public Optional<PlaytimeUser> getPlaytimeUser(String name){
+    public Optional<PlaytimeUser> getPlaytimeUser(String name) {
         return playtimeUsers.values().stream().filter(item -> item.getName().equalsIgnoreCase(name)).findFirst();
     }
 }

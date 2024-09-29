@@ -102,50 +102,62 @@ public class Milestone {
      * @param player The player to apply the milestone to
      */
     public void apply(Player player) {
-        Bukkit.getScheduler().runTask(Playtime.getPlugin(),() -> Bukkit.getPluginManager().callEvent(new MilestoneReceiveEvent(this,Playtime.getInstance().getPlaytimeUser(player.getUniqueId()).get())));
-        if (itemStacks != null) {
-            if (_itemStackObjects == null) {
-                _itemStackObjects = new ArrayList<>();
-                for (Map<String, Object> itemStack : itemStacks) {
-                    _itemStackObjects.add(ItemStack.deserialize(itemStack));
-                }
+        Bukkit.getScheduler().runTask(Playtime.getPlugin(), () ->
+                Bukkit.getPluginManager().callEvent(
+                        new MilestoneReceiveEvent(this, Playtime.getInstance().getPlaytimeUser(player.getUniqueId()).get()))
+        );
+
+        if (itemStacks != null && _itemStackObjects == null) {
+            _itemStackObjects = new ArrayList<>();
+            for (Map<String, Object> itemStack : itemStacks) {
+                _itemStackObjects.add(ItemStack.deserialize(itemStack));
             }
-            if(!_itemStackObjects.isEmpty()){
-                Bukkit.getScheduler().runTask(Playtime.getPlugin(),() -> player.getInventory().addItem(_itemStackObjects.toArray(ItemStack[]::new)));
-            }
+        }
+
+        if (_itemStackObjects != null && !_itemStackObjects.isEmpty()) {
+            Bukkit.getScheduler().runTask(Playtime.getPlugin(), () ->
+                    player.getInventory().addItem(_itemStackObjects.toArray(new ItemStack[0]))
+            );
         }
 
         if (commands != null) {
-            Bukkit.getScheduler().runTask(Playtime.getPlugin(), () -> commands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                    command.replaceAll("%playername%", player.getName())
-                            .replaceAll("%player_name%", player.getName())
-                            .replaceAll("%playeruuid%", player.getUniqueId().toString())
-                            .replaceAll("%player_uuid%", player.getUniqueId().toString()))));
+            Bukkit.getScheduler().runTask(Playtime.getPlugin(), () ->
+                    commands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                            command.replaceAll("%playername%", player.getName())
+                                    .replaceAll("%player_name%", player.getName())
+                                    .replaceAll("%playeruuid%", player.getUniqueId().toString())
+                                    .replaceAll("%player_uuid%", player.getUniqueId().toString()))
+                    )
+            );
         }
 
         if (messages != null) {
-            messages.forEach(s -> {
-                String formattedString = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', s));
-                player.sendMessage(formattedString);
-            });
+            messages.forEach(s ->
+                    player.sendMessage(MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', s)))
+            );
         }
 
         if (fireworkShow) {
             Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(), () -> {
                 for (int i = 0; i < fireworkShowAmount; i++) {
-                    Bukkit.getScheduler().runTask(Playtime.getPlugin(), () -> FireworkUtil.spawnRandomFirework(player.getLocation()));
+                    Bukkit.getScheduler().runTask(Playtime.getPlugin(), () ->
+                            FireworkUtil.spawnRandomFirework(player.getLocation())
+                    );
                     try {
                         Thread.sleep(fireworkShowSecondsBetween * 1000L);
                     } catch (InterruptedException e) {
-                        Playtime.getPlugin().getLogger().warning("Error while sleeping the thread :" + e.getMessage());
+                        Playtime.getPlugin().getLogger().warning("Error while sleeping the thread: " + e.getMessage());
                     }
                 }
             });
-
         }
-
     }
 
+    /**
+     * Adds an ItemStack to the milestone.
+     *
+     * @param itemStack The ItemStack to add.
+     */
     public void addItemStack(ItemStack itemStack) {
         if (itemStacks == null) {
             itemStacks = new ArrayList<>();
@@ -154,6 +166,11 @@ public class Milestone {
         _itemStackObjects = null;
     }
 
+    /**
+     * Adds a command to the milestone.
+     *
+     * @param command The command to add.
+     */
     public void addCommand(String command) {
         if (commands == null) {
             commands = new ArrayList<>();
@@ -161,6 +178,11 @@ public class Milestone {
         commands.add(command);
     }
 
+    /**
+     * Adds a message to the milestone.
+     *
+     * @param message The message to add.
+     */
     public void addMessage(String message) {
         if (messages == null) {
             messages = new ArrayList<>();
@@ -168,6 +190,11 @@ public class Milestone {
         messages.add(message);
     }
 
+    /**
+     * Removes an ItemStack from the milestone.
+     *
+     * @param itemStack The ItemStack to remove.
+     */
     public void removeItemStack(ItemStack itemStack) {
         if (itemStacks == null) {
             return;
@@ -176,6 +203,11 @@ public class Milestone {
         _itemStackObjects = null;
     }
 
+    /**
+     * Removes a command from the milestone.
+     *
+     * @param command The command to remove.
+     */
     public void removeCommand(String command) {
         if (commands == null) {
             return;
@@ -183,6 +215,11 @@ public class Milestone {
         commands.remove(command);
     }
 
+    /**
+     * Removes a message from the milestone.
+     *
+     * @param message The message to remove.
+     */
     public void removeMessage(String message) {
         if (messages == null) {
             return;
@@ -214,9 +251,9 @@ public class Milestone {
      * get the list of messages to send
      */
     public List<String> getMessages() {
-        if (messages == null)
+        if (messages == null) {
             messages = new ArrayList<>();
-
+        }
         return messages;
     }
 

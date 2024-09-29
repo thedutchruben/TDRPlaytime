@@ -5,8 +5,7 @@ import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 /**
  * This event is called when a player is unloaded
  */
-public class PlaytimePlayerUnLoadedEvent extends PlaytimePlayerEvent
-{
+public class PlaytimePlayerUnLoadedEvent extends PlaytimePlayerEvent {
     /**
      * Create a new PlaytimePlayerUnLoadedEvent
      * @param user the user that is unloaded

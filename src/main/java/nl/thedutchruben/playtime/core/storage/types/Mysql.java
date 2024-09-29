@@ -54,7 +54,7 @@ public class Mysql extends Storage {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for(String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(),true)){
+        for(String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), true)){
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             } catch (SQLException sqlException) {

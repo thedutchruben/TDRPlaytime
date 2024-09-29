@@ -3,6 +3,7 @@ package nl.thedutchruben.playtime.core.storage.types;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
@@ -57,7 +58,7 @@ public class SqlLite extends Storage {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for(String statement : SqlStatements.getStatements("",false)){
+        for(String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), false)){
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             } catch (SQLException sqlException) {
@@ -409,6 +410,17 @@ public class SqlLite extends Storage {
     @Override
     public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid,Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
+
+            try (PreparedStatement preparedStatement = connection
+                    .prepareStatement("INSERT INTO `playtime_history`(`uuid`, `event`, `time`) VALUES (?,?,?)")) {
+                preparedStatement.setString(1, uuid.toString());
+                preparedStatement.setString(2, event.name());
+                preparedStatement.setInt(3, time);
+                preparedStatement.executeUpdate();
+                return true;
+            } catch (SQLException sqlException) {
+                Playtime.getPlugin().getLogger().severe("Error while updating playtime history to database: " + sqlException.getMessage());
+            }
 
             return true;
         });

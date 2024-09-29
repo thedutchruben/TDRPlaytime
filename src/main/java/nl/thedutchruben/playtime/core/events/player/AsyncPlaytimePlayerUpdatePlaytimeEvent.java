@@ -24,4 +24,3 @@ public class AsyncPlaytimePlayerUpdatePlaytimeEvent extends PlaytimePlayerEvent 
         this.newPlaytime = newPlaytime;
     }
 }
-

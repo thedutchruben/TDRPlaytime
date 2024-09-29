@@ -6,17 +6,14 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.storage.Storage;
 import org.bson.Document;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Mongodb extends Storage {
@@ -38,19 +35,18 @@ public class Mongodb extends Storage {
      */
     @Override
     public boolean setup() {
-        YamlConfiguration databaseConfig = Playtime.getInstance().getFileManager().getConfig("database.yml").get();
         // build the connection string from config values
         String connectionString = "mongodb://";
-        if (!Objects.equals(databaseConfig.getString("mongodb.user"), "") && databaseConfig.getString("mongodb.user") != null && !databaseConfig.getString("mongodb.user").isEmpty()) {
-            connectionString += databaseConfig.getString("mongodb.user") + ":" + databaseConfig.getString("mongodb.password") + "@";
+        if (!Objects.equals(Settings.STORAGE_MONGO_USERNAME.getValueAsString(), "")) {
+            connectionString += Settings.STORAGE_MONGO_USERNAME.getValueAsString()+ ":" + Settings.STORAGE_MONGO_PASSWORD.getValueAsString() + "@";
         }
-        connectionString += databaseConfig.getString("mongodb.hostname") + ":" + databaseConfig.getInt("mongodb.port");
-        connectionString += "/" + databaseConfig.getString("mongodb.collection");
+        connectionString += Settings.STORAGE_MONGO_HOST.getValueAsString() + ":" + Settings.STORAGE_MONGO_PORT.getValueAsInteger();
+        connectionString += "/" + Settings.STORAGE_MONGO_COLLECTION.getValueAsString();
         this.mongoClient = MongoClients.create(connectionString);
         //Check if the database is valid
-        this.database = this.mongoClient.getDatabase(databaseConfig.getString("mongodb.collection"));
+        this.database = this.mongoClient.getDatabase( Settings.STORAGE_MONGO_COLLECTION.getValueAsString());
 
-        return this.mongoClient != null && this.database != null;
+        return this.mongoClient != null;
     }
 
     /**
@@ -277,6 +273,39 @@ public class Mongodb extends Storage {
 
     @Override
     public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            Calendar date = new GregorianCalendar();
+            date.set(Calendar.HOUR_OF_DAY, 0);
+            date.set(Calendar.MINUTE, 0);
+            date.set(Calendar.SECOND, 0);
+            date.set(Calendar.MILLISECOND, 0);
+            java.sql.Date sqlDate = new java.sql.Date(date.getTimeInMillis());
+
+            try {
+                if (event == Event.JOIN) {
+                    if (!playtimeRecordExists(uuid, sqlDate)) {
+                        Document document = new Document("uuid", uuid.toString())
+                                .append("start_time", time)
+                                .append("end_time", time)
+                                .append("date", sqlDate);
+                        InsertOneResult result = this.database.getCollection("playtime_history").insertOne(document);
+                        return result.wasAcknowledged();
+                    }
+                } else {
+                    Document query = new Document("uuid", uuid.toString()).append("date", sqlDate);
+                    Document update = new Document("$set", new Document("end_time", time));
+                    UpdateResult result = this.database.getCollection("playtime_history").updateOne(query, update);
+                    return result.wasAcknowledged();
+                }
+            } catch (Exception e) {
+                Playtime.getPlugin().getLogger().severe("Error while updating playtime history: " + e.getMessage());
+            }
+            return false;
+        });
+    }
+
+    private boolean playtimeRecordExists(UUID uuid, java.sql.Date date) {
+        Document query = new Document("uuid", uuid.toString()).append("date", date);
+        return this.database.getCollection("playtime_history").find(query).first() != null;
     }
 }

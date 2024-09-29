@@ -38,7 +38,7 @@ public enum Messages {
     MILESTONE_REWARDS_APPLIED("command.milestone.rewardsapplied", "&aYou have successfully applied the rewards!"),
     PLAYER_DOES_NOT_EXIST("command.playtime.playerdoesnotexist", "&cThe player does not exist!"),
     MILESTONE_DOES_NOT_EXIST("command.milestone.milestonedoesnotexist", "&cThe milestone does not exist!"),
-    MILESTONE_COULD_NOT_BE_CREATED("command.milestone.milestonecouldnotbecreated", "&cThe milestone could not be created!"),
+    MILESTONE_COULD_NOT_BE_CREATED("command.milestone.milestonecouldnotbecreated", "&cThe milestone could not be created!")
     ;
 
     private final String path;
@@ -55,16 +55,15 @@ public enum Messages {
      * @param replacements
      * @return
      */
-    public String getMessage(Replacement... replacements){
-        YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").get();
-        if(!messages.containsKey(path)){
-            messages.put(path,file.getString(path,fallBack));
-        }
-        String message = MessageUtil.translateHexColorCodes("<", ">",ChatColor.translateAlternateColorCodes('&',messages.get(path)));
-        for(Replacement replacement : replacements){
-            message = message.replace(replacement.getFrom(),replacement.getTo());
+    public String getMessage(Replacement... replacements) {
+        messages.computeIfAbsent(path, k -> {
+            YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").get();
+            return file.getString(path, fallBack);
+        });
+        String message = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', messages.get(path)));
+        for (Replacement replacement : replacements) {
+            message = message.replace(replacement.getFrom(), replacement.getTo());
         }
         return message;
     }
-
 }
