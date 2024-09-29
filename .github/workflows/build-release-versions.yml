@@ -38,7 +38,7 @@ jobs:
           name: Plugin-${{ env.snapshotVersion }}-${{ matrix.downloadSource }}.jar
           path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
       - name: Upload Plugin jar to GitHub Releases
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
           tag_name: ${{ env.snapshotVersion }}
