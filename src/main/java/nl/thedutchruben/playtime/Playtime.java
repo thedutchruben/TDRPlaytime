@@ -90,6 +90,7 @@ public class Playtime {
         this.fileManager = new FileManager(plugin);
 
         Settings.setupDefaults();
+        Messages.setupDefaults();
 
         //set up the storage
         this.storage = getSelectedStorage();
@@ -120,16 +121,15 @@ public class Playtime {
         getPlugin().getLogger().log(Level.INFO,"Loaded {0} milestones",this.milestones.size());
         this.storage.getRepeatingMilestones().thenAccept(repeatingMilestones -> this.repeatingMilestones = repeatingMilestones).join();
         getPlugin().getLogger().log(Level.INFO,"Loaded {0} repeatingmilestones",this.repeatingMilestones.size());
-        
+
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            Playtime.getInstance().getStorage().loadUser(onlinePlayer.getUniqueId()).thenAccept(playtimeUser -> {
-                if(playtimeUser != null){
-                    Playtime.getInstance().getPlaytimeUsers().put(onlinePlayer.getUniqueId(),playtimeUser);
-                }else{
-                    PlaytimeUser playtimeUser1 = new PlaytimeUser(onlinePlayer.getUniqueId().toString(),onlinePlayer.getName());
-                    Playtime.getInstance().getStorage().createUser(playtimeUser1);
-                    Playtime.getInstance().getPlaytimeUsers().put(onlinePlayer.getUniqueId(),playtimeUser1);
+            UUID playerUUID = onlinePlayer.getUniqueId();
+            Playtime.getInstance().getStorage().loadUser(playerUUID).thenAccept(playtimeUser -> {
+                if (playtimeUser == null) {
+                    playtimeUser = new PlaytimeUser(playerUUID.toString(), onlinePlayer.getName());
+                    Playtime.getInstance().getStorage().createUser(playtimeUser);
                 }
+                Playtime.getInstance().getPlaytimeUsers().put(playerUUID, playtimeUser);
             });
         }
 
@@ -148,8 +148,11 @@ public class Playtime {
         String storageType = Settings.STORAGE_TYPE.getValueAsString().toLowerCase();
         switch (storageType){
             case "mongodb":
+            case "mongo":
                 return new Mongodb();
             case "mysql":
+            case "sql":
+            case "mariadb":
                 return new Mysql();
             case "yaml":
             case "yml":
@@ -159,12 +162,19 @@ public class Playtime {
                 return new SqlLite();
             case "postgresql":
                 throw new StorageTypeNotFoundException("Postgresql is not supported yet");
+            case "h2":
+                throw new StorageTypeNotFoundException("H2 is not supported yet");
             default:
                 throw new StorageTypeNotFoundException("Storage type " + storageType + " not found");
         }
     }
 
     public void onDisable() {
+
+        for (PlaytimeUser playtimeUser : playtimeUsers.values()) {
+            storage.saveUser(playtimeUser);
+        }
+
         this.storage.stop();
         this.milestones.clear();
         this.repeatingMilestones.clear();

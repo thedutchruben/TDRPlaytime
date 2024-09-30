@@ -45,22 +45,37 @@ public enum Messages {
     private final String fallBack;
     @Getter
     private static final Map<String, String> messages = new HashMap<>();
+
     Messages(String path,String fallBack) {
         this.path = path;
         this.fallBack = fallBack;
     }
 
     /**
-     * Get the message fully tranlated
-     * @param replacements
-     * @return
+     * Setup the default messages
+     */
+    public static void setupDefaults() {
+        YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").get();
+        for (Messages value : Messages.values()) {
+            if (!file.contains(value.path)) {
+                file.set(value.path, value.fallBack);
+            }
+        }
+
+        Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").save();
+    }
+
+    /**
+     * Get the message from the path
+     * @param replacements The replacements to replace in the message
+     * @return The message
      */
     public String getMessage(Replacement... replacements) {
-        messages.computeIfAbsent(path, k -> {
+        String message = messages.computeIfAbsent(path, k -> {
             YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").get();
             return file.getString(path, fallBack);
         });
-        String message = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', messages.get(path)));
+        message = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', message));
         for (Replacement replacement : replacements) {
             message = message.replace(replacement.getFrom(), replacement.getTo());
         }

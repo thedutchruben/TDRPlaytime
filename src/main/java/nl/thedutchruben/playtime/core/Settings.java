@@ -8,7 +8,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 @Getter
 public enum Settings {
     UPDATE_CHECK("settings.update-check", true, 1.0, "config.yml"),
-    LANGUAGE("language", "en_GB" ,1.0, "config.yml"),
     CACHE_TIME("settings.cache-time", 5, 1.0, "config.yml"),
     AFK_COUNT_TIME("settings.afk.countAfkTime", true, 1.0, "config.yml"),
     AFK_USE_ESSENTIALS_API("settings.afk.useEssentialsApi", false, 1.0, "config.yml"),
@@ -73,6 +72,5 @@ public enum Settings {
                 Playtime.getInstance().getFileManager().getConfig(value.getFileName()).save();
             }
         }
-
     }
 }
