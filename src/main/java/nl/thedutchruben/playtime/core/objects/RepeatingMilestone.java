@@ -48,7 +48,6 @@ public class RepeatingMilestone {
     @SerializedName("messages")
     private List<String> messages;
 
-
     /**
      * Apply the milestone on the player
      *
@@ -78,14 +77,15 @@ public class RepeatingMilestone {
                                     .replaceAll("%player_uuid%", player.getUniqueId().toString()));
                 }
             });
-
         }
+
         if (messages != null) {
             messages.forEach(s -> {
                 String formattedString = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', s));
                 player.sendMessage(formattedString);
             });
         }
+
         if (fireworkShow) {
             Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(), () -> {
                 for (int i = 0; i < fireworkShowAmount; i++) {

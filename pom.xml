@@ -148,7 +148,6 @@
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -164,7 +163,7 @@
         <dependency>
             <groupId>nl.thedutchruben</groupId>
             <artifactId>mccore</artifactId>
-            <version>1.4.7</version>
+            <version>1.4.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

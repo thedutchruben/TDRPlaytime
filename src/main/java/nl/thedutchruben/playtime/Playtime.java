@@ -153,6 +153,7 @@ public class Playtime {
                 getPlugin().getLogger().log(Level.WARNING, "Yaml storage is not recommended. If you have a lot of players it can cause lag. Please use sqlLite, mysql or mongodb");
                 return new Yaml();
             case "sqlite":
+            case "sqllite":
                 return new SqlLite();
             case "postgresql":
                 throw new StorageTypeNotFoundException("Postgresql is not supported yet");

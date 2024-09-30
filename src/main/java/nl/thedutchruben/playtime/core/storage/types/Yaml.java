@@ -12,10 +12,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Yaml extends Storage {
@@ -183,7 +181,23 @@ public class Yaml extends Storage {
      */
     @Override
     public CompletableFuture<List<Milestone>> getMilestones() {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            List<Milestone> milestones = new ArrayList<>();
+            File[] files = new File(Playtime.getPlugin().getDataFolder(), "milestones/").listFiles();
+
+            if (files == null) {
+                return milestones;
+            }
+
+            for (final File fileEntry : files) {
+                YamlConfiguration config = Playtime.getInstance().getFileManager()
+                        .getConfig("milestones/" + fileEntry.getName()).get();
+                if (config != null) {
+                    milestones.add(this.gson.fromJson(config.getString("data"), Milestone.class));
+                }
+            }
+            return milestones;
+        });
     }
 
     /**
@@ -194,7 +208,14 @@ public class Yaml extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> saveMilestone(Milestone milestone) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml")
+                    .get().set("data", this.gson.toJson(milestone, Milestone.class));
+            Playtime.getInstance().getFileManager().getConfig("milestones/" + milestone.getMilestoneName() + ".yaml")
+                    .save();
+            return true;
+        });
+
     }
 
     /**
@@ -205,7 +226,11 @@ public class Yaml extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> deleteMilestone(Milestone milestone) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            Playtime.getInstance().getFileManager()
+                    .getConfig("milestones/" + milestone.getMilestoneName() + ".yaml").file.delete();
+            return true;
+        });
     }
 
     /**
@@ -216,7 +241,7 @@ public class Yaml extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> updateMilestone(Milestone milestone) {
-        return null;
+        return saveMilestone(milestone);
     }
 
     /**
@@ -226,7 +251,23 @@ public class Yaml extends Storage {
      */
     @Override
     public CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones() {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            List<RepeatingMilestone> milestones = new ArrayList<>();
+            File[] files = new File(Playtime.getPlugin().getDataFolder(), "repeatingmilestones/").listFiles();
+
+            if (files == null) {
+                return milestones;
+            }
+
+            for (final File fileEntry : files) {
+                YamlConfiguration config = Playtime.getInstance().getFileManager()
+                        .getConfig("repeatingmilestones/" + fileEntry.getName()).get();
+                if (config != null) {
+                    milestones.add(this.gson.fromJson(config.getString("data"), RepeatingMilestone.class));
+                }
+            }
+            return milestones;
+        });
     }
 
     /**
@@ -237,7 +278,14 @@ public class Yaml extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> saveRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            Playtime.getInstance().getFileManager()
+                    .getConfig("repeatingmilestones/" + repeatingMilestone.getMilestoneName() + ".yaml").get()
+                    .set("data", this.gson.toJson(repeatingMilestone, RepeatingMilestone.class));
+            Playtime.getInstance().getFileManager()
+                    .getConfig("repeatingmilestones/" + repeatingMilestone.getMilestoneName() + ".yaml").save();
+            return true;
+        });
     }
 
     /**
@@ -248,7 +296,11 @@ public class Yaml extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> deleteRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            Playtime.getInstance().getFileManager()
+                    .getConfig("repeatingmilestones/" + repeatingMilestone.getMilestoneName() + ".yaml").file.delete();
+            return true;
+        });
     }
 
     /**
@@ -259,7 +311,7 @@ public class Yaml extends Storage {
      */
     @Override
     public CompletableFuture<Boolean> updateRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
-        return null;
+        return saveRepeatingMilestone(repeatingMilestone);
     }
 
     @Override
@@ -267,7 +319,22 @@ public class Yaml extends Storage {
         return CompletableFuture.supplyAsync(() -> {
             FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("players/history/" + uuid + ".yaml");
             List<String> history = config.get().getStringList("history");
-            history.add(event.name() + ":" + time);
+            String today = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+            boolean updated = false;
+
+            for (int i = 0; i < history.size(); i++) {
+                String entry = history.get(i);
+                if (entry.contains("Date: " + today) && event.equals(Event.QUIT)) {
+                    history.set(i, "Date: " + today + " Event: " + event.name() + " Time: " + time);
+                    updated = true;
+                    break;
+                }
+            }
+
+            if (!updated) {
+                history.add("Date: " + today + " Event: " + event.name() + " Time: " + time);
+            }
+
             config.set("history", history);
             config.save();
             return true;

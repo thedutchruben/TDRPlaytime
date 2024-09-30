@@ -3,6 +3,7 @@ package nl.thedutchruben.playtime.core.storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import nl.thedutchruben.mccore.utils.GsonUtil;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
@@ -15,13 +16,7 @@ public abstract class Storage {
     private final Gson gson;
 
     public Storage() {
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .setObjectToNumberStrategy(JsonReader::nextInt)
-//                .registerTypeHierarchyAdapter(ConfigurationSerializable.class, new ConfigurationSerializableAdapter())
-//                .registerTypeHierarchyAdapter(ItemStack.class, new ItemStackAdapter())
-                .create();
+        this.gson =  GsonUtil.createGson();
     }
 
     /**
