@@ -1,6 +1,5 @@
 package nl.thedutchruben.playtime.core;
 
-
 import lombok.Getter;
 import nl.thedutchruben.playtime.Playtime;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,6 +33,7 @@ public enum Settings {
     private final String path;
     private final Object defaultValue;
     private final String fileName;
+    private final double version;
 
     public YamlConfiguration getConfig(String fileName){
         return Playtime.getInstance().getFileManager().getConfig(fileName).get();
@@ -43,6 +43,7 @@ public enum Settings {
         this.path = path;
         this.defaultValue = defaultValue;
         this.fileName = fileName;
+        this.version = version;
     }
 
     public Object getValue(){

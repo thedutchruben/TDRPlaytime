@@ -3,7 +3,6 @@ package nl.thedutchruben.playtime.extentions;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.Settings;
 import org.bstats.bukkit.Metrics;
-import org.bstats.charts.AdvancedBarChart;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
