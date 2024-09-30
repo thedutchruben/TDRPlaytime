@@ -9,21 +9,21 @@ import org.bukkit.event.HandlerList;
  * Base for the repeatingMilestone events
  */
 public abstract class RepeatingMilestoneEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
     @Getter
     private RepeatingMilestone repeatingMilestone;
-    private static final HandlerList handlers = new HandlerList();
 
 
     public RepeatingMilestoneEvent(RepeatingMilestone repeatingMilestone) {
         this.repeatingMilestone = repeatingMilestone;
     }
 
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    @Override
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

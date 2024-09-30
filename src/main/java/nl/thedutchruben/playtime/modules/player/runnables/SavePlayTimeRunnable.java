@@ -7,7 +7,7 @@ import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import java.util.logging.Level;
 
 @ASyncRepeatingTask(repeatTime = 6000, startTime = 6000)
-public class SavePlayTimeRunnable implements Runnable{
+public class SavePlayTimeRunnable implements Runnable {
     /**
      * When an object implementing interface {@code Runnable} is used
      * to create a thread, starting the thread causes the object's
@@ -21,11 +21,11 @@ public class SavePlayTimeRunnable implements Runnable{
      */
     @Override
     public void run() {
-        if(Playtime.getInstance().getPlaytimeUsers().isEmpty()) return;
+        if (Playtime.getInstance().getPlaytimeUsers().isEmpty()) return;
         Playtime.getPlugin().getLogger().log(Level.INFO, "Saving playtime...");
         for (PlaytimeUser value : Playtime.getInstance().getPlaytimeUsers().values()) {
             Playtime.getInstance().getStorage().saveUser(value);
         }
-        Playtime.getPlugin().getLogger().log(Level.INFO, "Saved playtime of {0} players",Playtime.getInstance().getPlaytimeUsers().size());
+        Playtime.getPlugin().getLogger().log(Level.INFO, "Saved playtime of {0} players", Playtime.getInstance().getPlaytimeUsers().size());
     }
 }

@@ -22,6 +22,7 @@ public class Mysql extends Storage {
     private Connection connection;
 
     private String tablePrefix = "";
+
     /**
      * Get the name of the storage type
      *
@@ -54,7 +55,7 @@ public class Mysql extends Storage {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for(String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), true)){
+        for (String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), true)) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             } catch (SQLException sqlException) {
@@ -64,7 +65,7 @@ public class Mysql extends Storage {
         return ds.isRunning();
     }
 
-    public String getTableName(String name){
+    public String getTableName(String name) {
         return "`" + this.tablePrefix + name + "`";
     }
 
@@ -91,7 +92,7 @@ public class Mysql extends Storage {
                 preparedStatement.setString(1, uuid.toString());
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new PlaytimeUser(uuid.toString(),resultSet.getString("name"), resultSet.getLong("time"));
+                        return new PlaytimeUser(uuid.toString(), resultSet.getString("name"), resultSet.getLong("time"));
                     }
                 }
             } catch (SQLException sqlException) {
@@ -113,10 +114,10 @@ public class Mysql extends Storage {
 
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM " + getTableName("playtime") + " WHERE `name` = ?")) {
-                preparedStatement.setString(1,name);
+                preparedStatement.setString(1, name);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new PlaytimeUser(resultSet.getString("uuid"),resultSet.getString("name"), resultSet.getLong("time"));
+                        return new PlaytimeUser(resultSet.getString("uuid"), resultSet.getString("name"), resultSet.getLong("time"));
                     }
                 }
             } catch (SQLException sqlException) {
@@ -258,7 +259,7 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> saveMilestone(Milestone milestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement( "INSERT INTO " + getTableName("milestones") + "(`name`, `data`) VALUES (?,?)")) {
+                    .prepareStatement("INSERT INTO " + getTableName("milestones") + "(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, milestone.getMilestoneName());
                 preparedStatement.setString(2, getGson().toJson(milestone));
                 preparedStatement.executeUpdate();
@@ -347,7 +348,7 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> saveRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement( "INSERT INTO " + getTableName("repeating_milestones") + "`(`name`, `data`) VALUES (?,?)")) {
+                    .prepareStatement("INSERT INTO " + getTableName("repeating_milestones") + "`(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, repeatingMilestone.getMilestoneName());
                 preparedStatement.setString(2, getGson().toJson(repeatingMilestone));
                 preparedStatement.executeUpdate();

@@ -35,43 +35,43 @@ public enum Settings {
     private final String fileName;
     private final double version;
 
-    public YamlConfiguration getConfig(String fileName){
-        return Playtime.getInstance().getFileManager().getConfig(fileName).get();
-    }
-
-    Settings(String path, Object defaultValue,double version,String fileName) {
+    Settings(String path, Object defaultValue, double version, String fileName) {
         this.path = path;
         this.defaultValue = defaultValue;
         this.fileName = fileName;
         this.version = version;
     }
 
-    public Object getValue(){
-        return getConfig(this.fileName).get(path,defaultValue);
-    }
-
-    public String getValueAsString(){
-        return getConfig(this.fileName).getString(path,(String)defaultValue);
-    }
-
-    public Boolean getValueAsBoolean(){
-        return getConfig(this.fileName).getBoolean(path,(Boolean)defaultValue);
-    }
-
-    public Integer getValueAsInteger(){
-        return getConfig(this.fileName).getInt(path,(Integer)defaultValue);
-    }
-
     /**
      * Set up the default config
      */
-    public static void setupDefaults(){
+    public static void setupDefaults() {
         for (Settings value : Settings.values()) {
             YamlConfiguration yamlConfiguration = Playtime.getInstance().getFileManager().getConfig(value.getFileName()).get();
-            if(yamlConfiguration.get(value.getPath()) == null){
-                yamlConfiguration.set(value.getPath(),value.getDefaultValue());
+            if (yamlConfiguration.get(value.getPath()) == null) {
+                yamlConfiguration.set(value.getPath(), value.getDefaultValue());
                 Playtime.getInstance().getFileManager().getConfig(value.getFileName()).save();
             }
         }
+    }
+
+    public YamlConfiguration getConfig(String fileName) {
+        return Playtime.getInstance().getFileManager().getConfig(fileName).get();
+    }
+
+    public Object getValue() {
+        return getConfig(this.fileName).get(path, defaultValue);
+    }
+
+    public String getValueAsString() {
+        return getConfig(this.fileName).getString(path, (String) defaultValue);
+    }
+
+    public Boolean getValueAsBoolean() {
+        return getConfig(this.fileName).getBoolean(path, (Boolean) defaultValue);
+    }
+
+    public Integer getValueAsInteger() {
+        return getConfig(this.fileName).getInt(path, (Integer) defaultValue);
     }
 }

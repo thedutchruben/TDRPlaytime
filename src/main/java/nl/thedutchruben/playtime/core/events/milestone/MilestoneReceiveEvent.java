@@ -5,6 +5,7 @@ import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 
 public class MilestoneReceiveEvent extends MilestoneEvent {
     private PlaytimeUser playtimeUser;
+
     public MilestoneReceiveEvent(Milestone milestone, PlaytimeUser playtimeUser) {
         super(milestone);
 

@@ -46,10 +46,20 @@ public class PlaytimeUser {
     }
 
     /**
+     * Loads a PlaytimeUser asynchronously based on the specified UUID.
+     *
+     * @param uuid The UUID of the user to load.
+     * @return A CompletableFuture that completes with the loaded PlaytimeUser.
+     */
+    public static CompletableFuture<PlaytimeUser> loadUser(UUID uuid) {
+        return Playtime.getInstance().getStorage().loadUser(uuid);
+    }
+
+    /**
      * Updates the playtime of the user based on the time elapsed since the last check.
      * Fires an AsyncPlaytimePlayerUpdatePlaytimeEvent asynchronously.
      */
-    public void updatePlaytime(){
+    public void updatePlaytime() {
         time = time + (System.currentTimeMillis() - lastChecked);
         Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),
                 () -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this, true, time - (System.currentTimeMillis() - lastChecked), time)));
@@ -61,17 +71,17 @@ public class PlaytimeUser {
      *
      * @return The UUID of the user.
      */
-    public UUID getUUID(){
+    public UUID getUUID() {
         return UUID.fromString(this.uuid);
     }
 
     /**
      * Adds the specified amount of playtime to the user's total playtime.
      *
-     * @param time The amount of time to add.
+     * @param time     The amount of time to add.
      * @param timeUnit The unit of time.
      */
-    public void addPlaytime(long time, TimeUnit timeUnit){
+    public void addPlaytime(long time, TimeUnit timeUnit) {
         this.time = this.time + timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
@@ -81,17 +91,17 @@ public class PlaytimeUser {
      *
      * @return A CompletableFuture that completes when the save operation is done.
      */
-    public CompletableFuture<Boolean> save(){
+    public CompletableFuture<Boolean> save() {
         return Playtime.getInstance().getStorage().saveUser(this);
     }
 
     /**
      * Removes the specified amount of playtime from the user's total playtime.
      *
-     * @param time The amount of time to remove.
+     * @param time     The amount of time to remove.
      * @param timeUnit The unit of time.
      */
-    public void removePlaytime(long time, TimeUnit timeUnit){
+    public void removePlaytime(long time, TimeUnit timeUnit) {
         this.time = this.time - timeUnit.toMillis(time);
         lastChecked = System.currentTimeMillis();
     }
@@ -101,7 +111,7 @@ public class PlaytimeUser {
      *
      * @param time The new total playtime in milliseconds.
      */
-    public void setPlaytime(float time){
+    public void setPlaytime(float time) {
         this.time = time;
     }
 
@@ -110,7 +120,7 @@ public class PlaytimeUser {
      *
      * @return The Bukkit Player object.
      */
-    public Player getBukkitPlayer(){
+    public Player getBukkitPlayer() {
         return Bukkit.getPlayer(getUUID());
     }
 
@@ -130,15 +140,5 @@ public class PlaytimeUser {
         tempTime = tempTime - minutes * 60L;
         int seconds = (int) tempTime;
         return new int[]{days, hours, minutes, seconds};
-    }
-
-    /**
-     * Loads a PlaytimeUser asynchronously based on the specified UUID.
-     *
-     * @param uuid The UUID of the user to load.
-     * @return A CompletableFuture that completes with the loaded PlaytimeUser.
-     */
-    public static CompletableFuture<PlaytimeUser> loadUser(UUID uuid){
-        return Playtime.getInstance().getStorage().loadUser(uuid);
     }
 }

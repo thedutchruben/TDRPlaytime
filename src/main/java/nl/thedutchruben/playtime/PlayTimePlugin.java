@@ -8,9 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  * Tdrplaytime is the playtime plugin for tracking the playtime of players and rewarding them!
  *
  * @version 1.0.0
- * @since 1.0.0
- *
  * @see JavaPlugin
+ * @since 1.0.0
  */
 public class PlayTimePlugin extends JavaPlugin {
     private Playtime playtime;

@@ -3,7 +3,6 @@ package nl.thedutchruben.playtime.modules.milestones.listeners;
 import nl.thedutchruben.mccore.spigot.listeners.TDRListener;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.player.AsyncPlaytimePlayerUpdatePlaytimeEvent;
-import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -30,8 +29,8 @@ public class UpdatePlaytimeListener implements Listener {
             if (i > 0) {
                 float finalI = i;
                 Playtime.getInstance().getRepeatingMilestones().stream()
-                    .filter(repeatingMilestone -> finalI % (repeatingMilestone.getOnlineTime() * 1000) == 1)
-                    .forEach(repeatingMilestone -> repeatingMilestone.apply(event.getUser().getBukkitPlayer()));
+                        .filter(repeatingMilestone -> finalI % (repeatingMilestone.getOnlineTime() * 1000) == 1)
+                        .forEach(repeatingMilestone -> repeatingMilestone.apply(event.getUser().getBukkitPlayer()));
             }
         }
     }

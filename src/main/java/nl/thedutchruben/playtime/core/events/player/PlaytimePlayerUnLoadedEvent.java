@@ -8,7 +8,8 @@ import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 public class PlaytimePlayerUnLoadedEvent extends PlaytimePlayerEvent {
     /**
      * Create a new PlaytimePlayerUnLoadedEvent
-     * @param user the user that is unloaded
+     *
+     * @param user  the user that is unloaded
      * @param async if the event is async
      */
     public PlaytimePlayerUnLoadedEvent(PlaytimeUser user, boolean async) {

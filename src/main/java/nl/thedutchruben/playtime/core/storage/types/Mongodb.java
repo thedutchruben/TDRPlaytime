@@ -38,13 +38,13 @@ public class Mongodb extends Storage {
         // build the connection string from config values
         String connectionString = "mongodb://";
         if (!Objects.equals(Settings.STORAGE_MONGO_USERNAME.getValueAsString(), "")) {
-            connectionString += Settings.STORAGE_MONGO_USERNAME.getValueAsString()+ ":" + Settings.STORAGE_MONGO_PASSWORD.getValueAsString() + "@";
+            connectionString += Settings.STORAGE_MONGO_USERNAME.getValueAsString() + ":" + Settings.STORAGE_MONGO_PASSWORD.getValueAsString() + "@";
         }
         connectionString += Settings.STORAGE_MONGO_HOST.getValueAsString() + ":" + Settings.STORAGE_MONGO_PORT.getValueAsInteger();
         connectionString += "/" + Settings.STORAGE_MONGO_COLLECTION.getValueAsString();
         this.mongoClient = MongoClients.create(connectionString);
         //Check if the database is valid
-        this.database = this.mongoClient.getDatabase( Settings.STORAGE_MONGO_COLLECTION.getValueAsString());
+        this.database = this.mongoClient.getDatabase(Settings.STORAGE_MONGO_COLLECTION.getValueAsString());
 
         return this.mongoClient != null;
     }
@@ -70,7 +70,7 @@ public class Mongodb extends Storage {
             if (document == null) {
                 return null;
             }
-            return new PlaytimeUser(document.getString("uuid"),document.getString("name"),document.getLong("playtime"));
+            return new PlaytimeUser(document.getString("uuid"), document.getString("name"), document.getLong("playtime"));
         });
     }
 
@@ -87,7 +87,7 @@ public class Mongodb extends Storage {
             if (document == null) {
                 return null;
             }
-            return new PlaytimeUser(document.getString("uuid"),document.getString("name"),document.getLong("playtime"));
+            return new PlaytimeUser(document.getString("uuid"), document.getString("name"), document.getLong("playtime"));
         });
     }
 
@@ -138,7 +138,7 @@ public class Mongodb extends Storage {
         return CompletableFuture.supplyAsync(() -> {
             List<PlaytimeUser> users = new ArrayList<>();
             this.database.getCollection("playtime").find().sort(new Document("playtime", -1)).skip(skip).limit(amount).forEach(document -> {
-                users.add(new PlaytimeUser(document.getString("uuid"),document.getString("name"),document.getLong("playtime")));
+                users.add(new PlaytimeUser(document.getString("uuid"), document.getString("name"), document.getLong("playtime")));
             });
             return users;
         });
@@ -157,7 +157,7 @@ public class Mongodb extends Storage {
             if (document == null) {
                 return null;
             }
-            return new PlaytimeUser(document.getString("uuid"),document.getString("name"),document.getLong("playtime"));
+            return new PlaytimeUser(document.getString("uuid"), document.getString("name"), document.getLong("playtime"));
         });
     }
 

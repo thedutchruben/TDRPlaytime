@@ -9,6 +9,7 @@ public class RepeatingMilestoneCreateEvent extends RepeatingMilestoneEvent {
 
     /**
      * Create a new RepeatingMilestoneCreateEvent
+     *
      * @param repeatingMilestone The RepeatingMilestone that is created
      */
     public RepeatingMilestoneCreateEvent(RepeatingMilestone repeatingMilestone) {

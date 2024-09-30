@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 public class SqlLite extends Storage {
     private HikariDataSource ds;
     private Connection connection;
+
     /**
      * Get the name of the storage type
      *
@@ -58,7 +59,7 @@ public class SqlLite extends Storage {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for(String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), false)){
+        for (String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), false)) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             } catch (SQLException sqlException) {
@@ -72,7 +73,7 @@ public class SqlLite extends Storage {
      * Stops the storage such things as the database connection
      */
     @Override
-    public void stop()  {
+    public void stop() {
         try {
             this.connection.close();
         } catch (SQLException e) {
@@ -96,7 +97,7 @@ public class SqlLite extends Storage {
                 preparedStatement.setString(1, uuid.toString());
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new PlaytimeUser(uuid.toString(),resultSet.getString("name"), resultSet.getLong("time"));
+                        return new PlaytimeUser(uuid.toString(), resultSet.getString("name"), resultSet.getLong("time"));
                     }
                 }
             } catch (SQLException sqlException) {
@@ -121,7 +122,7 @@ public class SqlLite extends Storage {
                 preparedStatement.setString(1, name);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new PlaytimeUser(resultSet.getString("uuid"),resultSet.getString("name"), resultSet.getLong("time"));
+                        return new PlaytimeUser(resultSet.getString("uuid"), resultSet.getString("name"), resultSet.getLong("time"));
                     }
                 }
             } catch (SQLException sqlException) {
@@ -352,7 +353,7 @@ public class SqlLite extends Storage {
     public CompletableFuture<Boolean> saveRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement( "INSERT INTO `repeating_milestones`(`name`, `data`) VALUES (?,?)")) {
+                    .prepareStatement("INSERT INTO `repeating_milestones`(`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, repeatingMilestone.getMilestoneName());
                 preparedStatement.setString(2, getGson().toJson(repeatingMilestone));
                 preparedStatement.executeUpdate();
@@ -408,7 +409,7 @@ public class SqlLite extends Storage {
     }
 
     @Override
-    public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid,Event event, int time) {
+    public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
 
             try (PreparedStatement preparedStatement = connection

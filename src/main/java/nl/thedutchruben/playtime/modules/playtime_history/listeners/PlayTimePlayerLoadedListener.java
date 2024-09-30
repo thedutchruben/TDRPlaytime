@@ -12,12 +12,12 @@ import org.bukkit.event.Listener;
 public class PlayTimePlayerLoadedListener implements Listener {
 
     @EventHandler
-    public void onJoin(PlaytimePlayerLoadedEvent event){
+    public void onJoin(PlaytimePlayerLoadedEvent event) {
         Playtime.getInstance().getStorage().updatePlaytimeHistory(event.getUser().getUUID(), Storage.Event.JOIN, (int) event.getUser().getTime());
     }
 
     @EventHandler
-    public void onQuit(PlaytimePlayerUnLoadedEvent event){
+    public void onQuit(PlaytimePlayerUnLoadedEvent event) {
         Playtime.getInstance().getStorage().updatePlaytimeHistory(event.getUser().getUUID(), Storage.Event.QUIT, (int) event.getUser().getTime());
     }
 }

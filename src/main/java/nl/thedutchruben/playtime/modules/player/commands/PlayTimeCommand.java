@@ -169,11 +169,21 @@ public class PlayTimeCommand {
         } else {
             timeMap.forEach((unit, value) -> {
                 switch (unit.toUpperCase(Locale.ROOT)) {
-                    case "S": user.addPlaytime(value, TimeUnit.SECONDS); break;
-                    case "M": user.addPlaytime(value, TimeUnit.MINUTES); break;
-                    case "H": user.addPlaytime(value, TimeUnit.HOURS); break;
-                    case "D": user.addPlaytime(value, TimeUnit.DAYS); break;
-                    case "W": user.addPlaytime(value * 7L, TimeUnit.DAYS); break;
+                    case "S":
+                        user.addPlaytime(value, TimeUnit.SECONDS);
+                        break;
+                    case "M":
+                        user.addPlaytime(value, TimeUnit.MINUTES);
+                        break;
+                    case "H":
+                        user.addPlaytime(value, TimeUnit.HOURS);
+                        break;
+                    case "D":
+                        user.addPlaytime(value, TimeUnit.DAYS);
+                        break;
+                    case "W":
+                        user.addPlaytime(value * 7L, TimeUnit.DAYS);
+                        break;
                 }
             });
         }
@@ -185,11 +195,21 @@ public class PlayTimeCommand {
         } else {
             timeMap.forEach((unit, value) -> {
                 switch (unit.toUpperCase(Locale.ROOT)) {
-                    case "S": user.removePlaytime(value, TimeUnit.SECONDS); break;
-                    case "M": user.removePlaytime(value, TimeUnit.MINUTES); break;
-                    case "H": user.removePlaytime(value, TimeUnit.HOURS); break;
-                    case "D": user.removePlaytime(value, TimeUnit.DAYS); break;
-                    case "W": user.removePlaytime(value * 7L, TimeUnit.DAYS); break;
+                    case "S":
+                        user.removePlaytime(value, TimeUnit.SECONDS);
+                        break;
+                    case "M":
+                        user.removePlaytime(value, TimeUnit.MINUTES);
+                        break;
+                    case "H":
+                        user.removePlaytime(value, TimeUnit.HOURS);
+                        break;
+                    case "D":
+                        user.removePlaytime(value, TimeUnit.DAYS);
+                        break;
+                    case "W":
+                        user.removePlaytime(value * 7L, TimeUnit.DAYS);
+                        break;
                 }
             });
         }

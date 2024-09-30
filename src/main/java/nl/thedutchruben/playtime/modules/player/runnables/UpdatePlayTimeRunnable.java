@@ -8,7 +8,7 @@ import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
  * Every 15 seconds the playtime will update for scoreboards and for getting the milestones
  */
 @ASyncRepeatingTask(repeatTime = 300, startTime = 300)
-public class UpdatePlayTimeRunnable implements Runnable{
+public class UpdatePlayTimeRunnable implements Runnable {
 
     /**
      * When an object implementing interface {@code Runnable} is used

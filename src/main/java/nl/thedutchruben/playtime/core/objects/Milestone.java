@@ -24,8 +24,7 @@ public class Milestone {
      * -- GETTER --
      * get the name of the milestone
      * -- SETTER --
-     *  set the name of the milestone
-
+     * set the name of the milestone
      */
     @Setter
     @Getter
@@ -36,8 +35,7 @@ public class Milestone {
      * -- GETTER --
      * get the time the player has to be online to get the milestone
      * -- SETTER --
-     *  set the time the player has to be online to get the milestone
-
+     * set the time the player has to be online to get the milestone
      */
     @Setter
     @Getter
@@ -56,8 +54,7 @@ public class Milestone {
     /**
      * The list of messages to send
      * -- SETTER --
-     *  set the list of messages to send
-
+     * set the list of messages to send
      */
     @Setter
     @SerializedName("messages")
@@ -67,8 +64,7 @@ public class Milestone {
      * -- GETTER --
      * get if there is a firework show
      * -- SETTER --
-     *  set if there is a firework show
-
+     * set if there is a firework show
      */
     @Setter
     @Getter
@@ -79,8 +75,7 @@ public class Milestone {
      * -- GETTER --
      * get the amount of fireworks to spawn
      * -- SETTER --
-     *  set the amount of fireworks to spawn
-
+     * set the amount of fireworks to spawn
      */
     @Setter
     @Getter
@@ -89,12 +84,18 @@ public class Milestone {
     /**
      * The seconds between the fireworks
      * -- SETTER --
-     *  set the seconds between the fireworks
-
+     * set the seconds between the fireworks
      */
     @Setter
     @SerializedName("firework_show_seconds_between_firework")
     private int fireworkShowSecondsBetween = 0;
+
+    public static Milestone getMilestone(String name) {
+        return Playtime.getInstance()
+                .getMilestones().stream()
+                .filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(name))
+                .findFirst().orElse(null);
+    }
 
     /**
      * Apply the milestone on the player
@@ -255,12 +256,5 @@ public class Milestone {
             messages = new ArrayList<>();
         }
         return messages;
-    }
-
-    public static Milestone getMilestone(String name){
-        return Playtime.getInstance()
-                .getMilestones().stream()
-                .filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(name))
-                .findFirst().orElse(null);
     }
 }

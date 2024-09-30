@@ -13,8 +13,9 @@ public class AsyncPlaytimePlayerUpdatePlaytimeEvent extends PlaytimePlayerEvent 
 
     /**
      * Create a new PlaytimePlayerUpdatePlaytimeEvent
-     * @param user the user that is updated
-     * @param async if the event is async
+     *
+     * @param user        the user that is updated
+     * @param async       if the event is async
      * @param oldPlaytime the old playtime
      * @param newPlaytime the new playtime
      */

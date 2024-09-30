@@ -9,21 +9,21 @@ import org.bukkit.event.HandlerList;
  * Base for the milestone events
  */
 public abstract class MilestoneEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
     @Getter
     private Milestone milestone;
-    private static final HandlerList handlers = new HandlerList();
 
 
     public MilestoneEvent(Milestone milestone) {
         this.milestone = milestone;
     }
 
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    @Override
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

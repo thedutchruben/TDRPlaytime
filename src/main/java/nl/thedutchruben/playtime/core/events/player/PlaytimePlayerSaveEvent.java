@@ -9,7 +9,8 @@ public class PlaytimePlayerSaveEvent extends PlaytimePlayerEvent {
 
     /**
      * Create a new PlaytimePlayerSaveEvent
-     * @param user the user that is saved
+     *
+     * @param user  the user that is saved
      * @param async if the event is async
      */
     public PlaytimePlayerSaveEvent(PlaytimeUser user, boolean async) {

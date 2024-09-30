@@ -11,19 +11,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 @TDRListener
-public class PlayerJoinListener  implements Listener{
+public class PlayerJoinListener implements Listener {
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event){
+    public void onJoin(PlayerJoinEvent event) {
         Playtime.getInstance().getStorage().loadUser(event.getPlayer().getUniqueId()).thenAcceptAsync(playtimeUser -> {
-            if(playtimeUser != null){
-                Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(),playtimeUser);
-            }else{
-                PlaytimeUser playtimeUser1 = new PlaytimeUser(event.getPlayer().getUniqueId().toString(),event.getPlayer().getName());
+            if (playtimeUser != null) {
+                Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(), playtimeUser);
+            } else {
+                PlaytimeUser playtimeUser1 = new PlaytimeUser(event.getPlayer().getUniqueId().toString(), event.getPlayer().getName());
                 Playtime.getInstance().getStorage().createUser(playtimeUser1);
-                Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(),playtimeUser1);
+                Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(), playtimeUser1);
             }
-            Bukkit.getPluginManager().callEvent(new PlaytimePlayerLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()),true));
+            Bukkit.getPluginManager().callEvent(new PlaytimePlayerLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()), true));
         });
     }
 }

@@ -27,7 +27,7 @@ public class MileStoneCommand {
     @SubCommand(
             subCommand = "create",
             description = "Create a new milestone",
-            usage = "<name> <time>" ,
+            usage = "<name> <time>",
             permission = "playtime.milestone.create",
             console = true,
             minParams = 3,
@@ -38,9 +38,9 @@ public class MileStoneCommand {
         long time = getTime(args.get(2));
         milestone.setOnlineTime(time);
         Playtime.getInstance().getStorage().saveMilestone(milestone).thenAcceptAsync(aBoolean -> {
-            if(aBoolean){
+            if (aBoolean) {
                 commandSender.sendMessage(Messages.MILESTONE_CREATED.getMessage());
-            }else {
+            } else {
                 commandSender.sendMessage(Messages.MILESTONE_COULD_NOT_BE_CREATED.getMessage());
             }
         });
@@ -57,14 +57,14 @@ public class MileStoneCommand {
     )
     public void delete(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
-        if(milestone == null){
+        if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
         Playtime.getInstance().getStorage().deleteMilestone(milestone).thenAcceptAsync(aBoolean -> {
-            if(aBoolean){
+            if (aBoolean) {
                 commandSender.sendMessage(Messages.MILESTONE_REMOVED.getMessage());
-            }else {
+            } else {
                 commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             }
         });
@@ -104,7 +104,7 @@ public class MileStoneCommand {
     )
     public void info(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
-        if(milestone == null){
+        if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }

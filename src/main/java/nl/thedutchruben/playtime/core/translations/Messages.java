@@ -38,15 +38,14 @@ public enum Messages {
     MILESTONE_REWARDS_APPLIED("command.milestone.rewardsapplied", "&aYou have successfully applied the rewards!"),
     PLAYER_DOES_NOT_EXIST("command.playtime.playerdoesnotexist", "&cThe player does not exist!"),
     MILESTONE_DOES_NOT_EXIST("command.milestone.milestonedoesnotexist", "&cThe milestone does not exist!"),
-    MILESTONE_COULD_NOT_BE_CREATED("command.milestone.milestonecouldnotbecreated", "&cThe milestone could not be created!")
-    ;
+    MILESTONE_COULD_NOT_BE_CREATED("command.milestone.milestonecouldnotbecreated", "&cThe milestone could not be created!");
 
-    private final String path;
-    private final String fallBack;
     @Getter
     private static final Map<String, String> messages = new HashMap<>();
+    private final String path;
+    private final String fallBack;
 
-    Messages(String path,String fallBack) {
+    Messages(String path, String fallBack) {
         this.path = path;
         this.fallBack = fallBack;
     }
@@ -67,6 +66,7 @@ public enum Messages {
 
     /**
      * Get the message from the path
+     *
      * @param replacements The replacements to replace in the message
      * @return The message
      */

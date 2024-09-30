@@ -7,6 +7,7 @@ import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -49,29 +50,29 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
         placeholders.add("%tdrplaytime_time%");
         placeholders.add("%tdrplaytime_time_seconds_number%");
 
-        for(int i = 1; i <= 10; i++){
-            placeholders.add("%tdrplaytime_top_names_"+i+"%");
-            placeholders.add("%tdrplaytime_top_time_"+i+"_days%");
-            placeholders.add("%tdrplaytime_top_time_"+i+"_hours%");
-            placeholders.add("%tdrplaytime_top_time_"+i+"_minutes%");
-            placeholders.add("%tdrplaytime_top_time_"+i+"_seconds%");
+        for (int i = 1; i <= 10; i++) {
+            placeholders.add("%tdrplaytime_top_names_" + i + "%");
+            placeholders.add("%tdrplaytime_top_time_" + i + "_days%");
+            placeholders.add("%tdrplaytime_top_time_" + i + "_hours%");
+            placeholders.add("%tdrplaytime_top_time_" + i + "_minutes%");
+            placeholders.add("%tdrplaytime_top_time_" + i + "_seconds%");
         }
 
         return placeholders;
     }
 
     @Override
-    public String onPlaceholderRequest(Player player,  String params) {
-        String dummyProofParams = params.toLowerCase().replace('-','_');
+    public String onPlaceholderRequest(Player player, String params) {
+        String dummyProofParams = params.toLowerCase().replace('-', '_');
         PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(player.getUniqueId());
 
         // %tdrplaytime_time%
         if (dummyProofParams.equals("time")) {
             return Messages.PLAYTIME_INFO_OWN.getMessage(
-                    new Replacement("%D%",String.valueOf(user.translateTime()[0])),
-                    new Replacement("%H%",String.valueOf(user.translateTime()[1])),
-                    new Replacement("%M%",String.valueOf(user.translateTime()[2])),
-                    new Replacement("%S%",String.valueOf(user.translateTime()[3]))
+                    new Replacement("%D%", String.valueOf(user.translateTime()[0])),
+                    new Replacement("%H%", String.valueOf(user.translateTime()[1])),
+                    new Replacement("%M%", String.valueOf(user.translateTime()[2])),
+                    new Replacement("%S%", String.valueOf(user.translateTime()[3]))
             );
         }
 
@@ -100,9 +101,9 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
             }
             try {
                 PlaytimeUser playtimeUser = Playtime.getInstance().getStorage().getTopUser(placeNumber - 1).get();
-                if(playtimeUser != null){
+                if (playtimeUser != null) {
                     return playtimeUser.getName();
-                }else{
+                } else {
                     return "No user found";
                 }
 
@@ -124,7 +125,7 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
             try {
                 PlaytimeUser playtimeUser = Playtime.getInstance().getStorage().getTopUser(placeNumber - 1).get();
                 if (playtimeUser != null) {
-                    if(Bukkit.getPlayer(playtimeUser.getUUID()) != null){
+                    if (Bukkit.getPlayer(playtimeUser.getUUID()) != null) {
                         playtimeUser = Playtime.getInstance().getPlaytimeUser(playtimeUser.getUUID()).get();
                     }
                     if (dummyProofParams.endsWith("_days")) {

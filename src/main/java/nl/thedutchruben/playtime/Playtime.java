@@ -44,42 +44,36 @@ public class Playtime {
      */
     @Getter
     private static JavaPlugin plugin;
-
-    /**
-     * Instance of the core
-     */
-    @Getter
-    private Mccore mccore;
-
-    /**
-     * Instance of the FileManager
-     */
-    @Getter
-    private FileManager fileManager;
-
     /**
      * Cache of the PlaytimeUsers
      */
     @Getter
     public Map<UUID, PlaytimeUser> playtimeUsers = new HashMap<>();
-
     /**
      * The selected storage method
      */
     @Getter
     public Storage storage;
-
     /**
      * Cache of the Milestones
      */
     @Getter
     public List<Milestone> milestones;
-
     /**
      * Cache of the RepeatingMilestones
      */
     @Getter
     public List<RepeatingMilestone> repeatingMilestones;
+    /**
+     * Instance of the core
+     */
+    @Getter
+    private Mccore mccore;
+    /**
+     * Instance of the FileManager
+     */
+    @Getter
+    private FileManager fileManager;
 
     public Playtime(JavaPlugin playTimePlugin) {
         plugin = playTimePlugin;
@@ -97,14 +91,14 @@ public class Playtime {
         this.storage.setup();
 
         // todo check if migration is needed
-        if(fileManager.getConfig("config.yml").get().getString("version") == null){
+        if (fileManager.getConfig("config.yml").get().getString("version") == null) {
             new TwoPointZeroMigration();
         }
 
         // Register the mc core
         mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
-        if(Settings.UPDATE_CHECK.getValueAsBoolean()){
-            mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin",60));
+        if (Settings.UPDATE_CHECK.getValueAsBoolean()) {
+            mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin", 60));
         }
 
         mccore.registerCompleters();
@@ -112,15 +106,15 @@ public class Playtime {
         new BStatsExtension().startBStats(playTimePlugin);
 
         // Register the placeholder api
-        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")){
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderAPIExtension().register();
         }
 
         // Load the messages
         this.storage.getMilestones().thenAccept(milestones -> this.milestones = milestones).join();
-        getPlugin().getLogger().log(Level.INFO,"Loaded {0} milestones",this.milestones.size());
+        getPlugin().getLogger().log(Level.INFO, "Loaded {0} milestones", this.milestones.size());
         this.storage.getRepeatingMilestones().thenAccept(repeatingMilestones -> this.repeatingMilestones = repeatingMilestones).join();
-        getPlugin().getLogger().log(Level.INFO,"Loaded {0} repeatingmilestones",this.repeatingMilestones.size());
+        getPlugin().getLogger().log(Level.INFO, "Loaded {0} repeatingmilestones", this.repeatingMilestones.size());
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             UUID playerUUID = onlinePlayer.getUniqueId();
@@ -134,8 +128,8 @@ public class Playtime {
         }
 
         CommandRegistry.getTabCompletable().put("milestone", commandSender ->
-            this.milestones.stream().map(Milestone::getMilestoneName)
-                    .collect(Collectors.toSet())
+                this.milestones.stream().map(Milestone::getMilestoneName)
+                        .collect(Collectors.toSet())
         );
 
         CommandRegistry.getTabCompletable().put("repeatingMilestone", commandSender ->
@@ -146,7 +140,7 @@ public class Playtime {
 
     public Storage getSelectedStorage() {
         String storageType = Settings.STORAGE_TYPE.getValueAsString().toLowerCase();
-        switch (storageType){
+        switch (storageType) {
             case "mongodb":
             case "mongo":
                 return new Mongodb();
@@ -183,6 +177,7 @@ public class Playtime {
 
     /**
      * Get the playtime user from the cache or load it from the storage
+     *
      * @param uuid The uuid of the player
      * @return The playtime user
      */
@@ -192,6 +187,7 @@ public class Playtime {
 
     /**
      * Get a playtime user by name
+     *
      * @param name The name of the player
      * @return The playtime user if exist
      */

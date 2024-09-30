@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class Storage {
     private final Gson gson;
+
     public Storage() {
         this.gson = new GsonBuilder()
                 .setPrettyPrinting()
@@ -51,6 +52,7 @@ public abstract class Storage {
 
     /**
      * Load user loaded by name
+     *
      * @param name
      * @return
      */
@@ -66,6 +68,7 @@ public abstract class Storage {
 
     /**
      * Create the user
+     *
      * @param playtimeUser
      * @return
      */
@@ -73,14 +76,16 @@ public abstract class Storage {
 
     /**
      * Get the top users
+     *
      * @param amount The amount of users
-     * @param skip The amount of users to skip
+     * @param skip   The amount of users to skip
      * @return The list of users
      */
     public abstract CompletableFuture<List<PlaytimeUser>> getTopUsers(int amount, int skip);
 
     /**
      * Get the top user
+     *
      * @param place The place of the user
      * @return The user
      */
@@ -88,12 +93,14 @@ public abstract class Storage {
 
     /**
      * Get the milestones
+     *
      * @return The list of milestones
      */
     public abstract CompletableFuture<List<Milestone>> getMilestones();
 
     /**
      * Save the milestone
+     *
      * @param milestone The milestone to save
      * @return If the milestone is saved
      */
@@ -101,6 +108,7 @@ public abstract class Storage {
 
     /**
      * Delete the milestone
+     *
      * @param milestone The milestone to delete
      * @return If the milestone is deleted
      */
@@ -108,6 +116,7 @@ public abstract class Storage {
 
     /**
      * Update the milestone
+     *
      * @param milestone The milestone to update
      * @return If the milestone is updated
      */
@@ -115,12 +124,14 @@ public abstract class Storage {
 
     /**
      * Get the repeating milestones
+     *
      * @return The list of repeating milestones
      */
     public abstract CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones();
 
     /**
      * Save the repeating milestone
+     *
      * @param repeatingMilestone The repeating milestone to save
      * @return If the repeating milestone is saved
      */
@@ -128,6 +139,7 @@ public abstract class Storage {
 
     /**
      * Delete the repeating milestone
+     *
      * @param repeatingMilestone The repeating milestone to delete
      * @return If the repeating milestone is deleted
      */
@@ -135,12 +147,13 @@ public abstract class Storage {
 
     /**
      * Update the repeating milestone
+     *
      * @param repeatingMilestone The repeating milestone to update
      * @return If the repeating milestone is updated
      */
     public abstract CompletableFuture<Boolean> updateRepeatingMilestone(RepeatingMilestone repeatingMilestone);
 
-    public abstract CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid,Event event, int time);
+    public abstract CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time);
 
 
     public Gson getGson() {
