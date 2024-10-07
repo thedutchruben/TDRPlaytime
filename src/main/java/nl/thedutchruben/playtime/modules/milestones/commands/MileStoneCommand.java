@@ -160,10 +160,10 @@ public class MileStoneCommand {
     }
 
     @SubCommand(
-            subCommand = "addCommandToMilestone",
+            subCommand = "addCommand",
             description = "Add a command to the milestone",
             usage = "<milestone> <command>",
-            permission = "playtime.milestone.addCommandToMilestone",
+            permission = "playtime.milestone.addCommand",
             minParams = 3,
             maxParams = 3,
             console = true
@@ -175,9 +175,30 @@ public class MileStoneCommand {
             return;
         }
         String command = String.join(" ", args.subList(1, args.size()));
-        milestone.getMessages().removeIf(s -> s.equalsIgnoreCase(command));
+        milestone.addCommand(command);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.COMMAND_ADDED.getMessage());
+    }
+
+    @SubCommand(
+            subCommand = "removeCommand",
+            description = "Remove a command from the milestone",
+            usage = "<milestone> <command>",
+            permission = "playtime.milestone.removeCommand",
+            minParams = 3,
+            maxParams = 3,
+            console = true
+    )
+    public void removeCommandFromMilestone(CommandSender commandSender, List<String> args) {
+        Milestone milestone = Milestone.getMilestone(args.get(1));
+        if (milestone == null) {
+            commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
+            return;
+        }
+        String command = String.join(" ", args.subList(1, args.size()));
+        milestone.removeCommand(command);
+        Playtime.getInstance().getStorage().updateMilestone(milestone);
+        commandSender.sendMessage(Messages.COMMAND_REMOVED.getMessage());
     }
 
     @SubCommand(
@@ -297,11 +318,9 @@ public class MileStoneCommand {
         return timeMap;
     }
 
-
     private long getTime(String time) {
         AtomicLong parsedTime = new AtomicLong();
         Map<String, Integer> timeMap = parseTime(time);
-        System.out.println(timeMap);
         timeMap.forEach((unit, value) -> {
             switch (unit.toLowerCase(Locale.ROOT)) {
                 case "s":
