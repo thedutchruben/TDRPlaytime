@@ -13,32 +13,46 @@ import java.util.Map;
 public enum Messages {
 
     ONLY_PLAYER_COMMAND("only.player.command", "&cThis is a player only command!"),
-    PLAYTIME_INFO_OWN("command.playtime.timemessage", "&8[&6PlayTime&8] &7Your playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)"),
-    PLAYTIME_INFO_OTHER("command.playtime.usertimemessage", "&8[&6PlayTime&8] &7%NAME% 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)"),
-    PLAYER_RESET_CONFIRM("command.playtime.resettimeconfirm", "&cUser time reset!"),
-    MILESTONE_MUST_BE_NUMBER("command.milestone.mustbenumber", "&cThe time parameter must be a number!"),
-    MILESTONE_NOT_EXIST("command.milestone.milestonenotexist", "&cThe milestone <name> doesn't exist!"),
-    MILESTONE_CREATED("command.milestone.milestonecreated", "&aThe milestone is created!"),
-    ITEM_ADDED("command.milestone.itemadded", "&aYou added successfully an item to the milestone!"),
-    COMMAND_ADDED("command.milestone.commandadded", "&aYou added successfully a command to the milestone!"),
-    FIREWORK_TOGGLED("command.milestone.fireworktoggled", "&aYou <state> the firework for the milestone"),
-    SET_FIREWORK_AMOUNT("command.milestone.setfireworkamount", "&aYou set the firework amount to <amount>"),
-    SET_FIREWORK_DELAY("command.milestone.setfireworkdelay", "&aYou set the firework delay to <amount>"),
-    REPEATING_MILESTONE_REMOVED("command.milestone.repeatingmilestoneremoved", "&aYou have successfully removed the repeating milestone!"),
-    MILESTONE_REMOVED("command.milestone.milestoneremoved", "&aYou have successfully removed the milestone!"),
-    ITEM_REMOVED("command.milestone.itemremoved", "&aYou removed an item from the milestone!"),
-    COMMAND_REMOVED("command.milestone.commandremoved", "&aYou removed a command from the milestone!"),
-    TIME_ADDED("command.playtime.timeadded", "&aYou have successfully added playtime to <player>"),
-    TIME_REMOVED("command.playtime.timeremoved", "&aYou have successfully removed playtime from <player>"),
+
+    PLAYTIME_INFO_OWN("command.playtime.time_message", "&8[&6PlayTime&8] &7Your playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)"),
+    PLAYTIME_INFO_OTHER("command.playtime.user_time_message", "&8[&6PlayTime&8] &7%NAME% 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)"),
+    PLAYER_RESET_CONFIRM("command.playtime.reset_time_confirm", "&cUser time reset!"),
+    TIME_ADDED("command.playtime.time_added", "&aYou have successfully added playtime to <player>"),
+    TIME_REMOVED("command.playtime.time_removed", "&aYou have successfully removed playtime from <player>"),
+    PLAYTIME_IMPORTED("command.playtime.imported", "&aYou have successfully imported <count> players!"),
+    PLAYER_DOES_NOT_EXIST("command.playtime.player_does_not_exist", "&cThe player does not exist!"),
+
+    MILESTONE_CREATED("command.milestone.created", "&aThe milestone is created!"),
+    MILESTONE_ITEM_ADDED("command.milestone.item_added", "&aYou added successfully an item to the milestone!"),
+    MILESTONE_COMMAND_ADDED("command.milestone.command_added", "&aYou added successfully a command to the milestone!"),
+    MILESTONE_FIREWORK_TOGGLED("command.milestone.firework_toggled", "&aYou <state> the firework for the milestone"),
+    MILESTONE_SET_FIREWORK_AMOUNT("command.milestone.set_firework_amount", "&aYou set the firework amount to <amount>"),
+    MILESTONE_SET_FIREWORK_DELAY("command.milestone.set_firework_delay", "&aYou set the firework delay to <amount>"),
+    MILESTONE_REMOVED("command.milestone.removed", "&aYou have successfully removed the milestone!"),
+    MILESTONE_COMMAND_REMOVED("command.milestone.command_removed", "&aYou removed a command from the milestone!"),
     MILESTONE_LIST("command.milestone.list", "%MILESTONE_NAME% Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"),
     MILESTONE_INFO("command.milestone.info", "%MILESTONE_NAME% Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S% Rewards: Commands(%REWARD_COMMAND_COUNT%): %REWARD_COMMAND% Items(%REWARD_ITEMS_COUNT%): %REWARD_ITEMS%"),
-    PLAYTIME_IMPORTED("command.playtime.imported", "&aYou have successfully imported <count> players!"),
-    MESSAGE_ADDED("command.milestone.messageadded", "&aYou have successfully added a message to a milestone!"),
-    MESSAGE_REMOVED("command.milestone.messageremoved", "&aYou have removed a message from a milestone!"),
-    MILESTONE_REWARDS_APPLIED("command.milestone.rewardsapplied", "&aYou have successfully applied the rewards!"),
-    PLAYER_DOES_NOT_EXIST("command.playtime.playerdoesnotexist", "&cThe player does not exist!"),
-    MILESTONE_DOES_NOT_EXIST("command.milestone.milestonedoesnotexist", "&cThe milestone does not exist!"),
-    MILESTONE_COULD_NOT_BE_CREATED("command.milestone.milestonecouldnotbecreated", "&cThe milestone could not be created!");
+    MILESTONE_MESSAGE_ADDED("command.milestone.message_added", "&aYou have successfully added a message to a milestone!"),
+    MILESTONE_MESSAGE_REMOVED("command.milestone.message_removed", "&aYou have removed a message from a milestone!"),
+    MILESTONE_REWARDS_APPLIED("command.milestone.rewards_applied", "&aYou have successfully applied the rewards!"),
+    MILESTONE_DOES_NOT_EXIST("command.milestone.milestone_does_not_exist", "&cThe milestone does not exist!"),
+    MILESTONE_COULD_NOT_BE_CREATED("command.milestone.could_not_be_created", "&cThe milestone could not be created!"),
+
+    REPEATING_MILESTONE_REMOVED("command.repeating_milestone.removed", "&aYou have successfully removed the repeating milestone!"),
+    REPEATING_MILESTONE_DOES_NOT_EXIST("command.repeating_milestone.does_not_exist", "&cThe repeating milestone does not exist!"),
+    REPEATING_MILESTONE_COULD_NOT_BE_CREATED("command.repeating_milestone.could_not_be_created", "&cThe repeating milestone could not be created!"),
+    REPEATING_MILESTONE_CREATED("command.repeating_milestone.created", "&aYou have successfully created a repeating milestone!"),
+    REPEATING_MILESTONE_DELETED("command.repeating_milestone.deleted", "&aYou have successfully deleted a repeating milestone!"),
+    REPEATING_MILESTONE_ITEM_ADDED("command.repeating_milestone.item_added", "&aYou have successfully added an item to the repeating milestone!"),
+    REPEATING_MILESTONE_ITEM_REMOVED("command.repeating_milestone.item_removed", "&aYou have successfully removed an item from the repeating milestone!"),
+    REPEATING_MILESTONE_COMMAND_ADDED("command.repeating_milestone.command_added", "&aYou have successfully added a command to the repeating milestone!"),
+    REPEATING_MILESTONE_FIREWORK_TOGGLED("command.repeating_milestone.firework_toggled", "&aYou <state> the firework for the repeating milestone"),
+    REPEATING_MILESTONE_SET_FIREWORK_AMOUNT("command.repeating_milestone.set_firework_amount", "&aYou set the firework amount to <amount>"),
+    REPEATING_MILESTONE_SET_FIREWORK_DELAY("command.repeating_milestone.set_firework_delay", "&aYou set the firework delay to <amount>"),
+    REPEATING_MILESTONE_MESSAGE_ADDED("command.repeating_milestone.message_added", "&aYou have successfully added a message to a repeating milestone!"),
+    REPEATING_MILESTONE_MESSAGE_REMOVED("command.repeating_milestone.message_removed", "&aYou have removed a message from a repeating milestone!"),
+    REPEATING_MILESTONE_LIST("command.repeating_milestone.list", "%REPEATING_MILESTONE_NAME% Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"),
+    ;
 
     @Getter
     private static final Map<String, String> messages = new HashMap<>();
@@ -54,7 +68,7 @@ public enum Messages {
      * Setup the default messages
      */
     public static void setupDefaults() {
-        YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").get();
+        YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("translations.yml").get();
         for (Messages value : Messages.values()) {
             if (!file.contains(value.path)) {
                 file.set(value.path, value.fallBack);

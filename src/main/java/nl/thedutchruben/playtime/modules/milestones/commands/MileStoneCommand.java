@@ -6,9 +6,13 @@ import nl.thedutchruben.mccore.spigot.commands.Command;
 import nl.thedutchruben.mccore.spigot.commands.Default;
 import nl.thedutchruben.mccore.spigot.commands.SubCommand;
 import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneCreateEvent;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneDeleteEvent;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneUpdateEvent;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.utils.Replacement;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -25,13 +29,13 @@ import java.util.regex.Pattern;
 public class MileStoneCommand {
 
     @SubCommand(
-            subCommand = "create",
-            description = "Create a new milestone",
-            usage = "<name> <time>",
-            permission = "playtime.milestone.create",
-            console = true,
-            minParams = 3,
-            maxParams = 3)
+        subCommand = "create",
+        description = "Create a new milestone",
+        usage = "<name> <time>",
+        permission = "playtime.milestone.create",
+        console = true,
+        minParams = 3,
+        maxParams = 3)
     public void create(CommandSender commandSender, List<String> args) {
         Milestone milestone = new Milestone();
         milestone.setMilestoneName(args.get(1));
@@ -40,6 +44,8 @@ public class MileStoneCommand {
         Playtime.getInstance().getStorage().saveMilestone(milestone).thenAcceptAsync(aBoolean -> {
             if (aBoolean) {
                 commandSender.sendMessage(Messages.MILESTONE_CREATED.getMessage());
+                Bukkit.getPluginManager().callEvent(new MilestoneCreateEvent(milestone));
+                Playtime.getInstance().getMilestones().add(milestone);
             } else {
                 commandSender.sendMessage(Messages.MILESTONE_COULD_NOT_BE_CREATED.getMessage());
             }
@@ -47,13 +53,13 @@ public class MileStoneCommand {
     }
 
     @SubCommand(
-            subCommand = "delete",
-            description = "Delete a milestone",
-            usage = "<milestone>",
-            permission = "playtime.milestone.delete",
-            minParams = 2,
-            maxParams = 2,
-            console = true
+        subCommand = "delete",
+        description = "Delete a milestone",
+        usage = "<milestone>",
+        permission = "playtime.milestone.delete",
+        minParams = 2,
+        maxParams = 2,
+        console = true
     )
     public void delete(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -64,6 +70,8 @@ public class MileStoneCommand {
         Playtime.getInstance().getStorage().deleteMilestone(milestone).thenAcceptAsync(aBoolean -> {
             if (aBoolean) {
                 commandSender.sendMessage(Messages.MILESTONE_REMOVED.getMessage());
+                Bukkit.getPluginManager().callEvent(new MilestoneDeleteEvent(milestone));
+                Playtime.getInstance().getMilestones().remove(milestone);
             } else {
                 commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             }
@@ -72,21 +80,21 @@ public class MileStoneCommand {
 
     @Default
     @SubCommand(
-            subCommand = "list",
-            description = "List all milestones",
-            permission = "playtime.milestone.list",
-            console = true
+        subCommand = "list",
+        description = "List all milestones",
+        permission = "playtime.milestone.list",
+        console = true
     )
     public void list(CommandSender commandSender, List<String> args) {
         List<Milestone> milestones = Playtime.getInstance().getMilestones();
         commandSender.sendMessage("Milestones: ");
         for (Milestone milestone : milestones) {
             TextComponent message = new TextComponent(Messages.MILESTONE_LIST.getMessage(
-                    new Replacement("<MILESTONE_NAME>", milestone.getMilestoneName()),
-                    new Replacement("<D>", String.valueOf(TimeUnit.SECONDS.toDays(milestone.getOnlineTime()))),
-                    new Replacement("<H>", String.valueOf(TimeUnit.SECONDS.toHours(milestone.getOnlineTime()) % 24)),
-                    new Replacement("<M>", String.valueOf(TimeUnit.SECONDS.toMinutes(milestone.getOnlineTime()) % 60)),
-                    new Replacement("<S>", String.valueOf(TimeUnit.SECONDS.toSeconds(milestone.getOnlineTime()) % 60))
+                new Replacement("%MILESTONE_NAME%", milestone.getMilestoneName()),
+                new Replacement("%D%", String.valueOf(TimeUnit.SECONDS.toDays(milestone.getOnlineTime()))),
+                new Replacement("%H%", String.valueOf(TimeUnit.SECONDS.toHours(milestone.getOnlineTime()) % 24)),
+                new Replacement("%M%", String.valueOf(TimeUnit.SECONDS.toMinutes(milestone.getOnlineTime()) % 60)),
+                new Replacement("%S%", String.valueOf(TimeUnit.SECONDS.toSeconds(milestone.getOnlineTime()) % 60))
             ));
             message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone info " + milestone.getMilestoneName()));
             commandSender.spigot().sendMessage(message);
@@ -94,13 +102,13 @@ public class MileStoneCommand {
     }
 
     @SubCommand(
-            subCommand = "info",
-            description = "Get info about a milestone",
-            usage = "<milestone>",
-            permission = "playtime.milestone.info",
-            minParams = 2,
-            maxParams = 2,
-            console = true
+        subCommand = "info",
+        description = "Get info about a milestone",
+        usage = "<milestone>",
+        permission = "playtime.milestone.info",
+        minParams = 2,
+        maxParams = 2,
+        console = true
     )
     public void info(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -109,25 +117,27 @@ public class MileStoneCommand {
             return;
         }
         commandSender.sendMessage("Milestone: " + milestone.getMilestoneName());
-        commandSender.sendMessage("Time: " + milestone.getOnlineTime());
-        commandSender.sendMessage("Rewards: ");
-        milestone.getItemStacks().forEach(map -> commandSender.sendMessage(map.toString()));
-        commandSender.sendMessage("Commands: ");
-        milestone.getCommands().forEach(commandSender::sendMessage);
-        commandSender.sendMessage("Messages: ");
-        milestone.getMessages().forEach(commandSender::sendMessage);
-        commandSender.sendMessage("Firework show: " + milestone.isFireworkShow());
-        commandSender.sendMessage("Firework show amount: " + milestone.getFireworkShowAmount());
+        commandSender.sendMessage(" Time: " + milestone.getOnlineTime());
+        commandSender.sendMessage(" Rewards("+ milestone.getItemStacks().size() +"): ");
+        milestone.getItemStacks().forEach(map -> commandSender.sendMessage("  " + map.toString()));
+        commandSender.sendMessage(" Commands("+ milestone.getCommands().size() +"): ");
+        milestone.getCommands().forEach(command -> commandSender.sendMessage("  " + command));
+        commandSender.sendMessage(" Messages("+ milestone.getMessages().size() +"): ");
+        milestone.getMessages().forEach(message -> commandSender.sendMessage("  " + message));
+        commandSender.sendMessage(" Firework show: " + milestone.isFireworkShow());
+        if (milestone.isFireworkShow()) {
+            commandSender.sendMessage(" Firework show delay: " + milestone.getFireworkShowSecondsBetween());
+            commandSender.sendMessage(" Firework show amount: " + milestone.getFireworkShowAmount());
+        }
     }
 
     @SubCommand(
-            subCommand = "test",
-            description = "Execute the rewards of a milestone on yourself",
-            usage = "<milestone>",
-            permission = "playtime.milestone.test",
-            minParams = 2,
-            maxParams = 2,
-            console = false
+        subCommand = "test",
+        description = "Execute the rewards of a milestone on yourself",
+        usage = "<milestone>",
+        permission = "playtime.milestone.test",
+        minParams = 2,
+        maxParams = 2
     )
     public void test(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -140,12 +150,12 @@ public class MileStoneCommand {
     }
 
     @SubCommand(
-            subCommand = "addItemToMilestone",
-            description = "Add the item in your main hand to the milestone",
-            usage = "<milestone>",
-            permission = "playtime.milestone.addItemToMilestone",
-            minParams = 2,
-            maxParams = 2
+        subCommand = "addItemToMilestone",
+        description = "Add the item in your main hand to the milestone",
+        usage = "<milestone>",
+        permission = "playtime.milestone.addItemToMilestone",
+        minParams = 2,
+        maxParams = 2
     )
     public void addItemToMilestone(CommandSender commandSender, List<String> args) {
         Player player = (Player) commandSender;
@@ -156,17 +166,18 @@ public class MileStoneCommand {
         }
         milestone.addItemStack(player.getInventory().getItemInMainHand());
         Playtime.getInstance().getStorage().updateMilestone(milestone);
-        commandSender.sendMessage(Messages.ITEM_ADDED.getMessage());
+        commandSender.sendMessage(Messages.MILESTONE_ITEM_ADDED.getMessage());
+        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
     }
 
     @SubCommand(
-            subCommand = "addCommand",
-            description = "Add a command to the milestone",
-            usage = "<milestone> <command>",
-            permission = "playtime.milestone.addCommand",
-            minParams = 3,
-            maxParams = 3,
-            console = true
+        subCommand = "addCommand",
+        description = "Add a command to the milestone",
+        usage = "<milestone> <command>",
+        permission = "playtime.milestone.addCommand",
+        minParams = 3,
+        maxParams = 3,
+        console = true
     )
     public void addCommandToMilestone(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -177,17 +188,18 @@ public class MileStoneCommand {
         String command = String.join(" ", args.subList(1, args.size()));
         milestone.addCommand(command);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
-        commandSender.sendMessage(Messages.COMMAND_ADDED.getMessage());
+        commandSender.sendMessage(Messages.MILESTONE_COMMAND_ADDED.getMessage());
+        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
     }
 
     @SubCommand(
-            subCommand = "removeCommand",
-            description = "Remove a command from the milestone",
-            usage = "<milestone> <command>",
-            permission = "playtime.milestone.removeCommand",
-            minParams = 3,
-            maxParams = 3,
-            console = true
+        subCommand = "removeCommand",
+        description = "Remove a command from the milestone",
+        usage = "<milestone> <command>",
+        permission = "playtime.milestone.removeCommand",
+        minParams = 3,
+        maxParams = 3,
+        console = true
     )
     public void removeCommandFromMilestone(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -198,17 +210,18 @@ public class MileStoneCommand {
         String command = String.join(" ", args.subList(1, args.size()));
         milestone.removeCommand(command);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
-        commandSender.sendMessage(Messages.COMMAND_REMOVED.getMessage());
+        commandSender.sendMessage(Messages.MILESTONE_COMMAND_REMOVED.getMessage());
+        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
     }
 
     @SubCommand(
-            subCommand = "togglefirework",
-            description = "Toggle the firework for a milestone",
-            usage = "<milestone>",
-            permission = "playtime.milestone.togglefirework",
-            minParams = 2,
-            maxParams = 2,
-            console = true
+        subCommand = "togglefirework",
+        description = "Toggle the firework for a milestone",
+        usage = "<milestone>",
+        permission = "playtime.milestone.togglefirework",
+        minParams = 2,
+        maxParams = 2,
+        console = true
     )
     public void toggleFirework(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -218,17 +231,18 @@ public class MileStoneCommand {
         }
         milestone.setFireworkShow(!milestone.isFireworkShow());
         Playtime.getInstance().getStorage().updateMilestone(milestone);
-        commandSender.sendMessage(Messages.FIREWORK_TOGGLED.getMessage(new Replacement("<state>", milestone.isFireworkShow() ? "enabled" : "disabled")));
+        commandSender.sendMessage(Messages.MILESTONE_FIREWORK_TOGGLED.getMessage(new Replacement("<state>", milestone.isFireworkShow() ? "enabled" : "disabled")));
+        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
     }
 
     @SubCommand(
-            subCommand = "setfireworkamount",
-            description = "Set the amount of firework for a milestone",
-            usage = "<milestone> <amount>",
-            permission = "playtime.milestone.setfireworkamount",
-            minParams = 3,
-            maxParams = 3,
-            console = true
+        subCommand = "setfireworkamount",
+        description = "Set the amount of firework for a milestone",
+        usage = "<milestone> <amount>",
+        permission = "playtime.milestone.setfireworkamount",
+        minParams = 3,
+        maxParams = 3,
+        console = true
     )
     public void setFireworkAmount(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -239,17 +253,18 @@ public class MileStoneCommand {
         int amount = Integer.parseInt(args.get(1));
         milestone.setFireworkShowAmount(amount);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
-        commandSender.sendMessage(Messages.SET_FIREWORK_AMOUNT.getMessage(new Replacement("<amount>", String.valueOf(amount))));
+        commandSender.sendMessage(Messages.MILESTONE_SET_FIREWORK_AMOUNT.getMessage(new Replacement("<amount>", String.valueOf(amount))));
+        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
     }
 
     @SubCommand(
-            subCommand = "setfireworkdelay",
-            description = "Set the delay between fireworks for a milestone",
-            usage = "<milestone> <time in seconds>",
-            permission = "playtime.milestone.setfireworkdelay",
-            minParams = 4,
-            maxParams = 4,
-            console = true
+        subCommand = "setfireworkdelay",
+        description = "Set the delay between fireworks for a milestone",
+        usage = "<milestone> <time in seconds>",
+        permission = "playtime.milestone.setfireworkdelay",
+        minParams = 4,
+        maxParams = 4,
+        console = true
     )
     public void setFireworkDelay(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -260,17 +275,18 @@ public class MileStoneCommand {
         int delay = Integer.parseInt(args.get(1));
         milestone.setFireworkShowSecondsBetween(delay);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
-        commandSender.sendMessage(Messages.SET_FIREWORK_DELAY.getMessage(new Replacement("<amount>", String.valueOf(delay))));
+        commandSender.sendMessage(Messages.MILESTONE_SET_FIREWORK_DELAY.getMessage(new Replacement("<amount>", String.valueOf(delay))));
+        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
     }
 
     @SubCommand(
-            subCommand = "addMessage",
-            description = "Add a message to a milestone",
-            usage = "<milestone> <message>",
-            permission = "playtime.milestone.addMessage",
-            minParams = 3,
-            maxParams = 3,
-            console = true
+        subCommand = "addMessage",
+        description = "Add a message to a milestone",
+        usage = "<milestone> <message>",
+        permission = "playtime.milestone.addMessage",
+        minParams = 3,
+        maxParams = 3,
+        console = true
     )
     public void addMessage(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -281,17 +297,18 @@ public class MileStoneCommand {
         String message = String.join(" ", args.subList(1, args.size()));
         milestone.addMessage(message);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
-        commandSender.sendMessage(Messages.MESSAGE_ADDED.getMessage());
+        commandSender.sendMessage(Messages.MILESTONE_MESSAGE_ADDED.getMessage());
+        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
     }
 
     @SubCommand(
-            subCommand = "removeMessage",
-            description = "Remove a message from a milestone",
-            usage = "<milestone> <message>",
-            permission = "playtime.milestone.removeMessage",
-            minParams = 3,
-            maxParams = 3,
-            console = true
+        subCommand = "removeMessage",
+        description = "Remove a message from a milestone",
+        usage = "<milestone> <message>",
+        permission = "playtime.milestone.removeMessage",
+        minParams = 3,
+        maxParams = 3,
+        console = true
     )
     public void removeMessage(CommandSender commandSender, List<String> args) {
         Milestone milestone = Milestone.getMilestone(args.get(1));
@@ -302,7 +319,8 @@ public class MileStoneCommand {
         String message = String.join(" ", args.subList(1, args.size()));
         milestone.removeMessage(message);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
-        commandSender.sendMessage(Messages.MESSAGE_REMOVED.getMessage());
+        commandSender.sendMessage(Messages.MILESTONE_MESSAGE_REMOVED.getMessage());
+        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
     }
 
     private Map<String, Integer> parseTime(String time) {
