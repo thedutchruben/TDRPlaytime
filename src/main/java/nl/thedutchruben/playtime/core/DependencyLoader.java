@@ -11,7 +11,7 @@ import java.util.List;
 public class DependencyLoader {
 
     public static void load(Plugin plugin) {
-        System.out.println("Loading dependencies");
+        plugin.getLogger().info("Loading dependencies");
 
         BukkitLibraryManager libraryManager = new BukkitLibraryManager(plugin);
         // setup repo's
@@ -35,7 +35,6 @@ public class DependencyLoader {
         for (Library library : libraries) {
             libraryManager.loadLibrary(library);
         }
-
     }
 
     @Getter
@@ -58,7 +57,6 @@ public class DependencyLoader {
             this.artifactID = artifactID;
             this.version = version;
             this.relocation = relocation;
-
         }
     }
 }
