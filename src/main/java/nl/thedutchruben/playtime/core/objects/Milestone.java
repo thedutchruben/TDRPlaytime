@@ -87,6 +87,7 @@ public class Milestone {
      * set the seconds between the fireworks
      */
     @Setter
+    @Getter
     @SerializedName("firework_show_seconds_between_firework")
     private int fireworkShowSecondsBetween = 0;
 

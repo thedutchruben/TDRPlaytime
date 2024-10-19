@@ -6,7 +6,6 @@ import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
 import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.core.Settings;
-import nl.thedutchruben.playtime.core.migrations.TwoPointZeroMigration;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
@@ -89,11 +88,6 @@ public class Playtime {
         //set up the storage
         this.storage = getSelectedStorage();
         this.storage.setup();
-
-        // todo check if migration is needed
-        if (fileManager.getConfig("config.yml").get().getString("version") == null) {
-            new TwoPointZeroMigration();
-        }
 
         // Register the mc core
         mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);

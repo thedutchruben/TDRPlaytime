@@ -6,6 +6,9 @@ import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 
 import java.util.logging.Level;
 
+/**
+ * Save the playtime of the players every 5 minutes
+ */
 @ASyncRepeatingTask(repeatTime = 6000, startTime = 6000)
 public class SavePlayTimeRunnable implements Runnable {
     /**

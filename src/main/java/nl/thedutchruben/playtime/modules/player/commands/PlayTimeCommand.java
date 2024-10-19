@@ -125,7 +125,7 @@ public class PlayTimeCommand {
         });
     }
 
-    @SubCommand(subCommand = "pluginInfo", permission = "playtime.playtime.pluginInfo", console = true, description = "Show info about the plugin")
+    @SubCommand(subCommand = "pluginInfo", permission = "playtime.playtime.pluginInfo", console = true, description = "Show info about the plugin", minParams = 1)
     public void pluginInfo(CommandSender sender, List<String> args) {
         sender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
         sender.sendMessage(ChatColor.GREEN + "Version: " + Playtime.getPlugin().getDescription().getVersion());

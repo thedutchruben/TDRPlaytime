@@ -2,6 +2,7 @@ package nl.thedutchruben.playtime.core.objects;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import lombok.Setter;
 import nl.thedutchruben.mccore.utils.firework.FireworkUtil;
 import nl.thedutchruben.mccore.utils.message.MessageUtil;
 import nl.thedutchruben.playtime.Playtime;
@@ -40,6 +41,7 @@ public class RepeatingMilestone {
     private boolean fireworkShow = false;
     @SerializedName("firework_show_amount")
     private int fireworkShowAmount = 1;
+    @Setter
     @SerializedName("firework_show_seconds_between_firework")
     private int fireworkShowSecondsBetween = 0;
     @Getter
@@ -176,11 +178,34 @@ public class RepeatingMilestone {
         return fireworkShowSecondsBetween;
     }
 
-    public void setFireworkShowSecondsBetween(int fireworkShowSecondsBetween) {
-        this.fireworkShowSecondsBetween = fireworkShowSecondsBetween;
-    }
-
     public void setOverrideMe(boolean overrideMe) {
         this.overrideMe = overrideMe;
+    }
+
+    public void addItemStack(ItemStack itemStack) {
+        getItemStacks().add(itemStack.serialize());
+    }
+
+    public void addCommand(String command) {
+        getCommands().add(command);
+    }
+
+    public void removeCommand(String command) {
+        getCommands().remove(command);
+    }
+
+    public void addMessage(String message) {
+        getMessages().add(message);
+    }
+
+    public void removeMessage(String message) {
+        getMessages().remove(message);
+    }
+
+    public static RepeatingMilestone get(String name) {
+        return Playtime.getInstance()
+                .getRepeatingMilestones().stream()
+                .filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(name))
+                .findFirst().orElse(null);
     }
 }

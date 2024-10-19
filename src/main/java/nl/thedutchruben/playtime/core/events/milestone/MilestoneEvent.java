@@ -13,7 +13,6 @@ public abstract class MilestoneEvent extends Event {
     @Getter
     private Milestone milestone;
 
-
     public MilestoneEvent(Milestone milestone) {
         this.milestone = milestone;
     }
