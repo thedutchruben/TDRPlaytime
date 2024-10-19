@@ -1,6 +1,7 @@
 package nl.thedutchruben.playtime.core.storage.types;
 
 import com.google.gson.Gson;
+import nl.thedutchruben.mccore.utils.GsonUtil;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.objects.Milestone;
@@ -20,7 +21,7 @@ public class Yaml extends Storage {
     private final Gson gson;
 
     public Yaml() {
-        this.gson = new Gson();
+        this.gson = GsonUtil.createGson();
     }
 
     /**
@@ -30,7 +31,7 @@ public class Yaml extends Storage {
      */
     @Override
     public String getName() {
-        return "";
+        return "Yaml";
     }
 
     /**
@@ -38,7 +39,8 @@ public class Yaml extends Storage {
      */
     @Override
     public boolean setup() {
-        return false;
+
+        return true;
     }
 
     /**
