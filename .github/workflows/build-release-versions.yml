@@ -37,6 +37,12 @@ jobs:
         with:
           name: Plugin-${{ env.snapshotVersion }}-${{ matrix.downloadSource }}.jar
           path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
+      - name: Test Plugin - ${{ matrix.version }}
+        uses: GamerCoder215/TestMC@v1.0.0
+        with:
+          path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
+          runtime: 'paper'
+          version: ${{ matrix.version }}
       - name: Upload Plugin jar to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
