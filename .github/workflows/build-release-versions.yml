@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         downloadSource: [GITHUB, SPIGOT, HANGAR, MODRINTH, CURSE_FORGE]
-        java-version: [8, 16, 17] # Adjust if versions differ per platform
+        java-version: [17] # Adjust if versions differ per platform
 
     steps:
       - uses: actions/checkout@v4
@@ -48,10 +48,8 @@ jobs:
     needs: build
     strategy:
       matrix:
-        version: [1.16.5, 1.15.2, 1.14.4, 1.13.2, 1.12.2, 1.11.2, 1.10.2, 1.9.4, 1.17.1, 1.18.2, 1.19.4, 1.20.4]
+        version: [1.18.2, 1.19.4, 1.20.4]
         include:
-          - version: 1.17.1
-            java-version: 16
           - version: 1.18.2
             java-version: 17
           - version: 1.19.4
