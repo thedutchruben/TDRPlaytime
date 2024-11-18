@@ -128,14 +128,14 @@ public class PlayTimeCommand {
     @SubCommand(subCommand = "pluginInfo", permission = "playtime.playtime.pluginInfo", console = true, description = "Show info about the plugin", minParams = 1)
     public void pluginInfo(CommandSender sender, List<String> args) {
         sender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
-        sender.sendMessage(ChatColor.GREEN + "Version: " + Playtime.getPlugin().getDescription().getVersion());
-        sender.sendMessage(ChatColor.GREEN + "Author: " + Playtime.getPlugin().getDescription().getAuthors());
-        sender.sendMessage(ChatColor.GREEN + "Website: " + Playtime.getPlugin().getDescription().getWebsite());
+        sender.sendMessage(ChatColor.GREEN + "Version: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getVersion());
+        sender.sendMessage(ChatColor.GREEN + "Author: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getAuthors());
+        sender.sendMessage(ChatColor.GREEN + "Website: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getWebsite());
         Playtime.getInstance().getStorage().getMilestones().whenComplete((milestones, throwable) -> {
-            sender.sendMessage(ChatColor.GREEN + "Milestones: " + milestones.size());
+            sender.sendMessage(ChatColor.GREEN + "Milestones: " + ChatColor.DARK_GRAY + milestones.size());
         });
         Playtime.getInstance().getStorage().getRepeatingMilestones().whenComplete((milestones, throwable) -> {
-            sender.sendMessage(ChatColor.GREEN + "Repeating Milestones: " + milestones.size());
+            sender.sendMessage(ChatColor.GREEN + "Repeating Milestones: " + ChatColor.DARK_GRAY + milestones.size());
         });
         Playtime.getInstance().getMccore().getUpdate(sender, true);
     }
@@ -160,6 +160,7 @@ public class PlayTimeCommand {
             String unit = matcher.group(2);
             timeMap.put(unit, value);
         }
+
         return timeMap;
     }
 
@@ -214,5 +215,4 @@ public class PlayTimeCommand {
             });
         }
     }
-
 }
