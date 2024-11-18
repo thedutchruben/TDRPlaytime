@@ -48,6 +48,8 @@ jobs:
     needs: build
     strategy:
       matrix:
+        downloadSource: [GITHUB, SPIGOT, HANGAR, MODRINTH, CURSE_FORGE]
+        runtime: ['paper', 'spigot']
         version: [1.18.2, 1.19.4, 1.20.4]
         include:
           - version: 1.18.2
@@ -60,7 +62,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: Plugin-${{ needs.build.outputs.downloadSource }}.jar
+          name: Plugin-${{ matrix.downloadSource }}.jar
           path: ./plugin
       - name: Setup JDK
         uses: actions/setup-java@v4.4.0
@@ -72,6 +74,6 @@ jobs:
       - name: Test Plugin - ${{ matrix.version }}
         uses: GamerCoder215/TestMC@v1.0.0
         with:
-          path: ./plugin/TDRPlaytime-${{ needs.build.outputs.version }}.jar
-          runtime: 'paper'
+          path: ./plugin/Plugin-${{ matrix.downloadSource }}.jar
+          runtime: ${{ matrix.runtime }}
           version: ${{ matrix.version }}
