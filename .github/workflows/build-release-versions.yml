@@ -72,7 +72,7 @@ jobs:
           java-package: jdk
           architecture: x64
       - name: Test Plugin - ${{ matrix.version }}
-        uses: GamerCoder215/TestMC@v1.0.0
+        uses: GamerCoder215/TestMC@v2.0.3
         with:
           path: ./plugin/Plugin-${{ matrix.downloadSource }}.jar
           runtime: ${{ matrix.runtime }}
