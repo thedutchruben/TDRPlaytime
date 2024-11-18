@@ -1,24 +1,16 @@
-on: [release,workflow_dispatch]
+on: [release, workflow_dispatch]
 name: Build plugin for all platforms
+
 jobs:
-  build-and-upload:
-    name: Build and Upload
+  build:
+    name: Build Plugin
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        downloadSource: [ GITHUB, SPIGOT, HANGAR, MODRINTH, CURSE_FORGE ]
-        version: [ 1.16.5, 1.15.2, 1.14.4, 1.13.2, 1.12.2, 1.11.2, 1.10.2, 1.9.4 ]
-        java-version: [ 8 ]
-        include:
-          - version: 1.17.1
-            java-version: 16
-          - version: 1.18.2
-            java-version: 17
-          - version: 1.19.4
-            java-version: 17
-          - version: 1.20.4
-            java-version: 17
+        downloadSource: [GITHUB, SPIGOT, HANGAR, MODRINTH, CURSE_FORGE]
+        java-version: [8, 16, 17] # Adjust if versions differ per platform
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,7 +19,7 @@ jobs:
         uses: actions/setup-java@v4.4.0
         with:
           distribution: 'adopt'
-          java-version: '22'
+          java-version: ${{ matrix.java-version }}
           java-package: jdk
           architecture: x64
       - name: Set downloadSource in plugin.yml
@@ -41,27 +33,47 @@ jobs:
           echo "git_hash=$git_hash" >> $GITHUB_ENV
           echo "artifactPath=$(pwd)/target" >> $GITHUB_ENV
       - name: Extract Maven project version
-        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
         id: project
+        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
       - name: Upload Plugin jar to artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Plugin-${{ env.snapshotVersion }}-${{ matrix.downloadSource }}.jar
+          name: Plugin-${{ matrix.downloadSource }}.jar
           path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
+
+  test:
+    name: Test Plugin
+    runs-on: ubuntu-latest
+
+    needs: build
+    strategy:
+      matrix:
+        version: [1.16.5, 1.15.2, 1.14.4, 1.13.2, 1.12.2, 1.11.2, 1.10.2, 1.9.4, 1.17.1, 1.18.2, 1.19.4, 1.20.4]
+        include:
+          - version: 1.17.1
+            java-version: 16
+          - version: 1.18.2
+            java-version: 17
+          - version: 1.19.4
+            java-version: 17
+          - version: 1.20.4
+            java-version: 17
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Plugin-${{ needs.build.outputs.downloadSource }}.jar
+          path: ./plugin
+      - name: Setup JDK
+        uses: actions/setup-java@v4.4.0
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java-version }}
+          java-package: jdk
+          architecture: x64
       - name: Test Plugin - ${{ matrix.version }}
         uses: GamerCoder215/TestMC@v1.0.0
         with:
-          path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
+          path: ./plugin/TDRPlaytime-${{ needs.build.outputs.version }}.jar
           runtime: 'paper'
           version: ${{ matrix.version }}
-      - name: Upload Plugin jar to GitHub Releases
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
-          tag_name: ${{ env.snapshotVersion }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release_name: ${{ env.snapshotVersion }}
-          release_notes: ${{ env.snapshotVersion }}
-          prerelease: true
-          draft: false
-          overwrite: true
