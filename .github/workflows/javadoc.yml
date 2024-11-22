@@ -3,21 +3,24 @@ name: Deploy Javadoc
 on:
   push:
     branches:
+      - master
       - main
-  schedule:
-    - cron: '0 0 * * *'
-
+concurrency:
+  group: pages
+  cancel-in-progress: false
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+        contents: read
+        pages: write
+        id-token: write
     steps:
       - name: Deploy JavaDoc 🚀
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          javadoc-branch: javadoc
+          deploy-mode: artifact
           java-version: 17
-          target-folder: javadoc
-          project: maven
+          project: maven # or gradle
+          # subdirectories: moduleA moduleB #for subdirectories support, needs to be run with custom command
