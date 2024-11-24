@@ -19,5 +19,5 @@ jobs:
           javadoc-branch: javadoc
           java-version: 17
           target-folder: javadoc
-          project: gradle
+          project: maven
           custom-command: javadoc -d javadoc -sourcepath src/main/java -subpackages .
