@@ -2,9 +2,10 @@ nl.thedutchruben.playtime
 nl.thedutchruben.playtime.core
 nl.thedutchruben.playtime.core.events.milestone
 nl.thedutchruben.playtime.core.events.player
-nl.thedutchruben.playtime.core.migrations
+nl.thedutchruben.playtime.core.events.repeatingmilestone
 nl.thedutchruben.playtime.core.objects
 nl.thedutchruben.playtime.core.storage
+nl.thedutchruben.playtime.core.storage.exceptions
 nl.thedutchruben.playtime.core.storage.types
 nl.thedutchruben.playtime.core.translations
 nl.thedutchruben.playtime.extentions
