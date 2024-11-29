@@ -36,7 +36,7 @@ jobs:
       uses: jakejarvis/wait-action@master
       with:
         time: '5s'
-    - name: send message
+    - name: Send message to Discord
       uses: appleboy/discord-action@master
       with:
         webhook_id: ${{ secrets.WEBHOOK_ID }}
@@ -45,3 +45,38 @@ jobs:
         message: "New Playtime build: ${{ steps.project.outputs.version }} - ${{ env.git_hash }}\n${{ env.BRANCH_NAME  }}\n${{ github.event.head_commit.message }}"
         color: "#48f442"
         username: "Playtime Builds"
+    - name: Create Pre-release and Upload Asset
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = `${process.env.artifactPath}/TDRPlaytime-${{ steps.project.outputs.version }}.jar`;
+
+          // Create the release
+          const { data: release } = await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: `pre-release-${process.env.git_hash}`,
+            target_commitish: context.sha,
+            name: `${process.env.git_hash}`,
+            body: `Pre-release build for commit ${process.env.git_hash}`,
+            draft: false,
+            prerelease: true
+          });
+
+          console.log(`Created release: ${release.id}`);
+
+          // Upload the JAR file as an asset
+          const { data: asset } = await github.rest.repos.uploadReleaseAsset({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: release.id,
+            name: `TDRPlaytime-${process.env.git_hash}.jar`,
+            data: fs.readFileSync(path),
+            headers: {
+              'content-type': 'application/java-archive',
+              'content-length': fs.statSync(path).size
+            }
+          });
+
+          console.log(`Uploaded asset: ${asset.name}`);
