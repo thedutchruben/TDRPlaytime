@@ -36,15 +36,13 @@ jobs:
       uses: jakejarvis/wait-action@master
       with:
         time: '5s'
-    - name: Send message to Discord
-      uses: appleboy/discord-action@master
-      with:
-        webhook_id: ${{ secrets.WEBHOOK_ID }}
-        webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-        file: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
-        message: "New Playtime build: ${{ steps.project.outputs.version }} - ${{ env.git_hash }}\n${{ env.BRANCH_NAME  }}\n${{ github.event.head_commit.message }}"
-        color: "#48f442"
-        username: "Playtime Builds"
+    - name: Generate Commit Message List
+      id: commit_messages
+      run: |
+        last_tag=$(git describe --tags --abbrev=0)
+        echo "Last release tag: $last_tag"
+        commit_messages=$(git log $last_tag..HEAD --pretty=format:"- %s (%h)")
+        echo "commit_messages=$commit_messages" >> $GITHUB_ENV
     - name: Create Pre-release and Upload Asset
       uses: actions/github-script@v6
       with:
@@ -52,14 +50,17 @@ jobs:
           const fs = require('fs');
           const path = `${process.env.artifactPath}/TDRPlaytime-${{ steps.project.outputs.version }}.jar`;
 
+          // Generate the release body with commit messages
+          const body = `### Changes since last release:\n${process.env.commit_messages}`;
+
           // Create the release
           const { data: release } = await github.rest.repos.createRelease({
             owner: context.repo.owner,
             repo: context.repo.repo,
             tag_name: `pre-release-${process.env.git_hash}`,
             target_commitish: context.sha,
-            name: `${process.env.git_hash}`,
-            body: `Pre-release build for commit ${process.env.git_hash}`,
+            name: `Pre-release ${process.env.git_hash}`,
+            body: body,
             draft: false,
             prerelease: true
           });
