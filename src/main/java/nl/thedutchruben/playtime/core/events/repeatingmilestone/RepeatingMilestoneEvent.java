@@ -13,7 +13,11 @@ public abstract class RepeatingMilestoneEvent extends Event {
     @Getter
     private RepeatingMilestone repeatingMilestone;
 
-
+    /**
+     * Create a new RepeatingMilestoneEvent
+     *
+     * @param repeatingMilestone The RepeatingMilestone
+     */
     public RepeatingMilestoneEvent(RepeatingMilestone repeatingMilestone) {
         this.repeatingMilestone = repeatingMilestone;
     }
