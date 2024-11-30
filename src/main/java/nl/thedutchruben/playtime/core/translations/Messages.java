@@ -65,7 +65,7 @@ public enum Messages {
     }
 
     /**
-     * Setup the default messages
+     * Set up the default messages
      */
     public static void setupDefaults() {
         YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("translations.yml").get();
