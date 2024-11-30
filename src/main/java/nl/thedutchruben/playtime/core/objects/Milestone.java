@@ -20,7 +20,7 @@ public class Milestone {
     private transient List<ItemStack> _itemStackObjects;
 
     /**
-     * The name of the milestone.
+     * The name of the milestone
      * -- GETTER --
      * get the name of the milestone
      * -- SETTER --
@@ -30,6 +30,7 @@ public class Milestone {
     @Getter
     @SerializedName("_id")
     private String milestoneName;
+
     /**
      * The time the player has to be online to get the milestone
      * -- GETTER --
@@ -41,16 +42,19 @@ public class Milestone {
     @Getter
     @SerializedName("online_time")
     private long onlineTime;
+
     /**
      * The list of items to give the player.
      */
     @SerializedName("item_stacks")
     private List<Map<String, Object>> itemStacks;
+
     /**
      * The list of commands to execute
      */
     @SerializedName("commands")
     private List<String> commands;
+
     /**
      * The list of messages to send
      * -- SETTER --
@@ -59,6 +63,7 @@ public class Milestone {
     @Setter
     @SerializedName("messages")
     private List<String> messages;
+
     /**
      * if there shall be a firework show
      * -- GETTER --
@@ -70,6 +75,7 @@ public class Milestone {
     @Getter
     @SerializedName("firework_show")
     private boolean fireworkShow = false;
+
     /**
      * The amount of fireworks to spawn
      * -- GETTER --
@@ -81,6 +87,7 @@ public class Milestone {
     @Getter
     @SerializedName("firework_show_amount")
     private int fireworkShowAmount = 1;
+
     /**
      * The seconds between the fireworks
      * -- SETTER --

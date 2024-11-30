@@ -182,26 +182,55 @@ public class RepeatingMilestone {
         this.overrideMe = overrideMe;
     }
 
+    /**
+     * Add an ItemStack to the milestone
+     * @param itemStack The itemStack to add
+     */
     public void addItemStack(ItemStack itemStack) {
         getItemStacks().add(itemStack.serialize());
     }
 
+    /**
+     * Add a command to the milestone
+     * @param command The command to add
+     */
     public void addCommand(String command) {
         getCommands().add(command);
     }
 
+    /**
+     * Remove a command from the milestone
+     * @param command The command to remove
+     */
     public void removeCommand(String command) {
         getCommands().remove(command);
     }
 
+    /**
+     * Add a message to the milestone
+     *
+     * @param message The message to add
+     */
     public void addMessage(String message) {
         getMessages().add(message);
     }
 
+    /**
+     * Remove a message from the milestone
+     *
+     * @param message The message to remove
+     */
     public void removeMessage(String message) {
         getMessages().remove(message);
     }
 
+    /**
+     * Get a milestone by name
+     *
+     * @param name The name of the milestone
+     * @see RepeatingMilestone
+     * @return The milestone
+     */
     public static RepeatingMilestone get(String name) {
         return Playtime.getInstance()
                 .getRepeatingMilestones().stream()

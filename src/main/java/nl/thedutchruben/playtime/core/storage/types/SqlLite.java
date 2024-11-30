@@ -38,20 +38,7 @@ public class SqlLite extends Storage {
      */
     @Override
     public boolean setup() {
-        // setup sqllite file
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:sqlite:" + Playtime.getPlugin().getDataFolder().getAbsolutePath() + "/playtime.db");
-        config.setConnectionTestQuery("SELECT 1");
-        config.addDataSourceProperty("cachePrepStmts", true);
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSwlLimit", "2048");
-        config.setPoolName("PlaytimePool");
-        config.setIdleTimeout(10000);
-        config.setMaxLifetime(30000);
-        config.setValidationTimeout(30000);
-        config.setMaximumPoolSize(100);
-        config.setMinimumIdle(10);
-        config.setAllowPoolSuspension(false);
+        HikariConfig config = getHikariConfig();
         ds = new HikariDataSource(config);
 
         try {
@@ -67,6 +54,28 @@ public class SqlLite extends Storage {
             }
         }
         return false;
+    }
+
+    private static HikariConfig getHikariConfig() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:sqlite:" + Playtime.getPlugin().getDataFolder().getAbsolutePath() + "/playtime.db");
+        config.setConnectionTestQuery("SELECT 1");
+        config.addDataSourceProperty("cachePrepStmts", true);
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSwlLimit", "2048");
+        config.setPoolName("PlaytimePool");
+        config.setIdleTimeout(10000);
+        config.setMaxLifetime(30000);
+        config.setValidationTimeout(30000);
+        config.setMaximumPoolSize(100);
+        config.setMinimumIdle(10);
+        config.setAllowPoolSuspension(false);
+        config.setThreadFactory(r -> {
+            Thread thread = new Thread(r);
+            thread.setName("Playtime-Database-Thread-" + thread.getId());
+            return thread;
+        });
+        return config;
     }
 
     /**

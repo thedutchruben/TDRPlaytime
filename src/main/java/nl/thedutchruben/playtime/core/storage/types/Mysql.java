@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The mysql storage
+ */
 public class Mysql extends Storage {
     private HikariDataSource ds;
     private Connection connection;
@@ -39,15 +42,7 @@ public class Mysql extends Storage {
     @Override
     public boolean setup() {
         this.tablePrefix = Settings.STORAGE_MYSQL_PREFIX.getValueAsString();
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(Settings.STORAGE_MYSQL_DRIVER.getValueAsString() + Settings.STORAGE_MYSQL_HOST.getValueAsString() + ":" + Settings.STORAGE_MYSQL_PORT.getValueAsInteger() + "/" + Settings.STORAGE_MYSQL_SCHEMA.getValueAsString());
-        config.setConnectionTestQuery("SELECT 1");
-        config.setUsername(Settings.STORAGE_MYSQL_USERNAME.getValueAsString());
-        config.setPassword(Settings.STORAGE_MYSQL_PASSWORD.getValueAsString());
-        config.setMaximumPoolSize(Settings.STORAGE_MYSQL_POOL.getValueAsInteger());
-
-        config.setPoolName("PlaytimePool");
-        config.addDataSourceProperty("useSSl", (Settings.STORAGE_MYSQL_SSL.getValueAsBoolean()));
+        HikariConfig config = getHikariConfig();
         ds = new HikariDataSource(config);
 
         try {
@@ -65,6 +60,31 @@ public class Mysql extends Storage {
         return ds.isRunning();
     }
 
+    private static HikariConfig getHikariConfig() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(Settings.STORAGE_MYSQL_DRIVER.getValueAsString() + Settings.STORAGE_MYSQL_HOST.getValueAsString() + ":" + Settings.STORAGE_MYSQL_PORT.getValueAsInteger() + "/" + Settings.STORAGE_MYSQL_SCHEMA.getValueAsString());
+        config.setConnectionTestQuery("SELECT 1");
+        config.setUsername(Settings.STORAGE_MYSQL_USERNAME.getValueAsString());
+        config.setPassword(Settings.STORAGE_MYSQL_PASSWORD.getValueAsString());
+        config.setMaximumPoolSize(Settings.STORAGE_MYSQL_POOL.getValueAsInteger());
+
+        config.setPoolName("PlaytimePool");
+        config.addDataSourceProperty("useSSl", (Settings.STORAGE_MYSQL_SSL.getValueAsBoolean()));
+        config.setThreadFactory(r -> {
+            Thread thread = new Thread(r);
+            thread.setName("Playtime-Database-Thread-" + thread.getId());
+            return thread;
+        });
+
+        return config;
+    }
+
+    /**
+     * Get the table name with the prefix
+     *
+     * @param name The name of the table
+     * @return The table name with the prefix
+     */
     public String getTableName(String name) {
         return "`" + this.tablePrefix + name + "`";
     }
@@ -403,6 +423,12 @@ public class Mysql extends Storage {
         });
     }
 
+    /**
+     * Get the playtime history
+     *
+     * @param uuid The uuid of the player
+     * @return The list of playtime history
+     */
     @Override
     public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
@@ -444,6 +470,12 @@ public class Mysql extends Storage {
         });
     }
 
+    /**
+     * Get the playtime history
+     *
+     * @param uuid The uuid of the player
+     * @return The list of playtime history
+     */
     private boolean playtimeRecordExists(UUID uuid, java.sql.Date date) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT * FROM " + getTableName("playtime_history") + " WHERE `uuid` = ? AND `date` = ?")) {

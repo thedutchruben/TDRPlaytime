@@ -16,6 +16,9 @@ import org.bson.Document;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The mongodb storage
+ */
 public class Mongodb extends Storage {
     private MongoClient mongoClient;
     private com.mongodb.client.MongoDatabase database;
@@ -271,6 +274,12 @@ public class Mongodb extends Storage {
         });
     }
 
+    /**
+     * Get the playtime history of the player
+     *
+     * @param uuid The UUID of the player
+     * @return The list of playtime history
+     */
     @Override
     public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
@@ -304,6 +313,13 @@ public class Mongodb extends Storage {
         });
     }
 
+    /**
+     * Check if a playtime record exists for the specified player and date
+     *
+     * @param uuid The UUID of the player
+     * @param date The date to check
+     * @return If the record exists
+     */
     private boolean playtimeRecordExists(UUID uuid, java.sql.Date date) {
         Document query = new Document("uuid", uuid.toString()).append("date", date);
         return this.database.getCollection("playtime_history").find(query).first() != null;
