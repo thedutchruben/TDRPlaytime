@@ -11,6 +11,7 @@ import java.util.logging.Level;
  */
 @ASyncRepeatingTask(repeatTime = 6000, startTime = 6000)
 public class SavePlayTimeRunnable implements Runnable {
+
     /**
      * When an object implementing interface {@code Runnable} is used
      * to create a thread, starting the thread causes the object's

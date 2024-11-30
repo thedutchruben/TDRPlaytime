@@ -18,10 +18,14 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Bukkit.getPluginManager().callEvent(new PlaytimePlayerSaveEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()), false));
+
         Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(), () -> {
             PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId());
+
             user.updatePlaytime();
+
             Playtime.getInstance().getStorage().saveUser(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId())).thenAcceptAsync(aBoolean -> {
+
                 if (aBoolean) {
                     Bukkit.getPluginManager().callEvent(new PlaytimePlayerUnLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()), true));
                     Playtime.getInstance().getPlaytimeUsers().remove(event.getPlayer().getUniqueId());
@@ -31,6 +35,7 @@ public class PlayerQuitListener implements Listener {
                     config.set("data", new Gson().toJson(user));
                     config.save();
                 }
+
             });
         });
     }

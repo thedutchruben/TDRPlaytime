@@ -22,12 +22,12 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "TheDutchRuben";
+        return Playtime.getPlugin().getDescription().getAuthors().toString();
     }
 
     @Override
     public String getVersion() {
-        return "1.0";
+        return Playtime.getPlugin().getDescription().getVersion();
     }
 
     @Override

@@ -36,5 +36,4 @@ public class Replacement {
         this.from = from;
         this.to = to;
     }
-
 }

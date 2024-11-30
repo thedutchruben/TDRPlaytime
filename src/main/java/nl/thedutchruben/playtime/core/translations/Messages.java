@@ -85,7 +85,7 @@ public enum Messages {
      * @return The message
      */
     public String getMessage(Replacement... replacements) {
-        String message = messages.computeIfAbsent(path, k -> {
+        String message = messages.computeIfAbsent(path, a -> {
             YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").get();
             return file.getString(path, fallBack);
         });

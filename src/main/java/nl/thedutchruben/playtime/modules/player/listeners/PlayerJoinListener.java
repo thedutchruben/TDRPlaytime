@@ -15,6 +15,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Playtime.getInstance().getStorage().loadUser(event.getPlayer().getUniqueId()).thenAcceptAsync(playtimeUser -> {
+
             if (playtimeUser != null) {
                 Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(), playtimeUser);
             } else {
@@ -22,6 +23,7 @@ public class PlayerJoinListener implements Listener {
                 Playtime.getInstance().getStorage().createUser(playtimeUser1);
                 Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(), playtimeUser1);
             }
+
             Bukkit.getPluginManager().callEvent(new PlaytimePlayerLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()), true));
         });
     }

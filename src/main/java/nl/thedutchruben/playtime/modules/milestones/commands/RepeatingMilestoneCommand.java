@@ -159,10 +159,12 @@ public class RepeatingMilestoneCommand {
     public void addItemToMilestone(CommandSender commandSender, List<String> args) {
         Player player = (Player) commandSender;
         RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
+
         repeatingMilestone.addItemStack(player.getInventory().getItemInMainHand());
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_ITEM_ADDED.getMessage());
@@ -180,10 +182,12 @@ public class RepeatingMilestoneCommand {
     )
     public void addCommandToMilestone(CommandSender commandSender, List<String> args) {
         RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
+
         String command = String.join(" ", args.subList(1, args.size()));
         repeatingMilestone.addCommand(command);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
@@ -202,10 +206,12 @@ public class RepeatingMilestoneCommand {
     )
     public void removeCommandFromMilestone(CommandSender commandSender, List<String> args) {
         RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
+
         String command = String.join(" ", args.subList(1, args.size()));
         repeatingMilestone.removeCommand(command);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
@@ -224,10 +230,12 @@ public class RepeatingMilestoneCommand {
     )
     public void toggleFirework(CommandSender commandSender, List<String> args) {
         RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
+
         repeatingMilestone.setFireworkShow(!repeatingMilestone.isFireworkShow());
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_FIREWORK_TOGGLED.getMessage(new Replacement("<state>", repeatingMilestone.isFireworkShow() ? "enabled" : "disabled")));
@@ -245,10 +253,12 @@ public class RepeatingMilestoneCommand {
     )
     public void setFireworkAmount(CommandSender commandSender, List<String> args) {
         RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
+
         int amount = Integer.parseInt(args.get(1));
         repeatingMilestone.setFireworkShowAmount(amount);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
