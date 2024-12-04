@@ -60,9 +60,13 @@ public class PlayTimeCommand {
         }
     }
 
-    @SubCommand(subCommand = "top", permission = "playtime.playtime.top", console = true, description = "Show the top 10 players")
+    @SubCommand(subCommand = "top", minParams = 0, maxParams = 1, usage = "<amount>", permission = "playtime.playtime.top", console = true, description = "Show the top 10 players")
     public void top(CommandSender sender, List<String> args) {
-        Playtime.getInstance().getStorage().getTopUsers(10, 0).whenCompleteAsync((users, throwable) -> {
+        int amount = 10;
+        if (args.size() == 2) {
+            amount = Integer.parseInt(args.get(1));
+        }
+        Playtime.getInstance().getStorage().getTopUsers(amount, 0).whenCompleteAsync((users, throwable) -> {
             users.forEach(user -> sendPlaytimeInfo(sender, user));
         });
     }
@@ -150,8 +154,15 @@ public class PlayTimeCommand {
         ));
     }
 
+    /**
+     * Parse the time string
+     * @param time The time string
+     * @return The map of time units
+     */
     private Map<String, Integer> parseTime(String time) {
         Pattern pattern = Pattern.compile("(\\d+)([A-Za-z]+)");
+        // Parse the time string
+        // Example: 1d2h3m4s
         Matcher matcher = pattern.matcher(time);
         Map<String, Integer> timeMap = new HashMap<>();
 
@@ -164,6 +175,12 @@ public class PlayTimeCommand {
         return timeMap;
     }
 
+    /**
+     * Add playtime to a user
+     * @param user The user to add playtime to
+     * @param timeMap The map of time units
+     * @param time The time to add
+     */
     private void addPlaytime(PlaytimeUser user, Map<String, Integer> timeMap, String time) {
         if (timeMap.isEmpty()) {
             user.addPlaytime(Long.parseLong(time), TimeUnit.SECONDS);
@@ -190,6 +207,12 @@ public class PlayTimeCommand {
         }
     }
 
+    /**
+     * Remove playtime from a user
+     * @param user The user to remove playtime from
+     * @param timeMap The map of time units
+     * @param time The time to remove
+     */
     private void removePlaytime(PlaytimeUser user, Map<String, Integer> timeMap, String time) {
         if (timeMap.isEmpty()) {
             user.removePlaytime(Long.parseLong(time), TimeUnit.SECONDS);

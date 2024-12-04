@@ -44,8 +44,8 @@ public class MileStoneCommand {
         Playtime.getInstance().getStorage().saveMilestone(milestone).thenAcceptAsync(aBoolean -> {
             if (aBoolean) {
                 commandSender.sendMessage(Messages.MILESTONE_CREATED.getMessage());
-                Bukkit.getPluginManager().callEvent(new MilestoneCreateEvent(milestone));
                 Playtime.getInstance().getMilestones().add(milestone);
+                Bukkit.getPluginManager().callEvent(new MilestoneCreateEvent(milestone));
             } else {
                 commandSender.sendMessage(Messages.MILESTONE_COULD_NOT_BE_CREATED.getMessage());
             }
@@ -71,7 +71,7 @@ public class MileStoneCommand {
             if (aBoolean) {
                 commandSender.sendMessage(Messages.MILESTONE_REMOVED.getMessage());
                 Bukkit.getPluginManager().callEvent(new MilestoneDeleteEvent(milestone));
-                Playtime.getInstance().getMilestones().remove(milestone);
+                Playtime.getInstance().getMilestones().removeIf(milestone1 -> milestone1.getMilestoneName().equals(milestone.getMilestoneName()));
             } else {
                 commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             }
@@ -185,7 +185,7 @@ public class MileStoneCommand {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String command = String.join(" ", args.subList(1, args.size()));
+        String command = String.join(" ", args.subList(2, args.size()));
         milestone.addCommand(command);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_COMMAND_ADDED.getMessage());
@@ -250,7 +250,7 @@ public class MileStoneCommand {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        int amount = Integer.parseInt(args.get(1));
+        int amount = Integer.parseInt(args.get(2));
         milestone.setFireworkShowAmount(amount);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_SET_FIREWORK_AMOUNT.getMessage(new Replacement("<amount>", String.valueOf(amount))));
@@ -272,7 +272,7 @@ public class MileStoneCommand {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        int delay = Integer.parseInt(args.get(1));
+        int delay = Integer.parseInt(args.get(2));
         milestone.setFireworkShowSecondsBetween(delay);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_SET_FIREWORK_DELAY.getMessage(new Replacement("<amount>", String.valueOf(delay))));
@@ -294,7 +294,7 @@ public class MileStoneCommand {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String message = String.join(" ", args.subList(1, args.size()));
+        String message = String.join(" ", args.subList(2, args.size()));
         milestone.addMessage(message);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_MESSAGE_ADDED.getMessage());
@@ -316,7 +316,7 @@ public class MileStoneCommand {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String message = String.join(" ", args.subList(1, args.size()));
+        String message = String.join(" ", args.subList(2, args.size()));
         milestone.removeMessage(message);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_MESSAGE_REMOVED.getMessage());
