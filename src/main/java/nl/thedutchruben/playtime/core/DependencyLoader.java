@@ -3,6 +3,7 @@ package nl.thedutchruben.playtime.core;
 import lombok.Getter;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
+import net.byteflux.libby.logging.LogLevel;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class DependencyLoader {
         libraryManager.addMavenCentral();
         libraryManager.addJitPack();
         libraryManager.addRepository("https://maven.thedutchservers.com/releases");
+        libraryManager.setLogLevel(LogLevel.INFO);
+
         //build array with all the dependencies as liberies
         List<Library> libraries = new ArrayList<>();
         for (Dependency dependency : Dependency.values()) {
