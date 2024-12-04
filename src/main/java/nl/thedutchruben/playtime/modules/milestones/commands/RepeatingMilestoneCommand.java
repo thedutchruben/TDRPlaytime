@@ -9,7 +9,6 @@ import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.repeatingmilestone.RepeatingMilestoneCreateEvent;
 import nl.thedutchruben.playtime.core.events.repeatingmilestone.RepeatingMilestoneDeleteEvent;
 import nl.thedutchruben.playtime.core.events.repeatingmilestone.RepeatingMilestoneUpdateEvent;
-import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.utils.Replacement;
@@ -188,7 +187,7 @@ public class RepeatingMilestoneCommand {
             return;
         }
 
-        String command = String.join(" ", args.subList(1, args.size()));
+        String command = String.join(" ", args.subList(2, args.size()));
         repeatingMilestone.addCommand(command);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_COMMAND_ADDED.getMessage());
@@ -212,7 +211,7 @@ public class RepeatingMilestoneCommand {
             return;
         }
 
-        String command = String.join(" ", args.subList(1, args.size()));
+        String command = String.join(" ", args.subList(2, args.size()));
         repeatingMilestone.removeCommand(command);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_ITEM_REMOVED.getMessage());
@@ -259,7 +258,7 @@ public class RepeatingMilestoneCommand {
             return;
         }
 
-        int amount = Integer.parseInt(args.get(1));
+        int amount = Integer.parseInt(args.get(2));
         repeatingMilestone.setFireworkShowAmount(amount);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_SET_FIREWORK_AMOUNT.getMessage(new Replacement("<amount>", String.valueOf(amount))));
@@ -281,7 +280,7 @@ public class RepeatingMilestoneCommand {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        int delay = Integer.parseInt(args.get(1));
+        int delay = Integer.parseInt(args.get(2));
         repeatingMilestone.setFireworkShowSecondsBetween(delay);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_SET_FIREWORK_DELAY.getMessage(new Replacement("<amount>", String.valueOf(delay))));
@@ -303,7 +302,7 @@ public class RepeatingMilestoneCommand {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String message = String.join(" ", args.subList(1, args.size()));
+        String message = String.join(" ", args.subList(2, args.size()));
         repeatingMilestone.addMessage(message);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_MESSAGE_ADDED.getMessage());
@@ -325,7 +324,7 @@ public class RepeatingMilestoneCommand {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String message = String.join(" ", args.subList(1, args.size()));
+        String message = String.join(" ", args.subList(2, args.size()));
         repeatingMilestone.removeMessage(message);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_MESSAGE_REMOVED.getMessage());

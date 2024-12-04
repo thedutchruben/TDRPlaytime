@@ -29,8 +29,11 @@ public class RepeatingMilestone {
     /**
      * The name of the milestone.
      */
+    @Setter
     @SerializedName("_id")
     private String milestoneName;
+    @Setter
+    @Getter
     @SerializedName("online_time")
     private long onlineTime;
     @SerializedName("item_stacks")
@@ -129,18 +132,6 @@ public class RepeatingMilestone {
 
     public String getMilestoneName() {
         return milestoneName;
-    }
-
-    public void setMilestoneName(String milestoneName) {
-        this.milestoneName = milestoneName;
-    }
-
-    public long getOnlineTime() {
-        return onlineTime;
-    }
-
-    public void setOnlineTime(long onlineTime) {
-        this.onlineTime = onlineTime;
     }
 
     public List<String> getMessages() {

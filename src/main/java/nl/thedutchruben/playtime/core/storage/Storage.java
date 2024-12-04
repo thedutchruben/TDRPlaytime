@@ -1,8 +1,6 @@
 package nl.thedutchruben.playtime.core.storage;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
 import nl.thedutchruben.mccore.utils.GsonUtil;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
