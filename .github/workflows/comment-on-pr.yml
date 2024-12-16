@@ -28,18 +28,30 @@ jobs:
       - name: Extract Maven project version
         run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
         id: project
+      - name: Setup Shared Variables
+        id: setup_shared
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prNumber = github.context.payload.pull_request?.number;
+            const repo = github.context.repo.repo;
+            const owner = github.context.repo.owner;
+            core.exportVariable('PR_NUMBER', prNumber);
+            core.exportVariable('REPO_NAME', repo);
+            core.exportVariable('REPO_OWNER', owner);
+            console.log(`PR Number: ${prNumber}, Repo: ${owner}/${repo}`);
       - name: Comment on PR (Success)
         if: success()
         uses: actions/github-script@v6
         with:
           script: |
-            const prNumber = github.context.payload.pull_request.number;
+            const prNumber = process.env.PR_NUMBER;
             const buildVersion = process.env.version;
             const gitHash = process.env.git_hash;
             const comment = `Build completed for PR #${prNumber}. Version: ${buildVersion}, Commit: ${gitHash}.`;
             await github.rest.issues.createComment({
-              owner: github.context.repo.owner,
-              repo: github.context.repo.repo,
+              owner: process.env.REPO_OWNER,
+              repo: process.env.REPO_NAME,
               issue_number: prNumber,
               body: comment
             });
@@ -48,12 +60,12 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const prNumber = github.context.payload.pull_request.number;
-            const issueUrl = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/issues/new?title=Build%20Failed%20for%20PR%20%23${prNumber}`;
+            const prNumber = process.env.PR_NUMBER;
+            const issueUrl = `https://github.com/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/issues/new?title=Build%20Failed%20for%20PR%20%23${prNumber}`;
             const comment = `Build failed for PR #${prNumber}. Please check the issue: ${issueUrl}`;
             await github.rest.issues.createComment({
-              owner: github.context.repo.owner,
-              repo: github.context.repo.repo,
+              owner: process.env.REPO_OWNER,
+              repo: process.env.REPO_NAME,
               issue_number: prNumber,
               body: comment
             });
