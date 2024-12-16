@@ -41,18 +41,20 @@ jobs:
       run: |
         last_tag=$(git describe --tags --abbrev=0)
         echo "Last release tag: $last_tag"
-        commit_messages=$(git log $last_tag..HEAD --pretty=format:"- %s (%h)")
+        commit_messages=$(git log $last_tag..HEAD --pretty=format:"- %s (%h)" | tr '\n' '|' )
         echo "commit_messages=$commit_messages" >> $GITHUB_ENV
+
     - name: Create Pre-release and Upload Asset
       uses: actions/github-script@v6
       with:
         script: |
           const fs = require('fs');
           const path = `${process.env.artifactPath}/TDRPlaytime-${{ steps.project.outputs.version }}.jar`;
-
-          // Generate the release body with commit messages
-          const body = `### Changes since last release:\n${process.env.commit_messages}`;
-
+    
+          // Decode commit messages
+          const commitMessages = process.env.commit_messages.replace(/\|/g, '\n');
+          const body = `### Changes since last release:\n${commitMessages}`;
+    
           // Create the release
           const { data: release } = await github.rest.repos.createRelease({
             owner: context.repo.owner,
@@ -64,9 +66,9 @@ jobs:
             draft: false,
             prerelease: true
           });
-
+    
           console.log(`Created release: ${release.id}`);
-
+    
           // Upload the JAR file as an asset
           const { data: asset } = await github.rest.repos.uploadReleaseAsset({
             owner: context.repo.owner,
@@ -79,5 +81,5 @@ jobs:
               'content-length': fs.statSync(path).size
             }
           });
-
+    
           console.log(`Uploaded asset: ${asset.name}`);
