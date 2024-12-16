@@ -60,9 +60,10 @@ public class PlaytimeUser {
      * Fires an AsyncPlaytimePlayerUpdatePlaytimeEvent asynchronously.
      */
     public void updatePlaytime() {
+        float oldTime = time;
         time = time + (System.currentTimeMillis() - lastChecked);
         Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),
-                () -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this, true, time - (System.currentTimeMillis() - lastChecked), time)));
+                () -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this, true, oldTime, time)));
         lastChecked = System.currentTimeMillis();
     }
 

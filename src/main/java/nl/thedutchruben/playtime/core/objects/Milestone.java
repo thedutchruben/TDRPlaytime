@@ -212,6 +212,10 @@ public class Milestone {
         _itemStackObjects = null;
     }
 
+    public long getOnlineTimeInMilliseconds(){
+        return onlineTime * 1000;
+    }
+
     /**
      * Removes a command from the milestone.
      *

@@ -141,6 +141,10 @@ public class RepeatingMilestone {
         return messages;
     }
 
+    public long getOnlineTimeInMilliseconds(){
+        return onlineTime * 1000;
+    }
+
     public void setMessages(List<String> messages) {
         this.messages = messages;
     }
