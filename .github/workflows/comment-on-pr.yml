@@ -1,0 +1,61 @@
+name: Comment on Pull Request
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build_and_comment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4.4.0
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+          java-package: jdk
+          architecture: x64
+      - name: Build with Maven
+        id: build
+        run: |
+          mvn install
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          echo "git_hash=$git_hash" >> $GITHUB_ENV
+          echo "artifactPath=$(pwd)/target" >> $GITHUB_ENV
+      - name: Extract Maven project version
+        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+        id: project
+      - name: Comment on PR (Success)
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { context, github } = require('@actions/github');
+            const prNumber = context.payload.pull_request.number;
+            const buildVersion = process.env.version;
+            const gitHash = process.env.git_hash;
+            const comment = `Build completed for PR #${prNumber}. Version: ${buildVersion}, Commit: ${gitHash}.`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });
+      - name: Comment on PR (Failure)
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { context, github } = require('@actions/github');
+            const prNumber = context.payload.pull_request.number;
+            const issueUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/issues/new?title=Build%20Failed%20for%20PR%20%23${prNumber}`;
+            const comment = `Build failed for PR #${prNumber}. Please check the issue: ${issueUrl}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });
