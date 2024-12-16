@@ -33,7 +33,8 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { context, github } = require('@actions/github');
+            const github = require('@actions/github');
+            const context = github.context;
             const prNumber = context.payload.pull_request.number;
             const buildVersion = process.env.version;
             const gitHash = process.env.git_hash;
@@ -49,7 +50,8 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { context, github } = require('@actions/github');
+            const github = require('@actions/github');
+            const context = github.context;
             const prNumber = context.payload.pull_request.number;
             const issueUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/issues/new?title=Build%20Failed%20for%20PR%20%23${prNumber}`;
             const comment = `Build failed for PR #${prNumber}. Please check the issue: ${issueUrl}`;
