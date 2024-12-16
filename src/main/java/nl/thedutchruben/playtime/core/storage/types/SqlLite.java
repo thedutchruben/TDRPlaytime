@@ -14,9 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class SqlLite extends Storage {
@@ -421,18 +419,58 @@ public class SqlLite extends Storage {
     public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
 
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("INSERT INTO `playtime_history`(`uuid`, `event`, `time`) VALUES (?,?,?)")) {
-                preparedStatement.setString(1, uuid.toString());
-                preparedStatement.setString(2, event.name());
-                preparedStatement.setInt(3, time);
-                preparedStatement.executeUpdate();
-                return true;
-            } catch (SQLException sqlException) {
-                Playtime.getPlugin().getLogger().severe("Error while updating playtime history to database: " + sqlException.getMessage());
-            }
+                Calendar date = new GregorianCalendar();
+                date.set(Calendar.HOUR_OF_DAY, 0);
+                date.set(Calendar.MINUTE, 0);
+                date.set(Calendar.SECOND, 0);
+                date.set(Calendar.MILLISECOND, 0);
+                java.sql.Date sqlDate = new java.sql.Date(date.getTimeInMillis());
 
-            return true;
+                try {
+                    if (event == Event.JOIN) {
+                        if (!playtimeRecordExists(uuid, sqlDate)) {
+                            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                                    "INSERT INTO playtime_history" + " (`uuid`, `start_time`, `end_time`, `date`) VALUES (?, ?, ?, ?)")) {
+                                preparedStatement.setString(1, uuid.toString());
+                                preparedStatement.setInt(2, time);
+                                preparedStatement.setInt(3, time);
+                                preparedStatement.setDate(4, sqlDate);
+                                preparedStatement.executeUpdate();
+                                return true;
+                            }
+                        }
+                    } else {
+                        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                                "UPDATE playtime_history" + " SET `end_time` = ? WHERE `uuid` = ? AND `date` = ?")) {
+                            preparedStatement.setInt(1, time);
+                            preparedStatement.setString(2, uuid.toString());
+                            preparedStatement.setDate(3, sqlDate);
+
+                            preparedStatement.executeUpdate();
+                            return true;
+                        }
+                    }
+                } catch (SQLException sqlException) {
+                    Playtime.getPlugin().getLogger().severe("Error while updating playtime history: " + sqlException.getMessage());
+                }
+                return false;
         });
+    }
+
+    /**
+     * Get the playtime history
+     *
+     * @param uuid The uuid of the player
+     * @return The list of playtime history
+     */
+    private boolean playtimeRecordExists(UUID uuid, java.sql.Date date) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM playtime_history" + " WHERE `uuid` = ? AND `date` = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setDate(2, date);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
     }
 }
