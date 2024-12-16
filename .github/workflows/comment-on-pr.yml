@@ -33,14 +33,13 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const context = require('@actions/github').context;
-            const prNumber = context.payload.pull_request.number;
+            const prNumber = github.context.payload.pull_request.number;
             const buildVersion = process.env.version;
             const gitHash = process.env.git_hash;
             const comment = `Build completed for PR #${prNumber}. Version: ${buildVersion}, Commit: ${gitHash}.`;
-            await require('@actions/github').rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+            await github.rest.issues.createComment({
+              owner: github.context.repo.owner,
+              repo: github.context.repo.repo,
               issue_number: prNumber,
               body: comment
             });
@@ -49,13 +48,12 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const context = require('@actions/github').context;
-            const prNumber = context.payload.pull_request.number;
-            const issueUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/issues/new?title=Build%20Failed%20for%20PR%20%23${prNumber}`;
+            const prNumber = github.context.payload.pull_request.number;
+            const issueUrl = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/issues/new?title=Build%20Failed%20for%20PR%20%23${prNumber}`;
             const comment = `Build failed for PR #${prNumber}. Please check the issue: ${issueUrl}`;
-            await require('@actions/github').rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+            await github.rest.issues.createComment({
+              owner: github.context.repo.owner,
+              repo: github.context.repo.repo,
               issue_number: prNumber,
               body: comment
             });
