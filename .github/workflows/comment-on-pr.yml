@@ -5,67 +5,72 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  build_and_comment:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup JDK
-        uses: actions/setup-java@v4.6.0
-        with:
-          distribution: 'adopt'
-          java-version: '17'
-          java-package: jdk
-          architecture: x64
-      - name: Build with Maven
-        id: build
-        run: |
-          mvn install
-          git_hash=$(git rev-parse --short "$GITHUB_SHA")
-          echo "git_hash=$git_hash" >> $GITHUB_ENV
-          echo "artifactPath=$(pwd)/target" >> $GITHUB_ENV
-      - name: Extract Maven project version
-        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-        id: project
-      - name: Setup Shared Variables
-        id: setup_shared
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prNumber = github.context.payload.pull_request?.number;
-            const repo = github.context.repo.repo;
-            const owner = github.context.repo.owner;
-            core.exportVariable('PR_NUMBER', prNumber);
-            core.exportVariable('REPO_NAME', repo);
-            core.exportVariable('REPO_OWNER', owner);
-            console.log(`PR Number: ${prNumber}, Repo: ${owner}/${repo}`);
-      - name: Comment on PR (Success)
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prNumber = process.env.PR_NUMBER;
-            const buildVersion = process.env.version;
-            const gitHash = process.env.git_hash;
-            const comment = `Build completed for PR #${prNumber}. Version: ${buildVersion}, Commit: ${gitHash}.`;
-            await github.rest.issues.createComment({
-              owner: process.env.REPO_OWNER,
-              repo: process.env.REPO_NAME,
-              issue_number: prNumber,
-              body: comment
+    # Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Java and Maven
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    # Build the Maven project
+    - name: Build with Maven
+      run: mvn clean package
+
+    # Upload build artifacts
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: maven-build
+        path: target/*
+
+  comment:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Post comment on PR
+      if: ${{ needs.build.result == 'success' || needs.build.result == 'failure' }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const status = '${{ needs.build.result }}';
+          const artifactUrl = status === 'success' ? 'Artifacts were uploaded successfully.' : 'No artifacts were uploaded.';
+          const commentBody = `**Build Status:** ${status.toUpperCase()}\n\n${artifactUrl}`;
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number
+          });
+
+          const existingComment = comments.find(comment => comment.body.includes('**Build Status:**'));
+
+          if (existingComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: existingComment.id,
+              body: commentBody
             });
-      - name: Comment on PR (Failure)
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prNumber = process.env.PR_NUMBER;
-            const issueUrl = `https://github.com/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/issues/new?title=Build%20Failed%20for%20PR%20%23${prNumber}`;
-            const comment = `Build failed for PR #${prNumber}. Please check the issue: ${issueUrl}`;
+          } else {
             await github.rest.issues.createComment({
-              owner: process.env.REPO_OWNER,
-              repo: process.env.REPO_NAME,
-              issue_number: prNumber,
-              body: comment
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody
             });
+          }
