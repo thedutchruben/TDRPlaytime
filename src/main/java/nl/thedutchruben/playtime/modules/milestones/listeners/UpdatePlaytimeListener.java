@@ -6,6 +6,8 @@ import nl.thedutchruben.playtime.core.events.player.AsyncPlaytimePlayerUpdatePla
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.logging.Level;
+
 /**
  * Listener class that handles the update of player playtime milestones.
  */
@@ -19,9 +21,12 @@ public class UpdatePlaytimeListener implements Listener {
      */
     @EventHandler
     public void updatePlaytime(AsyncPlaytimePlayerUpdatePlaytimeEvent event) {
+        Playtime.getPlugin().getLogger().log(Level.INFO, "Updating playtime for player " + event.getUser().getBukkitPlayer().getName() + " from " + event.getOldPlaytime() + " to " + event.getNewPlaytime());
+        Playtime.getInstance().getMilestones().forEach(milestone -> Playtime.getPlugin().getLogger().log(Level.INFO, "Milestone: " + milestone.getOnlineTimeInMilliseconds()));
         // Check and apply milestones that are not repeating
         Playtime.getInstance().getMilestones().stream()
-                .filter(milestone -> milestone.getOnlineTime() <= event.getNewPlaytime() && milestone.getOnlineTime() > event.getOldPlaytime())
+                .filter(milestone -> milestone.getOnlineTimeInMilliseconds() <= event.getNewPlaytime()
+                        && milestone.getOnlineTimeInMilliseconds() > event.getOldPlaytime())
                 .forEach(milestone -> milestone.apply(event.getUser().getBukkitPlayer()));
 
         // Check and apply repeating milestones
@@ -29,7 +34,7 @@ public class UpdatePlaytimeListener implements Listener {
             if (i > 0) {
                 float finalI = i;
                 Playtime.getInstance().getRepeatingMilestones().stream()
-                        .filter(repeatingMilestone -> finalI % (repeatingMilestone.getOnlineTime() * 1000) == 1)
+                        .filter(repeatingMilestone -> finalI % (repeatingMilestone.getOnlineTimeInMilliseconds() * 1000) == 1)
                         .forEach(repeatingMilestone -> repeatingMilestone.apply(event.getUser().getBukkitPlayer()));
             }
         }
