@@ -316,26 +316,19 @@ public class Yaml extends Storage {
         return saveRepeatingMilestone(repeatingMilestone);
     }
 
+    /**
+     * @param uuid
+     * @param event
+     * @param time
+     * @return
+     */
     @Override
-    public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
+    public CompletableFuture<Boolean> addPlaytimeHistory(UUID uuid, Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
             FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("players/history/" + uuid + ".yaml");
             List<String> history = config.get().getStringList("history");
-            String today = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-            boolean updated = false;
 
-            for (int i = 0; i < history.size(); i++) {
-                String entry = history.get(i);
-                if (entry.contains("Date: " + today) && event.equals(Event.QUIT)) {
-                    history.set(i, "Date: " + today + " Event: " + event.name() + " Time: " + time);
-                    updated = true;
-                    break;
-                }
-            }
-
-            if (!updated) {
-                history.add("Date: " + today + " Event: " + event.name() + " Time: " + time);
-            }
+            history.add("UUID:" + uuid + "|EVENT:" + event + "|TIME:" + time + "|DATE" + new Date());
 
             config.set("history", history);
             config.save();

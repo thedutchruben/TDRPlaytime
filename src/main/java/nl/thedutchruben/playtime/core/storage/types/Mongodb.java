@@ -275,41 +275,22 @@ public class Mongodb extends Storage {
     }
 
     /**
-     * Get the playtime history of the player
-     *
-     * @param uuid The UUID of the player
-     * @return The list of playtime history
+     * @param uuid
+     * @param event
+     * @param time
+     * @return
      */
     @Override
-    public CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time) {
+    public CompletableFuture<Boolean> addPlaytimeHistory(UUID uuid, Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
-            Calendar date = new GregorianCalendar();
-            date.set(Calendar.HOUR_OF_DAY, 0);
-            date.set(Calendar.MINUTE, 0);
-            date.set(Calendar.SECOND, 0);
-            date.set(Calendar.MILLISECOND, 0);
-            java.sql.Date sqlDate = new java.sql.Date(date.getTimeInMillis());
-
-            try {
-                if (event == Event.JOIN) {
-                    if (!playtimeRecordExists(uuid, sqlDate)) {
-                        Document document = new Document("uuid", uuid.toString())
-                                .append("start_time", time)
-                                .append("end_time", time)
-                                .append("date", sqlDate);
-                        InsertOneResult result = this.database.getCollection("playtime_history").insertOne(document);
-                        return result.wasAcknowledged();
-                    }
-                } else {
-                    Document query = new Document("uuid", uuid.toString()).append("date", sqlDate);
-                    Document update = new Document("$set", new Document("end_time", time));
-                    UpdateResult result = this.database.getCollection("playtime_history").updateOne(query, update);
-                    return result.wasAcknowledged();
-                }
-            } catch (Exception e) {
-                Playtime.getPlugin().getLogger().severe("Error while updating playtime history: " + e.getMessage());
-            }
-            return false;
+            InsertOneResult result = this.database.getCollection("playtimeHistory")
+                    .insertOne(
+                            new Document("uuid", uuid)
+                                    .append("date", new Date())
+                                    .append("event", event)
+                                    .append("time", time)
+                    );
+            return result.wasAcknowledged();
         });
     }
 

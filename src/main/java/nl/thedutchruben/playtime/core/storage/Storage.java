@@ -146,8 +146,14 @@ public abstract class Storage {
      */
     public abstract CompletableFuture<Boolean> updateRepeatingMilestone(RepeatingMilestone repeatingMilestone);
 
-    public abstract CompletableFuture<Boolean> updatePlaytimeHistory(UUID uuid, Event event, int time);
-
+    /**
+     *
+     * @param uuid
+     * @param event
+     * @param time
+     * @return
+     */
+    public abstract CompletableFuture<Boolean> addPlaytimeHistory(UUID uuid, Event event, int time);
 
     public Gson getGson() {
         return gson;
