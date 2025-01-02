@@ -42,9 +42,9 @@ public class DependencyLoader {
 
     @Getter
     private enum Dependency {
-        BSON("org{}mongodb", "bson", "5.1.2", null),
-        MONGODB("org{}mongodb", "mongodb-driver-sync", "5.1.4", null),
-        MONGODB_CORE("org{}mongodb", "mongodb-driver-core", "5.1.2", null),
+        BSON("org{}mongodb", "bson", "5.2.1", null),
+        MONGODB("org{}mongodb", "mongodb-driver-sync", "5.2.1", null),
+        MONGODB_CORE("org{}mongodb", "mongodb-driver-core", "5.2.1", null),
         MCCORE("nl{}thedutchruben", "mccore", "1.4.9", null),
         BSTATS("org{}bstats", "bstats-bukkit", "3.0.2", "nl{}thedutchruben{}playtime{}bstats"),
         BSTATS_BASE("org{}bstats", "bstats-base", "3.0.2", "nl{}thedutchruben{}playtime{}bstats"),
