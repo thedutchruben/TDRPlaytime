@@ -8,6 +8,9 @@ on:
 jobs:
   pre_release:
     name: Create/Update Pre-release
+    concurrency:
+      group: ${{ github.repository }}-pre-release
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
