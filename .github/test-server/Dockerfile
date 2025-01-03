@@ -1,5 +1,5 @@
 # Use the official OpenJDK image as a base
-FROM openjdk:21-jdk-alpine
+FROM openjdk:25-jdk-slim
 # Install curl and jq
 RUN apk add --no-cache curl jq
 # Set the working directory
