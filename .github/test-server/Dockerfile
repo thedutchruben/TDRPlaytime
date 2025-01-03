@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /minecraft
 
 # Download the Spigot server jar file
-RUN wget https://cdn.getbukkit.org/spigot/spigot-1.17.1.jar -O spigot.jar
+RUN wget https://download.getbukkit.org/spigot/spigot-1.21.jar -O spigot.jar
 COPY download-plugin.sh download-plugin.sh
 
 # Expose the Minecraft server port
