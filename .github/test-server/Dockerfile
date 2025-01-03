@@ -16,7 +16,7 @@ RUN echo "eula=true" > eula.txt
 
 # Run the plugin download script
 RUN chmod +x download-plugin.sh
-RUN ./download-plugin.sh
+RUN sh download-plugin.sh
 
 # Start the Spigot server
 CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "spigot.jar", "nogui"]
