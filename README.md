@@ -1,3 +1,11 @@
+## Warning: 2.0 is in development and is not stable. Use at your own risk.
+### 2.0 Checklist:
+- [x] New database implementation
+- [ ] Playtime history system
+- [ ] New implementation for placeholders
+- [ ] Updated system for rewards
+- [ ] Migration testing from 1.* to 2.0
+
 # Playtime Plugin
 
 ![GitHub Release](https://img.shields.io/github/v/release/thedutchruben/tdrplaytime?sort=date&label=Latest%20release)
