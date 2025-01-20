@@ -15,9 +15,8 @@ EXPOSE 25565
 # Accept the EULA
 RUN echo "eula=true" > eula.txt
 
-# Run the plugin download script
-RUN chmod +x download-plugin.sh
-RUN sh download-plugin.sh
+RUN mkidr plugins
+COPY TDRPlaytime.jar plugins/TDRPlaytime.jar
 
 # Start the Spigot server
 CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "spigot.jar", "nogui"]
