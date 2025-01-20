@@ -6,10 +6,10 @@ on:
       - main
 
 jobs:
-  pre_release:
-    name: Create/Update Pre-release
+  build:
+    name: Build and push Docker image
     concurrency:
-      group: ${{ github.repository }}-pre-release
+      group: ${{ github.repository }}-test-server
       cancel-in-progress: true
     runs-on: ubuntu-latest
     env:
