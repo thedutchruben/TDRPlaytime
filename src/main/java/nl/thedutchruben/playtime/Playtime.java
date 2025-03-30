@@ -106,9 +106,9 @@ public class Playtime {
 
         // Load the messages
         this.storage.getMilestones().thenAccept(milestones -> this.milestones = milestones).join();
-        getPlugin().getLogger().log(Level.INFO, "Loaded {0} milestones", this.milestones.size());
+        getPlugin().getLogger().log(Level.INFO, "Loaded {0} milestones", Optional.of(this.milestones.size()));
         this.storage.getRepeatingMilestones().thenAccept(repeatingMilestones -> this.repeatingMilestones = repeatingMilestones).join();
-        getPlugin().getLogger().log(Level.INFO, "Loaded {0} repeatingmilestones", this.repeatingMilestones.size());
+        getPlugin().getLogger().log(Level.INFO, "Loaded {0} repeatingmilestones", Optional.of(this.repeatingMilestones.size()));
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             UUID playerUUID = onlinePlayer.getUniqueId();

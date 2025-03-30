@@ -1,0 +1,81 @@
+name: Release Quality Checks
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened, labeled]
+
+jobs:
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'release')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Check code style
+        run: mvn checkstyle:check
+
+      - name: Run unit tests
+        run: mvn test
+
+      - name: Check code coverage
+        run: |
+          mvn jacoco:report
+          
+          # Extract coverage percentage
+          COVERAGE=$(awk -F, 'NR==2 {print $5}' target/site/jacoco/jacoco.csv)
+          echo "Code coverage: $COVERAGE%"
+          
+          # Fail if coverage is below threshold
+          if (( $(echo "$COVERAGE < 50" | bc -l) )); then
+            echo "Code coverage is below 50%"
+            exit 1
+          fi
+
+      - name: Run SpotBugs
+        run: mvn spotbugs:check
+
+      - name: Build final artifact
+        run: mvn package
+
+      - name: Upload final artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate
+          path: target/TDRPlaytime-*.jar
+
+      - name: Add comment with testing results
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ All quality checks passed! This PR is ready for review and release.'
+            })
+
+      - name: Add comment with testing failures
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Quality checks failed! Please fix the issues before this PR can be merged.'
+            })
