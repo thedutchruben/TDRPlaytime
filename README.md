@@ -2,6 +2,7 @@
 ### 2.0 Checklist:
 - [x] New database implementation
 - [ ] Playtime history system
+- [ ] New Afk system
 - [ ] New implementation for placeholders
 - [ ] Updated system for rewards
 - [ ] Migration testing from 1.* to 2.0
