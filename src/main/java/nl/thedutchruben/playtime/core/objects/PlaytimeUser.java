@@ -18,6 +18,10 @@ public class PlaytimeUser {
     public String uuid;
     public String name;
     public float time;
+    public float afkTime;
+    private boolean isAfk;
+    private long afkSince;
+    private long lastActivity;
     private transient long lastChecked;
 
     /**
@@ -31,6 +35,9 @@ public class PlaytimeUser {
         this.uuid = uuid;
         this.name = name;
         this.time = time;
+        this.afkTime = 0;
+        this.isAfk = false;
+        this.lastActivity = System.currentTimeMillis();
         this.lastChecked = System.currentTimeMillis();
     }
 
@@ -57,11 +64,22 @@ public class PlaytimeUser {
 
     /**
      * Updates the playtime of the user based on the time elapsed since the last check.
+     * Considers AFK status if configured not to count AFK time.
      * Fires an AsyncPlaytimePlayerUpdatePlaytimeEvent asynchronously.
      */
     public void updatePlaytime() {
         float oldTime = time;
-        time = time + (System.currentTimeMillis() - lastChecked);
+        long elapsedTime = System.currentTimeMillis() - lastChecked;
+
+        // If player is AFK and we don't count AFK time, don't increase playtime
+        if (isAfk && !Playtime.getInstance().getAfkManager().shouldCountAfkTime()) {
+            // Just update the AFK time
+            afkTime += elapsedTime;
+        } else {
+            // Update the total playtime
+            time = time + elapsedTime;
+        }
+
         Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),
                 () -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this, true, oldTime, time)));
         lastChecked = System.currentTimeMillis();
@@ -132,6 +150,115 @@ public class PlaytimeUser {
      */
     public int[] translateTime() {
         float tempTime = this.time;
+        tempTime = tempTime / 1000;
+        int days = (int) (tempTime / 86400);
+        tempTime = tempTime - days * 86400L;
+        int hours = (int) (tempTime / 3600);
+        tempTime = tempTime - hours * 3600L;
+        int minutes = (int) (tempTime / 60);
+        tempTime = tempTime - minutes * 60L;
+        int seconds = (int) tempTime;
+        return new int[]{days, hours, minutes, seconds};
+    }
+
+    /**
+     * Checks if the user is currently AFK
+     * @return true if the user is AFK, false otherwise
+     */
+    public boolean isAfk() {
+        return isAfk;
+    }
+
+    /**
+     * Sets the user's AFK status
+     * @param afk The new AFK status
+     */
+    public void setAfk(boolean afk) {
+        this.isAfk = afk;
+    }
+
+    /**
+     * Gets the timestamp when the user went AFK
+     * @return The timestamp when the user went AFK
+     */
+    public long getAfkSince() {
+        return afkSince;
+    }
+
+    /**
+     * Sets the timestamp when the user went AFK
+     * @param afkSince The timestamp when the user went AFK
+     */
+    public void setAfkSince(long afkSince) {
+        this.afkSince = afkSince;
+    }
+
+    /**
+     * Gets the total time the user has been AFK
+     * @return The total AFK time in milliseconds
+     */
+    public float getAfkTime() {
+        return afkTime;
+    }
+
+    /**
+     * Adds AFK time to the user's total AFK time
+     * @param time The time to add in milliseconds
+     */
+    public void addAfkTime(long time) {
+        this.afkTime += time;
+    }
+
+    /**
+     * Gets the timestamp of the user's last activity
+     * @return The timestamp of the user's last activity
+     */
+    public long getLastActivity() {
+        return lastActivity;
+    }
+
+    /**
+     * Sets the timestamp of the user's last activity
+     * @param lastActivity The timestamp of the user's last activity
+     */
+    public void setLastActivity(long lastActivity) {
+        this.lastActivity = lastActivity;
+    }
+
+    /**
+     * Gets the user's active playtime (total playtime minus AFK time)
+     * @return The active playtime in milliseconds
+     */
+    public float getActivePlaytime() {
+        if (!Playtime.getInstance().getAfkManager().shouldCountAfkTime()) {
+            return time - afkTime;
+        }
+        return time;
+    }
+
+    /**
+     * Translates the user's active playtime into an array of days, hours, minutes, and seconds.
+     * @return An array containing the days, hours, minutes, and seconds of active playtime.
+     */
+    public int[] translateActiveTime() {
+        float tempTime = this.getActivePlaytime();
+        tempTime = tempTime / 1000;
+        int days = (int) (tempTime / 86400);
+        tempTime = tempTime - days * 86400L;
+        int hours = (int) (tempTime / 3600);
+        tempTime = tempTime - hours * 3600L;
+        int minutes = (int) (tempTime / 60);
+        tempTime = tempTime - minutes * 60L;
+        int seconds = (int) tempTime;
+        return new int[]{days, hours, minutes, seconds};
+    }
+
+    /**
+     * Translates the user's AFK time into an array of days, hours, minutes, and seconds.
+     * @return An array containing the days, hours, minutes, and seconds of AFK time.
+     */
+    public int[] translateAfkTime() {
+        float tempTime = this.afkTime;
         tempTime = tempTime / 1000;
         int days = (int) (tempTime / 86400);
         tempTime = tempTime - days * 86400L;

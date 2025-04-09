@@ -9,6 +9,11 @@ softdepend:
   - EssentialsX
 description: Playtime plugin with milestone support
 commands:
+  afk:
+    aliases:
+      - away
+    description: Toggle AFK status
+    permission: playtime.afk
   playtime:
     aliases:
       - playertime
@@ -41,4 +46,12 @@ permissions:
   playtime.milestone.additem:
     default: op
   playtime.milestone.addcommand:
+    default: op
+  playtime.afk:
+    default: true
+  playtime.afk.status:
+    default: true
+  playtime.afk.active:
+    default: true
+  playtime.afk.kickexempt:
     default: op

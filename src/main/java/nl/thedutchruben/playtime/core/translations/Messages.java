@@ -52,6 +52,14 @@ public enum Messages {
     REPEATING_MILESTONE_MESSAGE_ADDED("command.repeating_milestone.message_added", "&aYou have successfully added a message to a repeating milestone!"),
     REPEATING_MILESTONE_MESSAGE_REMOVED("command.repeating_milestone.message_removed", "&aYou have removed a message from a repeating milestone!"),
     REPEATING_MILESTONE_LIST("command.repeating_milestone.list", "%REPEATING_MILESTONE_NAME% Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"),
+
+    PLAYER_NOW_AFK("afk.player_now_afk", "&8[&6PlayTime&8] &7%player% is now AFK"),
+    PLAYER_NO_LONGER_AFK("afk.player_no_longer_afk", "&8[&6PlayTime&8] &7%player% is no longer AFK"),
+    PLAYER_AFK_STATUS("afk.player_afk_status", "&8[&6PlayTime&8] &7%player% has been AFK for %D% day(s) %H% hour(s) %M% minute(s) %S% second(s)"),
+    PLAYER_AFK_TOTAL("afk.player_afk_total", "&8[&6PlayTime&8] &7%player% has spent a total of %D% day(s) %H% hour(s) %M% minute(s) %S% second(s) AFK"),
+    PLAYER_ACTIVE_TIME("afk.player_active_time", "&8[&6PlayTime&8] &7%player%'s active playtime is %D% day(s) %H% hour(s) %M% minute(s) %S% second(s)"),
+    PLAYER_MANUALLY_SET_AFK("afk.player_manually_set_afk", "&8[&6PlayTime&8] &7You have been marked as AFK"),
+    PLAYER_MANUALLY_SET_NOT_AFK("afk.player_manually_set_not_afk", "&8[&6PlayTime&8] &7You are no longer AFK"),
     ;
 
     @Getter

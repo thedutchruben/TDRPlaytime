@@ -47,6 +47,18 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
             placeholders.add("%tdrplaytime_top_time_" + i + "_seconds%");
         }
 
+        placeholders.add("%tdrplaytime_afk_status%");
+        placeholders.add("%tdrplaytime_afk_time%");
+        placeholders.add("%tdrplaytime_afk_time_days_number%");
+        placeholders.add("%tdrplaytime_afk_time_hours_number%");
+        placeholders.add("%tdrplaytime_afk_time_minutes_number%");
+        placeholders.add("%tdrplaytime_afk_time_seconds_number%");
+        placeholders.add("%tdrplaytime_active_time%");
+        placeholders.add("%tdrplaytime_active_time_days_number%");
+        placeholders.add("%tdrplaytime_active_time_hours_number%");
+        placeholders.add("%tdrplaytime_active_time_minutes_number%");
+        placeholders.add("%tdrplaytime_active_time_seconds_number%");
+
         return placeholders;
     }
 
@@ -82,6 +94,53 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
         if (dummyProofParams.contains("top_time_")) {
             int placeNumber = parsePlaceNumber(dummyProofParams);
             return getTopUserTime(dummyProofParams, placeNumber);
+        }
+
+        // Add this to the onPlaceholderRequest method
+        if (dummyProofParams.equals("afk_status")) {
+            return user.isAfk() ? "AFK" : "Online";
+        }
+
+        if (dummyProofParams.equals("afk_time")) {
+            int[] afkTime = user.translateAfkTime();
+            return Messages.PLAYER_AFK_TOTAL.getMessage(
+                    new Replacement("%player%", player.getName()),
+                    new Replacement("%D%", String.valueOf(afkTime[0])),
+                    new Replacement("%H%", String.valueOf(afkTime[1])),
+                    new Replacement("%M%", String.valueOf(afkTime[2])),
+                    new Replacement("%S%", String.valueOf(afkTime[3]))
+            );
+        }
+
+        if (dummyProofParams.contains("afk_time_days_number")) {
+            return String.valueOf(user.translateAfkTime()[0]);
+        } else if (dummyProofParams.contains("afk_time_hours_number")) {
+            return String.valueOf(user.translateAfkTime()[1]);
+        } else if (dummyProofParams.contains("afk_time_minutes_number")) {
+            return String.valueOf(user.translateAfkTime()[2]);
+        } else if (dummyProofParams.contains("afk_time_seconds_number")) {
+            return String.valueOf(user.translateAfkTime()[3]);
+        }
+
+        if (dummyProofParams.equals("active_time")) {
+            int[] activeTime = user.translateActiveTime();
+            return Messages.PLAYER_ACTIVE_TIME.getMessage(
+                    new Replacement("%player%", player.getName()),
+                    new Replacement("%D%", String.valueOf(activeTime[0])),
+                    new Replacement("%H%", String.valueOf(activeTime[1])),
+                    new Replacement("%M%", String.valueOf(activeTime[2])),
+                    new Replacement("%S%", String.valueOf(activeTime[3]))
+            );
+        }
+
+        if (dummyProofParams.contains("active_time_days_number")) {
+            return String.valueOf(user.translateActiveTime()[0]);
+        } else if (dummyProofParams.contains("active_time_hours_number")) {
+            return String.valueOf(user.translateActiveTime()[1]);
+        } else if (dummyProofParams.contains("active_time_minutes_number")) {
+            return String.valueOf(user.translateActiveTime()[2]);
+        } else if (dummyProofParams.contains("active_time_seconds_number")) {
+            return String.valueOf(user.translateActiveTime()[3]);
         }
 
         return super.onPlaceholderRequest(player, params);

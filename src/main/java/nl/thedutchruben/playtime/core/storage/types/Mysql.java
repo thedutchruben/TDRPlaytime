@@ -9,6 +9,7 @@ import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.storage.SqlStatements;
 import nl.thedutchruben.playtime.core.storage.Storage;
+import nl.thedutchruben.playtime.core.storage.migrations.MigrationManager;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -58,6 +59,10 @@ public class Mysql extends Storage {
                 Playtime.getPlugin().getLogger().severe("Error while creating table in database: " + sqlException.getMessage());
             }
         }
+
+        MigrationManager migrationManager = new MigrationManager(connection, false);
+        migrationManager.runMigrations();
+
         return ds.isRunning();
     }
 
@@ -107,13 +112,15 @@ public class Mysql extends Storage {
     @Override
     public CompletableFuture<PlaytimeUser> loadUser(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM " + getTableName("playtime") + " WHERE `uuid` = ?")) {
                 preparedStatement.setString(1, uuid.toString());
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new PlaytimeUser(uuid.toString(), resultSet.getString("name"), resultSet.getLong("time"));
+                        PlaytimeUser user = new PlaytimeUser(uuid.toString(), resultSet.getString("name"), resultSet.getLong("time"));
+                        user.addAfkTime(resultSet.getLong("afk_time"));
+                        user.setLastActivity(resultSet.getLong("last_activity"));
+                        return user;
                     }
                 }
             } catch (SQLException sqlException) {
@@ -158,10 +165,12 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> saveUser(PlaytimeUser playtimeUser) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE " + getTableName("playtime") + " SET `name` = ?, `time` = ? WHERE `uuid` = ?")) {
+                    .prepareStatement("UPDATE " + getTableName("playtime") + " SET `name` = ?, `time` = ?, `afk_time` = ?, `last_activity` = ? WHERE `uuid` = ?")) {
                 preparedStatement.setString(1, playtimeUser.getName());
                 preparedStatement.setFloat(2, playtimeUser.getTime());
-                preparedStatement.setString(3, playtimeUser.getUUID().toString());
+                preparedStatement.setFloat(3, playtimeUser.getAfkTime());
+                preparedStatement.setLong(4, playtimeUser.getLastActivity());
+                preparedStatement.setString(5, playtimeUser.getUUID().toString());
                 preparedStatement.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {
@@ -181,10 +190,12 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> createUser(PlaytimeUser playtimeUser) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("INSERT INTO " + getTableName("playtime") + " (`uuid`, `name`, `time`) VALUES (?, ?, ?)")) {
+                    .prepareStatement("INSERT INTO " + getTableName("playtime") + " (`uuid`, `name`, `time`, `afk_time`, `last_activity`) VALUES (?, ?, ?, ?, ?)")) {
                 preparedStatement.setString(1, playtimeUser.getUUID().toString());
                 preparedStatement.setString(2, playtimeUser.getName());
                 preparedStatement.setFloat(3, playtimeUser.getTime());
+                preparedStatement.setFloat(4, playtimeUser.getAfkTime());
+                preparedStatement.setLong(5, playtimeUser.getLastActivity());
                 preparedStatement.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {

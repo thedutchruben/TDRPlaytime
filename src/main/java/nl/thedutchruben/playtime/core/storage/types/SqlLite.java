@@ -9,6 +9,7 @@ import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.storage.SqlStatements;
 import nl.thedutchruben.playtime.core.storage.Storage;
+import nl.thedutchruben.playtime.core.storage.migrations.MigrationManager;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -45,6 +46,8 @@ public class SqlLite extends Storage {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        // Create base tables
         for (String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), false)) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
@@ -52,7 +55,12 @@ public class SqlLite extends Storage {
                 Playtime.getPlugin().getLogger().severe("Error while creating table in database: " + sqlException.getMessage());
             }
         }
-        return false;
+
+        // Run migrations
+        MigrationManager migrationManager = new MigrationManager(connection, false);
+        migrationManager.runMigrations();
+
+        return true;
     }
 
     private static HikariConfig getHikariConfig() {
@@ -99,13 +107,34 @@ public class SqlLite extends Storage {
     @Override
     public CompletableFuture<PlaytimeUser> loadUser(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM `playtime` WHERE `uuid` = ?")) {
                 preparedStatement.setString(1, uuid.toString());
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new PlaytimeUser(uuid.toString(), resultSet.getString("name"), resultSet.getLong("time"));
+                        PlaytimeUser user = new PlaytimeUser(uuid.toString(), resultSet.getString("name"), resultSet.getLong("time"));
+
+                        // Load AFK data if available
+                        try {
+                            // Check if the column exists before trying to access it
+                            resultSet.getLong("afk_time");
+                            user.addAfkTime(resultSet.getLong("afk_time"));
+
+                            // Load last activity time if available
+                            try {
+                                resultSet.getLong("last_activity");
+                                user.setLastActivity(resultSet.getLong("last_activity"));
+                            } catch (SQLException e) {
+                                // Column doesn't exist yet, set default value
+                                user.setLastActivity(System.currentTimeMillis());
+                            }
+                        } catch (SQLException e) {
+                            // AFk columns don't exist yet, set default values
+                            user.addAfkTime(0);
+                            user.setLastActivity(System.currentTimeMillis());
+                        }
+
+                        return user;
                     }
                 }
             } catch (SQLException sqlException) {
@@ -124,13 +153,34 @@ public class SqlLite extends Storage {
     @Override
     public CompletableFuture<PlaytimeUser> loadUserByName(String name) {
         return CompletableFuture.supplyAsync(() -> {
-
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM `playtime` WHERE `name` = ?")) {
                 preparedStatement.setString(1, name);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new PlaytimeUser(resultSet.getString("uuid"), resultSet.getString("name"), resultSet.getLong("time"));
+                        PlaytimeUser user = new PlaytimeUser(resultSet.getString("uuid"), resultSet.getString("name"), resultSet.getLong("time"));
+
+                        // Load AFK data if available
+                        try {
+                            // Check if the column exists before trying to access it
+                            resultSet.getLong("afk_time");
+                            user.addAfkTime(resultSet.getLong("afk_time"));
+
+                            // Load last activity time if available
+                            try {
+                                resultSet.getLong("last_activity");
+                                user.setLastActivity(resultSet.getLong("last_activity"));
+                            } catch (SQLException e) {
+                                // Column doesn't exist yet, set default value
+                                user.setLastActivity(System.currentTimeMillis());
+                            }
+                        } catch (SQLException e) {
+                            // AFK columns don't exist yet, set default values
+                            user.addAfkTime(0);
+                            user.setLastActivity(System.currentTimeMillis());
+                        }
+
+                        return user;
                     }
                 }
             } catch (SQLException sqlException) {
@@ -149,13 +199,28 @@ public class SqlLite extends Storage {
     @Override
     public CompletableFuture<Boolean> saveUser(PlaytimeUser playtimeUser) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE `playtime` SET `name` = ?, `time` = ? WHERE `uuid` = ?")) {
-                preparedStatement.setString(1, playtimeUser.getName());
-                preparedStatement.setFloat(2, playtimeUser.getTime());
-                preparedStatement.setString(3, playtimeUser.getUUID().toString());
-                preparedStatement.executeUpdate();
-                return true;
+            try {
+                // First try with AFK columns
+                try (PreparedStatement preparedStatement = connection
+                        .prepareStatement("UPDATE `playtime` SET `name` = ?, `time` = ?, `afk_time` = ?, `last_activity` = ? WHERE `uuid` = ?")) {
+                    preparedStatement.setString(1, playtimeUser.getName());
+                    preparedStatement.setFloat(2, playtimeUser.getTime());
+                    preparedStatement.setFloat(3, playtimeUser.getAfkTime());
+                    preparedStatement.setLong(4, playtimeUser.getLastActivity());
+                    preparedStatement.setString(5, playtimeUser.getUUID().toString());
+                    preparedStatement.executeUpdate();
+                    return true;
+                } catch (SQLException e) {
+                    // If that fails, the AFK columns might not exist yet, try without them
+                    try (PreparedStatement preparedStatement = connection
+                            .prepareStatement("UPDATE `playtime` SET `name` = ?, `time` = ? WHERE `uuid` = ?")) {
+                        preparedStatement.setString(1, playtimeUser.getName());
+                        preparedStatement.setFloat(2, playtimeUser.getTime());
+                        preparedStatement.setString(3, playtimeUser.getUUID().toString());
+                        preparedStatement.executeUpdate();
+                        return true;
+                    }
+                }
             } catch (SQLException sqlException) {
                 Playtime.getPlugin().getLogger().severe("Error while saving user to database: " + sqlException.getMessage());
             }
@@ -172,13 +237,28 @@ public class SqlLite extends Storage {
     @Override
     public CompletableFuture<Boolean> createUser(PlaytimeUser playtimeUser) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("INSERT INTO `playtime` (`uuid`, `name`, `time`) VALUES (?, ?, ?)")) {
-                preparedStatement.setString(1, playtimeUser.getUUID().toString());
-                preparedStatement.setString(2, playtimeUser.getName());
-                preparedStatement.setFloat(3, playtimeUser.getTime());
-                preparedStatement.executeUpdate();
-                return true;
+            try {
+                // First try with AFK columns
+                try (PreparedStatement preparedStatement = connection
+                        .prepareStatement("INSERT INTO `playtime` (`uuid`, `name`, `time`, `afk_time`, `last_activity`) VALUES (?, ?, ?, ?, ?)")) {
+                    preparedStatement.setString(1, playtimeUser.getUUID().toString());
+                    preparedStatement.setString(2, playtimeUser.getName());
+                    preparedStatement.setFloat(3, playtimeUser.getTime());
+                    preparedStatement.setFloat(4, playtimeUser.getAfkTime());
+                    preparedStatement.setLong(5, playtimeUser.getLastActivity());
+                    preparedStatement.executeUpdate();
+                    return true;
+                } catch (SQLException e) {
+                    // If that fails, the AFK columns might not exist yet, try without them
+                    try (PreparedStatement preparedStatement = connection
+                            .prepareStatement("INSERT INTO `playtime` (`uuid`, `name`, `time`) VALUES (?, ?, ?)")) {
+                        preparedStatement.setString(1, playtimeUser.getUUID().toString());
+                        preparedStatement.setString(2, playtimeUser.getName());
+                        preparedStatement.setFloat(3, playtimeUser.getTime());
+                        preparedStatement.executeUpdate();
+                        return true;
+                    }
+                }
             } catch (SQLException sqlException) {
                 Playtime.getPlugin().getLogger().severe("Error while creating user in database: " + sqlException.getMessage());
             }
@@ -203,14 +283,36 @@ public class SqlLite extends Storage {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     List<PlaytimeUser> playtimeUsers = new ArrayList<>();
                     while (resultSet.next()) {
-                        playtimeUsers.add(new PlaytimeUser(resultSet.getString("uuid"), resultSet.getString("name"), resultSet.getLong("time")));
+                        PlaytimeUser user = new PlaytimeUser(resultSet.getString("uuid"), resultSet.getString("name"), resultSet.getLong("time"));
+
+                        // Load AFK data if available
+                        try {
+                            // Check if the column exists before trying to access it
+                            resultSet.getLong("afk_time");
+                            user.addAfkTime(resultSet.getLong("afk_time"));
+
+                            // Load last activity time if available
+                            try {
+                                resultSet.getLong("last_activity");
+                                user.setLastActivity(resultSet.getLong("last_activity"));
+                            } catch (SQLException e) {
+                                // Column doesn't exist yet, set default value
+                                user.setLastActivity(System.currentTimeMillis());
+                            }
+                        } catch (SQLException e) {
+                            // AFK columns don't exist yet, set default values
+                            user.addAfkTime(0);
+                            user.setLastActivity(System.currentTimeMillis());
+                        }
+
+                        playtimeUsers.add(user);
                     }
                     return playtimeUsers;
                 }
             } catch (SQLException sqlException) {
                 Playtime.getPlugin().getLogger().severe("Error while getting top users from database: " + sqlException.getMessage());
             }
-            return null;
+            return new ArrayList<>();
         });
     }
 
@@ -228,7 +330,29 @@ public class SqlLite extends Storage {
                 preparedStatement.setInt(1, place);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new PlaytimeUser(resultSet.getString("uuid"), resultSet.getString("name"), resultSet.getLong("time"));
+                        PlaytimeUser user = new PlaytimeUser(resultSet.getString("uuid"), resultSet.getString("name"), resultSet.getLong("time"));
+
+                        // Load AFK data if available
+                        try {
+                            // Check if the column exists before trying to access it
+                            resultSet.getLong("afk_time");
+                            user.addAfkTime(resultSet.getLong("afk_time"));
+
+                            // Load last activity time if available
+                            try {
+                                resultSet.getLong("last_activity");
+                                user.setLastActivity(resultSet.getLong("last_activity"));
+                            } catch (SQLException e) {
+                                // Column doesn't exist yet, set default value
+                                user.setLastActivity(System.currentTimeMillis());
+                            }
+                        } catch (SQLException e) {
+                            // AFK columns don't exist yet, set default values
+                            user.addAfkTime(0);
+                            user.setLastActivity(System.currentTimeMillis());
+                        }
+
+                        return user;
                     }
                 }
             } catch (SQLException sqlException) {
@@ -258,7 +382,7 @@ public class SqlLite extends Storage {
             } catch (SQLException sqlException) {
                 Playtime.getPlugin().getLogger().severe("Error while getting milestones from database: " + sqlException.getMessage());
             }
-            return null;
+            return new ArrayList<>();
         });
     }
 
@@ -347,7 +471,7 @@ public class SqlLite extends Storage {
             } catch (SQLException sqlException) {
                 Playtime.getPlugin().getLogger().severe("Error while getting repeating milestones from database: " + sqlException.getMessage());
             }
-            return null;
+            return new ArrayList<>();
         });
     }
 
@@ -426,14 +550,16 @@ public class SqlLite extends Storage {
     public CompletableFuture<Boolean> addPlaytimeHistory(UUID uuid, Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO playtime_history (`uuid`, `time`, `date`) VALUES (?, ?, ?)")) {
+                    "INSERT INTO playtime_history (`uuid`, `time`, `event`, `date`) VALUES (?, ?, ?, ?)")) {
                 preparedStatement.setString(1, uuid.toString());
                 preparedStatement.setInt(2, time);
+                preparedStatement.setString(3, event.toString());
                 preparedStatement.setDate(4, new Date(new java.util.Date().getTime()));
                 preparedStatement.executeUpdate();
                 return true;
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                Playtime.getPlugin().getLogger().severe("Error while adding playtime history: " + e.getMessage());
+                return false;
             }
         });
     }
