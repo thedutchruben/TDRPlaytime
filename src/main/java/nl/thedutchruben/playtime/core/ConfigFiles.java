@@ -1,5 +1,8 @@
 package nl.thedutchruben.playtime.core;
 
+import lombok.Getter;
+
+@Getter
 public enum ConfigFiles {
     CONFIG("config.yml"),
     STORAGE("storage.yml");
@@ -10,7 +13,4 @@ public enum ConfigFiles {
         this.fileName = fileName;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
 }

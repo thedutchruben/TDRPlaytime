@@ -25,7 +25,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Command(command = "repeatingmilestone", description = "Main repeatingmilestone command", permission = "playtime.repeatingmilestone", console = true)
+@Command(
+        command = "repeatingmilestone",
+        description = "Main repeatingmilestone command",
+        permission = "playtime.repeatingmilestone",
+        console = true)
 public class RepeatingMilestoneCommand {
 
     @SubCommand(
