@@ -56,5 +56,3 @@ Version 2.0 brings significant improvements and new features:
 - Report issues on [GitHub](https://github.com/thedutchruben/tdrplaytime/issues)
 - Fork the repository and submit pull requests
 
-## License
-[Include license information here]
