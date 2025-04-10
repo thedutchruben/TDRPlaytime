@@ -1,13 +1,4 @@
-## Warning: 2.0 is in development and is not stable. Use at your own risk.
-### 2.0 Checklist:
-- [x] New database implementation
-- [ ] Playtime history system
-- [x] New Afk system
-- [ ] New implementation for placeholders
-- [ ] Updated system for rewards
-- [ ] Migration testing from 1.* to 2.0
-
-# Playtime Plugin
+# TDRPlaytime Plugin
 
 ![GitHub Release](https://img.shields.io/github/v/release/thedutchruben/tdrplaytime?sort=date&label=Latest%20release)
 ![GitHub Release](https://img.shields.io/github/v/release/thedutchruben/tdrplaytime?include_prereleases&sort=date&label=Latest%20pre-release)
@@ -20,29 +11,50 @@
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/t9QEZM17?label=Modrinth&link=https%3A%2F%2Fmodrinth.com%2Fplugin%2Ftdr-playtime)
 
 ## Overview
-TDRPlaytime is a Minecraft plugin that tracks player playtime and rewards players with milestones. The plugin is built using Java and Maven.
+TDRPlaytime is a comprehensive Minecraft plugin that tracks player playtime and rewards players with customizable milestones. The plugin offers flexible storage options, an AFK system, and extensive configuration possibilities.
 
 ## Features
-- Track player playtime
-- Reward players with items, commands, and messages upon reaching milestones
-- Customizable repeating milestones
-- Firework shows for milestone celebrations
+- **Playtime Tracking**: Accurately track and store player playtime
+- **Multiple Database Support**: Choose from MySQL, SQLite, MongoDB, or YAML storage
+- **Milestone System**: Create custom milestones based on playtime
+  - Reward players with items, commands, and custom messages
+  - Configure optional firework celebrations for milestones
+- **Repeating Milestones**: Set up rewards that repeat at regular playtime intervals
+- **Advanced AFK System**:
+  - Detect when players are AFK based on activity
+  - Configure whether AFK time should count toward playtime
+  - Optional integration with Essentials AFK system
+  - AFK kicking functionality with configurable messages
+- **PlaceholderAPI Integration**: Use playtime data in other plugins
+- **Playtime History**: Track when players join and leave (in development)
+
+## Documentation
+- [Setup Guide](SETUP.md) - Installation and configuration instructions
+- [Commands](COMMANDS.md) - List of all available commands
+- [Permissions](PERMISSIONS.md) - Permission nodes and explanations
 
 ## Installation
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/thedutchruben/TDRPlaytime.git
-    ```
-2. Navigate to the project directory:
-    ```sh
-    cd TDRPlaytime
-    ```
-3. Build the project using Maven:
-    ```sh
-    mvn clean install
-    ```
-4. Place the generated `TDRPlaytime.jar` file in your Minecraft server's `plugins` directory.
+1. Download the latest version from one of the platforms above
+2. Place the JAR file in your server's `plugins` directory
+3. Start or restart your server
+4. Configure the plugin by editing the generated configuration files
+5. See the [Setup Guide](SETUP.md) for detailed configuration instructions
 
-## Usage
-1. Start your Minecraft server.
-2. Configure the plugin by editing the `config.yml` file in the `plugins/TDRPlaytime` directory.
+## Version 2.0 Development Status
+Version 2.0 brings significant improvements and new features:
+
+- ✅ New database implementation
+- ✅ Advanced AFK system
+- ⏳ Playtime history system (in progress)
+- ⏳ Improved placeholders (in progress)
+- ⏳ Enhanced reward system (in progress)
+- ⏳ Migration from 1.x to 2.0 (in testing)
+
+**Note**: Version 2.0 is currently in development and may contain bugs or unfinished features. Use in production environments at your own risk.
+
+## Support and Contributions
+- Report issues on [GitHub](https://github.com/thedutchruben/tdrplaytime/issues)
+- Fork the repository and submit pull requests
+
+## License
+[Include license information here]
