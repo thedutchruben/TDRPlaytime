@@ -1,14 +1,19 @@
 nl.thedutchruben.playtime
 nl.thedutchruben.playtime.core
+nl.thedutchruben.playtime.core.afk
+nl.thedutchruben.playtime.core.events.afk
 nl.thedutchruben.playtime.core.events.milestone
 nl.thedutchruben.playtime.core.events.player
 nl.thedutchruben.playtime.core.events.repeatingmilestone
 nl.thedutchruben.playtime.core.objects
 nl.thedutchruben.playtime.core.storage
 nl.thedutchruben.playtime.core.storage.exceptions
+nl.thedutchruben.playtime.core.storage.migrations
 nl.thedutchruben.playtime.core.storage.types
 nl.thedutchruben.playtime.core.translations
 nl.thedutchruben.playtime.extentions
+nl.thedutchruben.playtime.modules.afk.commands
+nl.thedutchruben.playtime.modules.afk.listeners
 nl.thedutchruben.playtime.modules.milestones.commands
 nl.thedutchruben.playtime.modules.milestones.listeners
 nl.thedutchruben.playtime.modules.player.commands
@@ -16,5 +21,4 @@ nl.thedutchruben.playtime.modules.player.listeners
 nl.thedutchruben.playtime.modules.player.runnables
 nl.thedutchruben.playtime.modules.playtime_history.commands
 nl.thedutchruben.playtime.modules.playtime_history.listeners
-nl.thedutchruben.playtime.modules.playtime_history.runnables
 nl.thedutchruben.playtime.utils
