@@ -45,7 +45,7 @@ Version 2.0 brings significant improvements and new features:
 
 - ✅ New database implementation
 - ✅ Advanced AFK system
-- ⏳ Playtime history system (in progress)
+- ✅ Playtime history system
 - ⏳ Improved placeholders (in progress)
 - ⏳ Enhanced reward system (in progress)
 - ⏳ Migration from 1.x to 2.0 (in testing)

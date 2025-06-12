@@ -49,6 +49,9 @@ public enum Messages {
     REPEATING_MILESTONE_FIREWORK_TOGGLED("command.repeating_milestone.firework_toggled", "&aYou <state> the firework for the repeating milestone"),
     REPEATING_MILESTONE_SET_FIREWORK_AMOUNT("command.repeating_milestone.set_firework_amount", "&aYou set the firework amount to <amount>"),
     REPEATING_MILESTONE_SET_FIREWORK_DELAY("command.repeating_milestone.set_firework_delay", "&aYou set the firework delay to <amount>"),
+    REPEATING_MILESTONE_LIST("command.repeating_milestone.list", "%MILESTONE_NAME% Time: Days: %D% Hours: %H% ,Minute's: %M% ,Seconds's: %S%"),
+    REPEATING_MILESTONE_MESSAGE_ADDED("command.repeating_milestone.message_added", "&aYou have successfully added a message to a repeating milestone!"),
+    REPEATING_MILESTONE_MESSAGE_REMOVED("command.repeating_milestone.message_removed", "&aYou have removed a message from a repeating milestone!"),
 
     // Playtime history messages
     PLAYTIME_HISTORY_HEADER("command.playtime_history.header", "&8[&6PlayTime&8] &7Playtime History for &6%NAME%"),
