@@ -3,6 +3,7 @@ package nl.thedutchruben.playtime.core.storage;
 import com.google.gson.Gson;
 import nl.thedutchruben.mccore.utils.GsonUtil;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import nl.thedutchruben.playtime.core.objects.PlaytimeHistory;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 
@@ -154,6 +155,24 @@ public abstract class Storage {
      * @return
      */
     public abstract CompletableFuture<Boolean> addPlaytimeHistory(UUID uuid, Event event, int time);
+
+    /**
+     * Get playtime history for a user
+     *
+     * @param uuid The uuid of the player
+     * @param limit Maximum number of entries to return
+     * @return List of playtime history entries
+     */
+    public abstract CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistory(UUID uuid, int limit);
+
+    /**
+     * Get playtime history for a user by name
+     *
+     * @param name The name of the player
+     * @param limit Maximum number of entries to return
+     * @return List of playtime history entries
+     */
+    public abstract CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistoryByName(String name, int limit);
 
     public Gson getGson() {
         return gson;

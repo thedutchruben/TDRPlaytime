@@ -49,9 +49,12 @@ public enum Messages {
     REPEATING_MILESTONE_FIREWORK_TOGGLED("command.repeating_milestone.firework_toggled", "&aYou <state> the firework for the repeating milestone"),
     REPEATING_MILESTONE_SET_FIREWORK_AMOUNT("command.repeating_milestone.set_firework_amount", "&aYou set the firework amount to <amount>"),
     REPEATING_MILESTONE_SET_FIREWORK_DELAY("command.repeating_milestone.set_firework_delay", "&aYou set the firework delay to <amount>"),
-    REPEATING_MILESTONE_MESSAGE_ADDED("command.repeating_milestone.message_added", "&aYou have successfully added a message to a repeating milestone!"),
-    REPEATING_MILESTONE_MESSAGE_REMOVED("command.repeating_milestone.message_removed", "&aYou have removed a message from a repeating milestone!"),
-    REPEATING_MILESTONE_LIST("command.repeating_milestone.list", "%REPEATING_MILESTONE_NAME% Time: Days: %D% Hours: %H% ,Minute's: %M% Seconds's: %S%"),
+
+    // Playtime history messages
+    PLAYTIME_HISTORY_HEADER("command.playtime_history.header", "&8[&6PlayTime&8] &7Playtime History for &6%NAME%"),
+    PLAYTIME_HISTORY_ENTRY("command.playtime_history.entry", "&8[&6PlayTime&8] &7%EVENT% on &6%DATE% &7for &6%TIME%"),
+    PLAYTIME_HISTORY_FOOTER("command.playtime_history.footer", "&8[&6PlayTime&8] &7Showing &6%CURRENT%&7/&6%TOTAL% &7entries"),
+    PLAYTIME_HISTORY_NO_ENTRIES("command.playtime_history.no_entries", "&8[&6PlayTime&8] &cNo playtime history found for &6%NAME%"),
 
     PLAYER_NOW_AFK("afk.player_now_afk", "&8[&6PlayTime&8] &7%player% is now AFK"),
     PLAYER_NO_LONGER_AFK("afk.player_no_longer_afk", "&8[&6PlayTime&8] &7%player% is no longer AFK"),

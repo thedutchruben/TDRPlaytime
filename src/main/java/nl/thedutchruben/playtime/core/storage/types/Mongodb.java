@@ -8,6 +8,7 @@ import com.mongodb.client.result.UpdateResult;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import nl.thedutchruben.playtime.core.objects.PlaytimeHistory;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.storage.Storage;
@@ -291,6 +292,32 @@ public class Mongodb extends Storage {
                                     .append("time", time)
                     );
             return result.wasAcknowledged();
+        });
+    }
+
+    @Override
+    public CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistory(UUID uuid, int limit) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<PlaytimeHistory> history = new ArrayList<>();
+            Document query = new Document("uuid", uuid.toString());
+            this.database.getCollection("playtime_history").find(query).sort(new Document("date", -1)).limit(limit).forEach(document -> {
+                PlaytimeHistory playtimeHistory = getGson().fromJson(document.toJson(), PlaytimeHistory.class);
+                history.add(playtimeHistory);
+            });
+            return history;
+        });
+    }
+
+    @Override
+    public CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistoryByName(String name, int limit) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<PlaytimeHistory> history = new ArrayList<>();
+            Document query = new Document("name", name);
+            this.database.getCollection("playtime_history").find(query).sort(new Document("date", -1)).limit(limit).forEach(document -> {
+                PlaytimeHistory playtimeHistory = getGson().fromJson(document.toJson(), PlaytimeHistory.class);
+                history.add(playtimeHistory);
+            });
+            return history;
         });
     }
 

@@ -5,6 +5,7 @@ import nl.thedutchruben.mccore.utils.GsonUtil;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import nl.thedutchruben.playtime.core.objects.PlaytimeHistory;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.storage.Storage;
@@ -333,6 +334,42 @@ public class Yaml extends Storage {
             config.set("history", history);
             config.save();
             return true;
+        });
+    }
+
+    @Override
+    public CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistory(UUID uuid, int limit) {
+        return CompletableFuture.supplyAsync(() -> {
+            FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("players/history/" + uuid + ".yaml");
+            List<String> history = config.get().getStringList("history");
+            List<PlaytimeHistory> playtimeHistories = new ArrayList<>();
+
+            for (String entry : history) {
+                String[] parts = entry.split("\\|");
+                UUID entryUuid = UUID.fromString(parts[0].split(":")[1]);
+                Event event = Event.valueOf(parts[1].split(":")[1]);
+                int time = Integer.parseInt(parts[2].split(":")[1]);
+                Date date = new Date(parts[3].split(":")[1]);
+
+                playtimeHistories.add(new PlaytimeHistory(0, entryUuid, event, time, date));
+            }
+
+            if (limit > 0 && playtimeHistories.size() > limit) {
+                return playtimeHistories.subList(0, limit);
+            }
+            return playtimeHistories;
+        });
+    }
+
+    @Override
+    public CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistoryByName(String name, int limit) {
+        return CompletableFuture.supplyAsync(() -> {
+            Player player = Bukkit.getPlayer(name);
+            if (player == null) {
+                return Collections.emptyList();
+            }
+            UUID uuid = player.getUniqueId();
+            return getPlaytimeHistory(uuid, limit).join();
         });
     }
 }

@@ -11,6 +11,13 @@ This document provides detailed information about all commands available in the 
 | `/playtime <player>` | View another player's playtime | `playtime.playtime.other` | `/playtime Steve` |
 | `/playtime top [amount]` | View top players by playtime | `playtime.playtime.top` | `/playtime top 5` |
 
+### Playtime History Commands
+| Command | Description | Permission | Usage |
+|---------|-------------|------------|-------|
+| `/playtimehistory` | View your own playtime history | `playtime.history` | `/playtimehistory` |
+| `/playtimehistory <player>` | View another player's playtime history | `playtime.history.others` | `/playtimehistory Steve` |
+| `/playtimehistory <player> <limit>` | View specific number of history entries | `playtime.history.others` | `/playtimehistory Steve 20` |
+
 ### Playtime Administration
 | Command | Description | Permission | Usage |
 |---------|-------------|------------|-------|

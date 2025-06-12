@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import nl.thedutchruben.playtime.core.objects.PlaytimeHistory;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.storage.SqlStatements;
@@ -436,24 +437,99 @@ public class Mysql extends Storage {
     }
 
     /**
-     * @param uuid
-     * @param event
-     * @param time
-     * @return
+     * Add playtime history entry for a user
+     *
+     * @param uuid The UUID of the player
+     * @param event The event type (JOIN/QUIT)
+     * @param time The time value to record
+     * @return Whether the operation was successful
      */
     @Override
     public CompletableFuture<Boolean> addPlaytimeHistory(UUID uuid, Event event, int time) {
         return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO " + getTableName("playtime_history") + " (`uuid`, `time`, `date`) VALUES (?, ?, ?)")) {
+            try (PreparedStatement preparedStatement = connection
+                    .prepareStatement("INSERT INTO " + getTableName("playtime_history") + " (`uuid`, `time`, `event`, `date`) VALUES (?, ?, ?, NOW())")) {
                 preparedStatement.setString(1, uuid.toString());
                 preparedStatement.setInt(2, time);
-                preparedStatement.setDate(4, new Date(new java.util.Date().getTime()));
+                preparedStatement.setString(3, event.toString());
                 preparedStatement.executeUpdate();
                 return true;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            } catch (SQLException sqlException) {
+                Playtime.getPlugin().getLogger().severe("Error while adding playtime history: " + sqlException.getMessage());
+                return false;
             }
+        });
+    }
+
+    /**
+     * Get playtime history for a user by UUID
+     *
+     * @param uuid The UUID of the player
+     * @param limit Maximum number of entries to return
+     * @return List of playtime history entries
+     */
+    @Override
+    public CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistory(UUID uuid, int limit) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<PlaytimeHistory> history = new ArrayList<>();
+            try (PreparedStatement preparedStatement = connection
+                    .prepareStatement("SELECT * FROM " + getTableName("playtime_history") +
+                                     " WHERE `uuid` = ? ORDER BY `date` DESC LIMIT ?")) {
+                preparedStatement.setString(1, uuid.toString());
+                preparedStatement.setInt(2, limit);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        int id = resultSet.getInt("id");
+                        String eventStr = resultSet.getString("event");
+                        Event event = Event.valueOf(eventStr);
+                        long time = resultSet.getLong("time");
+                        java.util.Date date = new java.util.Date(resultSet.getTimestamp("date").getTime());
+
+                        history.add(new PlaytimeHistory(id, uuid, event, time, date));
+                    }
+                }
+            } catch (SQLException sqlException) {
+                Playtime.getPlugin().getLogger().severe("Error while getting playtime history: " + sqlException.getMessage());
+            }
+            return history;
+        });
+    }
+
+    /**
+     * Get playtime history for a user by name
+     *
+     * @param name The name of the player
+     * @param limit Maximum number of entries to return
+     * @return List of playtime history entries
+     */
+    @Override
+    public CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistoryByName(String name, int limit) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<PlaytimeHistory> history = new ArrayList<>();
+            try (PreparedStatement preparedStatement = connection
+                    .prepareStatement("SELECT h.* FROM " + getTableName("playtime_history") + " h" +
+                                     " JOIN " + getTableName("playtime") + " p ON h.uuid = p.uuid" +
+                                     " WHERE p.name = ? ORDER BY h.date DESC LIMIT ?")) {
+                preparedStatement.setString(1, name);
+                preparedStatement.setInt(2, limit);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        int id = resultSet.getInt("id");
+                        UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+                        String eventStr = resultSet.getString("event");
+                        Event event = Event.valueOf(eventStr);
+                        long time = resultSet.getLong("time");
+                        java.util.Date date = new java.util.Date(resultSet.getTimestamp("date").getTime());
+
+                        history.add(new PlaytimeHistory(id, uuid, event, time, date));
+                    }
+                }
+            } catch (SQLException sqlException) {
+                Playtime.getPlugin().getLogger().severe("Error while getting playtime history by name: " + sqlException.getMessage());
+            }
+            return history;
         });
     }
 }

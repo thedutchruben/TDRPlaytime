@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import nl.thedutchruben.playtime.core.objects.PlaytimeHistory;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
 import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.storage.SqlStatements;
@@ -231,8 +232,6 @@ public class SqlLite extends Storage {
     /**
      * Create the user
      *
-     * @param playtimeUser
-     * @return
      */
     @Override
     public CompletableFuture<Boolean> createUser(PlaytimeUser playtimeUser) {
@@ -561,6 +560,60 @@ public class SqlLite extends Storage {
                 Playtime.getPlugin().getLogger().severe("Error while adding playtime history: " + e.getMessage());
                 return false;
             }
+        });
+    }
+
+    @Override
+    public CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistory(UUID uuid, int limit) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<PlaytimeHistory> playtimeHistories = new ArrayList<>();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM playtime_history WHERE uuid = ? ORDER BY date DESC LIMIT ?")) {
+                preparedStatement.setString(1, uuid.toString());
+                preparedStatement.setInt(2, limit);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        PlaytimeHistory history = new PlaytimeHistory(
+                                resultSet.getInt("id"),
+                                UUID.fromString(resultSet.getString("uuid")),
+                                Event.valueOf(resultSet.getString("event")),
+                                resultSet.getLong("time"),
+                                resultSet.getDate("date")
+                        );
+                        playtimeHistories.add(history);
+                    }
+                }
+            } catch (SQLException e) {
+                Playtime.getPlugin().getLogger().severe("Error while getting playtime history: " + e.getMessage());
+            }
+            return playtimeHistories;
+        });
+    }
+
+    @Override
+    public CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistoryByName(String name, int limit) {
+    return CompletableFuture.supplyAsync(() -> {
+            List<PlaytimeHistory> playtimeHistories = new ArrayList<>();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT ph.* FROM playtime_history ph JOIN playtime p ON ph.uuid = p.uuid WHERE p.name = ? ORDER BY ph.date DESC LIMIT ?")) {
+                preparedStatement.setString(1, name);
+                preparedStatement.setInt(2, limit);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        PlaytimeHistory history = new PlaytimeHistory(
+                                resultSet.getInt("id"),
+                                UUID.fromString(resultSet.getString("uuid")),
+                                Event.valueOf(resultSet.getString("event")),
+                                resultSet.getLong("time"),
+                                resultSet.getDate("date")
+                        );
+                        playtimeHistories.add(history);
+                    }
+                }
+            } catch (SQLException e) {
+                Playtime.getPlugin().getLogger().severe("Error while getting playtime history by name: " + e.getMessage());
+            }
+            return playtimeHistories;
         });
     }
 }

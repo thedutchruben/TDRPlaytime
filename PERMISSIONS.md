@@ -14,6 +14,13 @@ This document lists all permissions available in the TDRPlaytime plugin. Assigni
 | `playtime.playtime.top` | View the top players by playtime | `op` |
 | `playtime.playtime.pluginInfo` | Access plugin information | `op` |
 
+## Playtime History Permissions
+
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `playtime.history` | View your own playtime history | `true` |
+| `playtime.history.others` | View another player's playtime history | `op` |
+
 ## Milestone Permissions
 
 | Permission | Description | Default |
