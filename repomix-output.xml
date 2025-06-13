@@ -1,0 +1,3772 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+The content has been processed where content has been compressed (code blocks are separated by ⋮---- delimiter).
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: src/main/java/nl/thedutchruben/playtime/core/storage/types/**, target/classes/nl/thedutchruben/playtime/core/storage/types/**, *.svg, **/*.svg, TDRPlayTime-logo/vector/*.svg
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Content has been compressed - code blocks are separated by ⋮---- delimiter
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+.github/dependabot.yml
+.github/FUNDING.yml
+.github/workflows/add-to-issue.yml
+.github/workflows/build-release-versions.yml
+.github/workflows/code-coverage.yml
+.github/workflows/comment-on-pr.yml
+.github/workflows/javadoc.yml
+.github/workflows/notification.yaml
+.github/workflows/pre-release.yml
+.github/workflows/release-checks.yml
+.gitignore
+.repomixignore
+pom.xml
+repomix.config.json
+spigotpage.txt
+src/main/java/nl/thedutchruben/playtime/core/afk/AFKManager.java
+src/main/java/nl/thedutchruben/playtime/core/ConfigFiles.java
+src/main/java/nl/thedutchruben/playtime/core/DependencyLoader.java
+src/main/java/nl/thedutchruben/playtime/core/events/afk/AFKEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/afk/PlayerAFKEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/afk/PlayerReturnFromAFKEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneCreateEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneDeleteEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneReceiveEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneUpdateEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/player/AsyncPlaytimePlayerUpdatePlaytimeEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/player/PlaytimePlayerEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/player/PlaytimePlayerLoadedEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/player/PlaytimePlayerSaveEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/player/PlaytimePlayerUnLoadedEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneCreateEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneDeleteEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneReceiveEvent.java
+src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneUpdateEvent.java
+src/main/java/nl/thedutchruben/playtime/core/objects/Milestone.java
+src/main/java/nl/thedutchruben/playtime/core/objects/MilestoneTest.java
+src/main/java/nl/thedutchruben/playtime/core/objects/PlaytimeHistory.java
+src/main/java/nl/thedutchruben/playtime/core/objects/PlaytimeUser.java
+src/main/java/nl/thedutchruben/playtime/core/objects/PlaytimeUserTest.java
+src/main/java/nl/thedutchruben/playtime/core/objects/RepeatingMilestone.java
+src/main/java/nl/thedutchruben/playtime/core/Settings.java
+src/main/java/nl/thedutchruben/playtime/core/storage/exceptions/StorageTypeNotFoundException.java
+src/main/java/nl/thedutchruben/playtime/core/storage/migrations/MigrationManager.java
+src/main/java/nl/thedutchruben/playtime/core/storage/SqlStatements.java
+src/main/java/nl/thedutchruben/playtime/core/storage/Storage.java
+src/main/java/nl/thedutchruben/playtime/core/translations/Messages.java
+src/main/java/nl/thedutchruben/playtime/extentions/BStatsExtension.java
+src/main/java/nl/thedutchruben/playtime/extentions/PlaceholderAPIExtension.java
+src/main/java/nl/thedutchruben/playtime/modules/afk/commands/AFKCommand.java
+src/main/java/nl/thedutchruben/playtime/modules/afk/listeners/AFKActivityListener.java
+src/main/java/nl/thedutchruben/playtime/modules/milestones/commands/MileStoneCommand.java
+src/main/java/nl/thedutchruben/playtime/modules/milestones/commands/RepeatingMilestoneCommand.java
+src/main/java/nl/thedutchruben/playtime/modules/milestones/listeners/UpdatePlaytimeListener.java
+src/main/java/nl/thedutchruben/playtime/modules/player/commands/PlayTimeCommand.java
+src/main/java/nl/thedutchruben/playtime/modules/player/listeners/PlayerJoinListener.java
+src/main/java/nl/thedutchruben/playtime/modules/player/listeners/PlayerQuitListener.java
+src/main/java/nl/thedutchruben/playtime/modules/player/runnables/SavePlayTimeRunnable.java
+src/main/java/nl/thedutchruben/playtime/modules/player/runnables/UpdatePlayTimeRunnable.java
+src/main/java/nl/thedutchruben/playtime/modules/playtime_history/commands/PlaytimeHistoryCommand.java
+src/main/java/nl/thedutchruben/playtime/modules/playtime_history/listeners/PlayTimePlayerLoadedListener.java
+src/main/java/nl/thedutchruben/playtime/Playtime.java
+src/main/java/nl/thedutchruben/playtime/PlayTimePlugin.java
+src/main/java/nl/thedutchruben/playtime/utils/Replacement.java
+src/main/java/nl/thedutchruben/playtime/utils/TimeUtil.java
+src/main/resources/plugin.yml
+TDRPlayTime-logo/info.txt
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".github/dependabot.yml">
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "maven" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    open-pull-requests-limit: 20
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    open-pull-requests-limit: 20
+    schedule:
+      # Check for updates to GitHub Actions every weekday
+      interval: "daily"
+</file>
+
+<file path=".github/FUNDING.yml">
+custom: [ "https://www.paypal.com/paypalme/RGSYT" ]
+</file>
+
+<file path=".github/workflows/add-to-issue.yml">
+name: Add me to issue
+
+on:
+  issues:
+    types: [ opened ]
+jobs:
+  label_issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v7
+        name: Add assignee
+        with:
+          script: |
+            github.rest.issues.addAssignees({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              assignees: ["TheDutchRuben"]
+            })
+      - name: send message
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.ISSUE_DISCORD_ID }}
+          webhook_token: ${{ secrets.ISSUE_WEBHOOK_TOKEN }}
+          message: "New issue opened: ${{ github.event.issue.title }}\n${{ github.event.issue.html_url }}"
+          color: "#48f442"
+          username: "Playtime Builds"
+</file>
+
+<file path=".gitignore">
+# User-specific stuff
+.idea/
+
+*.iml
+*.ipr
+*.iws
+
+# IntelliJ
+out/
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+target/
+
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.flattened-pom.xml
+
+# Common working directory
+run/
+</file>
+
+<file path=".repomixignore">
+# Add patterns to ignore here, one per line
+# Example:
+# *.log
+# tmp/
+*.MD
+</file>
+
+<file path="repomix.config.json">
+{
+  "output": {
+    "filePath": "repomix-output.xml",
+    "style": "xml",
+    "parsableStyle": false,
+    "fileSummary": true,
+    "directoryStructure": true,
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "compress": true,
+    "topFilesLength": 5,
+    "showLineNumbers": false,
+    "copyToClipboard": false,
+    "git": {
+      "sortByChanges": true,
+      "sortByChangesMaxCommits": 100
+    }
+  },
+  "include": [],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "src/main/java/nl/thedutchruben/playtime/core/storage/types/**",
+      "target/classes/nl/thedutchruben/playtime/core/storage/types/**",
+      "*.svg",
+      "**/*.svg",
+      "TDRPlayTime-logo/vector/*.svg"
+    ]
+  },
+  "security": {
+    "enableSecurityCheck": true
+  },
+  "tokenCount": {
+    "encoding": "o200k_base"
+  }
+}
+</file>
+
+<file path="spigotpage.txt">
+[IMG]https://files.thedutchruben.nl/download/1615723574/cover-smaller.png/raw[/IMG]
+TDRPlaytime is a plugin that keeps track of the playing time of your players.
+The plugin has support to view a top 10, create milestones and use your own language.
+This plugin has support for yml and mysql.
+
+[IMG]https://files.thedutchruben.nl/download/1617195834/commands.png/raw[/IMG]
+/playtime                      :  see your playtime
+/playtime top                  : see the top 10 online time
+/playtime reset <username>     : Reset user's time
+/playtime <playername/uuid>    : see other user's online time
+/playtime migratefromminecraft : Migrates the minecraft playtime to the database WARNING: THE PLAYERS PLAYTIME WIL BE OVERRIDDEN IN THE DATABASE
+
+/milestone create <name> <time in seconds>  : Create a milestone.
+/milestone additem <milestone>              : Add the item in your hand as reward for the milestone
+/milestone addcommand <milestone> <command> : Add a command that will be executed by the console to the milestone
+
+[IMG]https://files.thedutchruben.nl/download/1617195854/permissions.png/raw[/IMG]
+/playtime                      : playtime.playtime
+/playtime top                  : playtime.playtime.top
+/playtime reset <username>     : playtime.playtime.reset
+/playtime <playername/uuid>    : playtime.playtime.other
+/playtime migratefromminecraft : playtime.playtime.migratefromminecraft
+
+/milestone create <name> <time in seconds>  : playtime.milestone
+/milestone additem <milestone>              : playtime.milestone.additem
+/milestone addcommand <milestone> <command> : playtime.milestone.addcommand
+
+[IMG]https://files.thedutchruben.nl/download/1617195872/milestones.png/raw[/IMG]
+Milestones can be made for specific times, these times must be entered in seconds.
+With a milestone you can give rewards in the form of items and commands.
+The commands will be executed in the console for the playername you can use the placeholder %playername% in the command and for the UUID %playeruuid%.
+
+[IMG]https://files.thedutchruben.nl/download/1617195928/Language.png/raw[/IMG]
+TDRPlaytime supports the following languages English, Dutch, German and French.
+It is possible to add your own language and edit the messages via the lang folder.
+
+You can change the language in the config.yml
+language: eng adapt to language: nl_NL/ de_DE / fr_FR /en_GB or your own language
+[IMG]https://files.thedutchruben.nl/download/1617195976/PlaceHolderApi.png/raw[/IMG]
+In TDRPlaytime we added an expantion to PlaceHolderApi.
+
+- %tdrplaytime_time% : Show full time such as / playtime
+- %tdrplaytime_days_number% : Show your online days as a number.
+- %tdrplaytime_hour_number% : Show your online hours as a number.
+- %tdrplaytime_minutes_number% : Show your online minutes as a number.
+- %tdrplaytime_seconds_number% : Show your seconds as a number online.
+- %tdrplaytime_total_hour_number% : Show the total (including days) amount of hours as a number
+
+[IMG]https://files.thedutchruben.nl/download/1623334257/API.png/raw[/IMG]
+
+There are 2 events you can listen to.
+PlayTimeCheckEvent is executed every time there is a check.
+PlayTimeUpdatePlayerEvent Run on every player. When the playtime is updated at this event you can request the old time and the new time of a player.
+
+[IMG]https://bstats.org/signatures/bukkit/TDRPlaytime.svg[/IMG]
+
+[CENTER][B]Todo
+- None if you have a idea let me know[/B][/CENTER]
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneEvent.java">
+/**
+ * Base for the milestone events
+ */
+public abstract class MilestoneEvent extends Event {
+private static final HandlerList handlers = new HandlerList();
+⋮----
+public static HandlerList getHandlerList() {
+⋮----
+public HandlerList getHandlers() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/player/AsyncPlaytimePlayerUpdatePlaytimeEvent.java">
+/**
+ * This events get's called every time that the playtime gets updated (every 15 seconds)
+ */
+⋮----
+public class AsyncPlaytimePlayerUpdatePlaytimeEvent extends PlaytimePlayerEvent {
+⋮----
+/**
+     * Create a new PlaytimePlayerUpdatePlaytimeEvent
+     *
+     * @param user        the user that is updated
+     * @param async       if the event is async
+     * @param oldPlaytime the old playtime
+     * @param newPlaytime the new playtime
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/player/PlaytimePlayerEvent.java">
+/**
+ * This is the base class for all the player events
+ */
+⋮----
+public abstract class PlaytimePlayerEvent extends Event {
+private static final HandlerList handlers = new HandlerList();
+⋮----
+/**
+     * Create a new PlaytimePlayerEvent
+     *
+     * @param user  The user
+     * @param async If the event is async
+     */
+⋮----
+public static HandlerList getHandlerList() {
+⋮----
+public HandlerList getHandlers() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/player/PlaytimePlayerSaveEvent.java">
+/**
+ * This event is called when a player is saved
+ */
+public class PlaytimePlayerSaveEvent extends PlaytimePlayerEvent {
+⋮----
+/**
+     * Create a new PlaytimePlayerSaveEvent
+     *
+     * @param user  the user that is saved
+     * @param async if the event is async
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/player/PlaytimePlayerUnLoadedEvent.java">
+/**
+ * This event is called when a player is unloaded
+ */
+public class PlaytimePlayerUnLoadedEvent extends PlaytimePlayerEvent {
+/**
+     * Create a new PlaytimePlayerUnLoadedEvent
+     *
+     * @param user  the user that is unloaded
+     * @param async if the event is async
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneCreateEvent.java">
+/**
+ * Event that is called when a RepeatingMilestone is created
+ */
+public class RepeatingMilestoneCreateEvent extends RepeatingMilestoneEvent {
+⋮----
+/**
+     * Create a new RepeatingMilestoneCreateEvent
+     *
+     * @param repeatingMilestone The RepeatingMilestone that is created
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/extentions/BStatsExtension.java">
+public class BStatsExtension {
+⋮----
+public void startBStats(JavaPlugin plugin) {
+Metrics metrics = new Metrics(plugin, 9404);
+⋮----
+Plugin pl = Bukkit.getPluginManager().getPlugin(pluginName);
+⋮----
+metrics.addCustomChart(new SimplePie("addons_use", () -> pluginName));
+⋮----
+try (InputStream inputStream = plugin.getClass().getResourceAsStream("/plugin.yml")) {
+byte[] buffer = inputStream != null ? inputStream.readAllBytes() : new byte[0];
+String pluginYml = new String(buffer);
+⋮----
+Matcher matcher = Pattern.compile("downloadSource:\\s*'([^']+)'").matcher(pluginYml);
+String downloadSource = matcher.find() ? matcher.group(1) : "unknown";
+metrics.addCustomChart(new SimplePie("download_source", () -> downloadSource));
+⋮----
+plugin.getLogger().warning(e.getMessage());
+⋮----
+metrics.addCustomChart(new SimplePie("bungeecord", () -> String.valueOf(plugin.getServer().spigot().getConfig().getBoolean("settings.bungeecord"))));
+metrics.addCustomChart(new SimplePie("database_type", () -> Playtime.getInstance().getStorage().getName()));
+metrics.addCustomChart(new SimplePie("update_checker", () -> String.valueOf(Settings.UPDATE_CHECK.getValue())));
+metrics.addCustomChart(new SimplePie("uses_milestones", () -> String.valueOf(Playtime.getInstance().getMilestones().size() > 1)));
+metrics.addCustomChart(new SimplePie("uses_repeating_milestones", () -> String.valueOf(Playtime.getInstance().getRepeatingMilestones().size() > 1)));
+metrics.addCustomChart(new SimplePie("count_afk_time", () -> String.valueOf(Settings.AFK_COUNT_TIME.getValue())));
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/PlayTimePlugin.java">
+/**
+ * The main class of the plugin
+ * Tdrplaytime is the playtime plugin for tracking the playtime of players and rewarding them!
+ *
+ * @version 1.0.0
+ * @see JavaPlugin
+ * @since 1.0.0
+ */
+public class PlayTimePlugin extends JavaPlugin {
+⋮----
+public void onLoad() {
+// Load the dependencies of the plugin
+// the dependencies will load by downloading the jar from the maven repository
+// this will keep the download size of the plugin low
+DependencyLoader.load(this);
+⋮----
+public void onEnable() {
+playtime = new Playtime(this);
+playtime.onEnable(this);
+⋮----
+public void onDisable() {
+⋮----
+playtime.onDisable();
+</file>
+
+<file path="TDRPlayTime-logo/info.txt">
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: Dustismo_Roman_Bold
+font link: https://www.fontsquirrel.com/fonts/Dustismo
+font author: Dustin Norlander
+font author site: http://www.cheapskatefonts.com/
+
+
+icon designer: NAS
+icon designer link: /nas.ztu
+        
+
+fontColor: {"hex":"#7E5DFC"}
+bgColor: {"hex":"#261836"}
+iconColor: {"hex":"#7E5DFC"}
+</file>
+
+<file path=".github/workflows/javadoc.yml">
+name: Deploy Javadoc
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # if you have a protection rule on your repository, you'll need to give write permission to the workflow.
+    steps:
+      - name: Deploy JavaDoc 🚀
+        uses: MathieuSoysal/Javadoc-publisher.yml@v3.0.2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          javadoc-branch: javadoc
+          java-version: 17
+          target-folder: docs
+          project: maven
+          custom-command: mvn javadoc:javadoc
+</file>
+
+<file path=".github/workflows/release-checks.yml">
+name: Release Quality Checks
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened, labeled]
+
+jobs:
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'release')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Check code style
+        run: mvn checkstyle:check
+
+      - name: Run unit tests
+        run: mvn test
+
+      - name: Check code coverage
+        run: |
+          mvn jacoco:report
+          
+          # Extract coverage percentage
+          COVERAGE=$(awk -F, 'NR==2 {print $5}' target/site/jacoco/jacoco.csv)
+          echo "Code coverage: $COVERAGE%"
+          
+          # Fail if coverage is below threshold
+          if (( $(echo "$COVERAGE < 50" | bc -l) )); then
+            echo "Code coverage is below 50%"
+            exit 1
+          fi
+
+      - name: Run SpotBugs
+        run: mvn spotbugs:check
+
+      - name: Build final artifact
+        run: mvn package
+
+      - name: Upload final artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate
+          path: target/TDRPlaytime-*.jar
+
+      - name: Add comment with testing results
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ All quality checks passed! This PR is ready for review and release.'
+            })
+
+      - name: Add comment with testing failures
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Quality checks failed! Please fix the issues before this PR can be merged.'
+            })
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/afk/AFKManager.java">
+public class AFKManager {
+⋮----
+this.afkThresholdMillis = TimeUnit.MINUTES.toMillis(Settings.AFK_THRESHOLD_MINUTES.getValueAsInteger());
+this.useEssentialsAPI = Settings.AFK_USE_ESSENTIALS_API.getValueAsBoolean();
+this.countAfkTime = Settings.AFK_COUNT_TIME.getValueAsBoolean();
+⋮----
+// Initialize lastActivity for all online players
+for (Player player : Bukkit.getOnlinePlayers()) {
+lastActivity.put(player.getUniqueId(), System.currentTimeMillis());
+⋮----
+/**
+     * Records player activity and resets AFK status if needed
+     * @param player The player who performed an activity
+     */
+public void recordActivity(Player player) {
+UUID uuid = player.getUniqueId();
+lastActivity.put(uuid, System.currentTimeMillis());
+⋮----
+PlaytimeUser user = Playtime.getInstance().getPlaytimeUser(uuid).orElse(null);
+if (user != null && user.isAfk()) {
+setPlayerNotAFK(user);
+⋮----
+/**
+     * Checks if a player is AFK based on their last activity
+     * @param uuid The player's UUID
+     * @return true if the player is AFK, false otherwise
+     */
+public boolean isAFK(UUID uuid) {
+if (!lastActivity.containsKey(uuid)) return false;
+⋮----
+// If using Essentials, check if the player is marked as AFK in Essentials
+if (useEssentialsAPI && Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+Player player = Bukkit.getPlayer(uuid);
+⋮----
+Bukkit.getPluginManager().getPlugin("Essentials");
+return essentials.getUser(player).isAfk();
+⋮----
+// Otherwise, check based on last activity
+long timeSinceLastActivity = System.currentTimeMillis() - lastActivity.get(uuid);
+⋮----
+/**
+     * Sets a player as AFK
+     * @param user The PlaytimeUser to mark as AFK
+     */
+public void setPlayerAFK(PlaytimeUser user) {
+if (user.isAfk()) return;
+⋮----
+user.setAfk(true);
+user.setAfkSince(System.currentTimeMillis());
+⋮----
+Player player = user.getBukkitPlayer();
+⋮----
+// Fire AFK event
+PlayerAFKEvent event = new PlayerAFKEvent(user, false);
+Bukkit.getPluginManager().callEvent(event);
+⋮----
+// Broadcast message if enabled
+if (Settings.AFK_BROADCAST_MESSAGES.getValueAsBoolean()) {
+String message = Messages.PLAYER_NOW_AFK.getMessage(
+new Replacement("%player%", player.getName())
+⋮----
+if (Settings.AFK_BROADCAST_TO_ALL.getValueAsBoolean()) {
+Bukkit.broadcastMessage(message);
+⋮----
+player.sendMessage(message);
+⋮----
+/**
+     * Sets a player as not AFK
+     * @param user The PlaytimeUser to mark as not AFK
+     */
+public void setPlayerNotAFK(PlaytimeUser user) {
+if (!user.isAfk()) return;
+⋮----
+long afkDuration = System.currentTimeMillis() - user.getAfkSince();
+user.setAfk(false);
+user.addAfkTime(afkDuration);
+⋮----
+// Fire return from AFK event
+PlayerReturnFromAFKEvent event = new PlayerReturnFromAFKEvent(user, false, afkDuration);
+⋮----
+String message = Messages.PLAYER_NO_LONGER_AFK.getMessage(
+⋮----
+/**
+     * Checks all online players and updates their AFK status
+     */
+public void checkAllPlayers() {
+⋮----
+boolean shouldBeAfk = isAFK(uuid);
+if (shouldBeAfk && !user.isAfk()) {
+setPlayerAFK(user);
+} else if (!shouldBeAfk && user.isAfk()) {
+⋮----
+/**
+     * Check if the system should count AFK time toward playtime
+     * @return true if AFK time should be counted, false otherwise
+     */
+public boolean shouldCountAfkTime() {
+⋮----
+/**
+     * Removes a player from the activity tracking
+     * @param uuid The UUID of the player to remove
+     */
+public void removePlayer(UUID uuid) {
+lastActivity.remove(uuid);
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/afk/AFKEvent.java">
+/**
+ * Base class for AFK events
+ */
+public abstract class AFKEvent extends Event {
+private static final HandlerList handlers = new HandlerList();
+⋮----
+public static HandlerList getHandlerList() {
+⋮----
+public HandlerList getHandlers() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/afk/PlayerAFKEvent.java">
+public class PlayerAFKEvent extends AFKEvent {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/afk/PlayerReturnFromAFKEvent.java">
+public class PlayerReturnFromAFKEvent extends AFKEvent {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneCreateEvent.java">
+/**
+ * Event that is called when a milestone is created
+ */
+public class MilestoneCreateEvent extends MilestoneEvent {
+⋮----
+/**
+     * Create a new MilestoneCreateEvent
+     * @param milestone The milestone that is created
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneDeleteEvent.java">
+/**
+ * Event that is called when a milestone is deleted
+ */
+public class MilestoneDeleteEvent extends MilestoneEvent {
+⋮----
+/**
+     * Create a new MilestoneDeleteEvent
+     * @param milestone The milestone that is deleted
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneReceiveEvent.java">
+/**
+ * Event that is called when a milestone is received
+ */
+public class MilestoneReceiveEvent extends MilestoneEvent {
+⋮----
+/**
+     * Create a new MilestoneReceiveEvent
+     * @param milestone The milestone that is received
+     * @param playtimeUser The user that received the milestone
+     */
+⋮----
+/**
+     * Get the user that received the milestone
+     * @see PlaytimeUser
+     * @return The user that received the milestone
+     */
+public PlaytimeUser getPlaytimeUser() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/milestone/MilestoneUpdateEvent.java">
+/**
+ * Event that is called when a milestone is updated
+ */
+public class MilestoneUpdateEvent extends MilestoneEvent {
+⋮----
+/**
+     * Create a new MilestoneUpdateEvent
+     * @param milestone The milestone that is updated
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/player/PlaytimePlayerLoadedEvent.java">
+/**
+ * Event that is called when a player is loaded
+ */
+public class PlaytimePlayerLoadedEvent extends PlaytimePlayerEvent {
+⋮----
+/**
+     * Create a new PlaytimePlayerLoadedEvent
+     * @param user The user that is loaded
+     * @param async If the event is async
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneDeleteEvent.java">
+/**
+ * Event that is called when a RepeatingMilestone is deleted
+ */
+public class RepeatingMilestoneDeleteEvent extends RepeatingMilestoneEvent {
+⋮----
+/**
+     * Create a new RepeatingMilestoneDeleteEvent
+     *
+     * @param repeatingMilestone The RepeatingMilestone that is deleted
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneEvent.java">
+/**
+ * Base for the repeatingMilestone events
+ */
+public abstract class RepeatingMilestoneEvent extends Event {
+private static final HandlerList handlers = new HandlerList();
+⋮----
+/**
+     * Create a new RepeatingMilestoneEvent
+     *
+     * @param repeatingMilestone The RepeatingMilestone
+     */
+⋮----
+public static HandlerList getHandlerList() {
+⋮----
+public HandlerList getHandlers() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneReceiveEvent.java">
+/**
+ * Event that is called when a RepeatingMilestone is received
+ */
+public class RepeatingMilestoneReceiveEvent extends RepeatingMilestoneEvent {
+⋮----
+/**
+     * Create a new RepeatingMilestoneReceiveEvent
+     * @param repeatingMilestone The RepeatingMilestone that is received
+     * @param playtimeUser The user that received the RepeatingMilestone
+     */
+⋮----
+public PlaytimeUser getPlaytimeUser() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/events/repeatingmilestone/RepeatingMilestoneUpdateEvent.java">
+/**
+ * Event that is called when a RepeatingMilestone is updated
+ */
+public class RepeatingMilestoneUpdateEvent extends RepeatingMilestoneEvent {
+⋮----
+/**
+     * Create a new RepeatingMilestoneUpdateEvent
+     * @param repeatingMilestone The RepeatingMilestone that is updated
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/objects/MilestoneTest.java">
+public class MilestoneTest {
+⋮----
+void setUp() {
+milestone = new Milestone();
+milestone.setMilestoneName("TestMilestone");
+milestone.setOnlineTime(3600); // 1 hour in seconds
+⋮----
+// Setup mock player
+when(mockPlayer.getInventory()).thenReturn(mockInventory);
+when(mockPlayer.getName()).thenReturn("TestPlayer");
+when(mockPlayer.getUniqueId()).thenReturn(UUID.randomUUID());
+⋮----
+void testGetOnlineTimeInMilliseconds() {
+assertEquals(3600 * 1000, milestone.getOnlineTimeInMilliseconds());
+⋮----
+void testAddCommand() {
+milestone.addCommand("give %playername% diamond 1");
+assertEquals(1, milestone.getCommands().size());
+assertEquals("give %playername% diamond 1", milestone.getCommands().get(0));
+⋮----
+void testAddMessage() {
+milestone.addMessage("Congratulations on reaching the milestone!");
+assertEquals(1, milestone.getMessages().size());
+assertEquals("Congratulations on reaching the milestone!", milestone.getMessages().get(0));
+⋮----
+void testRemoveCommand() {
+⋮----
+milestone.addCommand(command);
+⋮----
+milestone.removeCommand(command);
+assertEquals(0, milestone.getCommands().size());
+⋮----
+void testRemoveMessage() {
+⋮----
+milestone.addMessage(message);
+⋮----
+milestone.removeMessage(message);
+assertEquals(0, milestone.getMessages().size());
+⋮----
+void testFireworkSettings() {
+assertFalse(milestone.isFireworkShow());
+⋮----
+milestone.setFireworkShow(true);
+assertTrue(milestone.isFireworkShow());
+⋮----
+milestone.setFireworkShowAmount(5);
+assertEquals(5, milestone.getFireworkShowAmount());
+⋮----
+milestone.setFireworkShowSecondsBetween(2);
+assertEquals(2, milestone.getFireworkShowSecondsBetween());
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/objects/PlaytimeHistory.java">
+/**
+ * Represents a single playtime history entry
+ */
+⋮----
+public class PlaytimeHistory {
+⋮----
+/**
+     * Get the formatted date string based on the provided format
+     *
+     * @param format The date format pattern
+     * @return The formatted date string
+     */
+public String getFormattedDate(String format) {
+SimpleDateFormat sdf = new SimpleDateFormat(format);
+return sdf.format(date);
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/objects/PlaytimeUserTest.java">
+public class PlaytimeUserTest {
+⋮----
+private final UUID testUuid = UUID.randomUUID();
+⋮----
+void setUp() {
+playtimeUser = new PlaytimeUser(testUuid.toString(), testName, 0);
+⋮----
+void testGetUUID() {
+assertEquals(testUuid, playtimeUser.getUUID());
+⋮----
+void testGetName() {
+assertEquals(testName, playtimeUser.getName());
+⋮----
+void testAddPlaytime() {
+// Test adding 1 hour
+playtimeUser.addPlaytime(1, TimeUnit.HOURS);
+assertEquals(TimeUnit.HOURS.toMillis(1), playtimeUser.getTime());
+⋮----
+// Test adding 30 minutes
+playtimeUser.addPlaytime(30, TimeUnit.MINUTES);
+assertEquals(TimeUnit.HOURS.toMillis(1) + TimeUnit.MINUTES.toMillis(30), playtimeUser.getTime());
+⋮----
+void testRemovePlaytime() {
+// Add 2 hours first
+playtimeUser.addPlaytime(2, TimeUnit.HOURS);
+⋮----
+// Remove 30 minutes
+playtimeUser.removePlaytime(30, TimeUnit.MINUTES);
+⋮----
+assertEquals(TimeUnit.HOURS.toMillis(2) - TimeUnit.MINUTES.toMillis(30), playtimeUser.getTime());
+⋮----
+void testSetPlaytime() {
+playtimeUser.setPlaytime(10000);
+assertEquals(10000, playtimeUser.getTime());
+⋮----
+void testTranslateTime() {
+// Set playtime to 1 day, 2 hours, 30 minutes, and 15 seconds
+⋮----
+TimeUnit.DAYS.toMillis(1) +
+TimeUnit.HOURS.toMillis(2) +
+TimeUnit.MINUTES.toMillis(30) +
+TimeUnit.SECONDS.toMillis(15);
+⋮----
+playtimeUser.setPlaytime(playtime);
+⋮----
+int[] time = playtimeUser.translateTime();
+⋮----
+assertEquals(1, time[0], "Days should be 1");
+assertEquals(2, time[1], "Hours should be 2");
+assertEquals(30, time[2], "Minutes should be 30");
+assertEquals(15, time[3], "Seconds should be 15");
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/storage/exceptions/StorageTypeNotFoundException.java">
+/**
+ * Thrown when a storage type is not found
+ */
+public class StorageTypeNotFoundException extends RuntimeException {
+⋮----
+/**
+     * Create a new StorageTypeNotFoundException
+     * @param message The message to display
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/storage/migrations/MigrationManager.java">
+/**
+ * Handles database migrations to update the schema when needed
+ */
+public class MigrationManager {
+⋮----
+/**
+     * Constructor
+     * @param connection The database connection
+     * @param isMySql Whether the database is MySQL (false means SQLite)
+     */
+⋮----
+this.tablePrefix = Settings.STORAGE_MYSQL_PREFIX.getValueAsString();
+⋮----
+// Register migrations
+registerMigrations();
+⋮----
+/**
+     * Register all migrations
+     */
+private void registerMigrations() {
+// Add all migrations here
+migrations.add(new Migration_001_AddAFKColumns(tablePrefix, isMySql));
+⋮----
+/**
+     * Run all pending migrations
+     */
+public void runMigrations() {
+⋮----
+// Create migrations table if it doesn't exist
+createMigrationsTable();
+⋮----
+// Get the current version
+int currentVersion = getCurrentVersion();
+Playtime.getPlugin().getLogger().log(Level.INFO, "Current database schema version: " + currentVersion);
+⋮----
+// Sort migrations by version
+migrations.sort(Comparator.comparingInt(Migration::getVersion));
+⋮----
+// Run all migrations that are newer than current version
+⋮----
+if (migration.getVersion() > currentVersion) {
+Playtime.getPlugin().getLogger().log(Level.INFO, "Running migration " + migration.getVersion() + ": " + migration.getDescription());
+⋮----
+// Run the migration
+migration.migrate(connection);
+⋮----
+// Update the version
+updateVersion(migration.getVersion());
+⋮----
+Playtime.getPlugin().getLogger().log(Level.INFO, "Successfully ran " + migrationsRun + " migrations. New database schema version: " + migrations.get(migrations.size() - 1).getVersion());
+⋮----
+Playtime.getPlugin().getLogger().log(Level.INFO, "Database schema is up to date.");
+⋮----
+Playtime.getPlugin().getLogger().log(Level.SEVERE, "Error running migrations: " + e.getMessage(), e);
+⋮----
+/**
+     * Create the migrations table if it doesn't exist
+     */
+private void createMigrationsTable() throws SQLException {
+⋮----
+try (Statement stmt = connection.createStatement()) {
+stmt.execute(createTable);
+⋮----
+/**
+     * Get the current schema version
+     * @return The current version, or 0 if no migrations have been run
+     */
+private int getCurrentVersion() throws SQLException {
+⋮----
+try (Statement stmt = connection.createStatement();
+ResultSet rs = stmt.executeQuery(query)) {
+⋮----
+if (rs.next()) {
+int version = rs.getInt("version");
+if (rs.wasNull()) {
+⋮----
+/**
+     * Update the schema version
+     * @param version The new version
+     */
+private void updateVersion(int version) throws SQLException {
+⋮----
+try (PreparedStatement stmt = connection.prepareStatement(insert)) {
+stmt.setInt(1, version);
+stmt.executeUpdate();
+⋮----
+/**
+     * Base class for migrations
+     */
+⋮----
+public static abstract class Migration {
+⋮----
+/**
+         * Get the migration version
+         * @return The version number
+         */
+public abstract int getVersion();
+⋮----
+/**
+         * Get the migration description
+         * @return A description of what the migration does
+         */
+public abstract String getDescription();
+⋮----
+/**
+         * Run the migration
+         * @param connection The database connection
+         * @throws SQLException If an error occurs
+         */
+public abstract void migrate(Connection connection) throws SQLException;
+⋮----
+/**
+     * Migration to add AFK columns
+     */
+public static class Migration_001_AddAFKColumns extends Migration {
+⋮----
+public int getVersion() {
+⋮----
+public String getDescription() {
+⋮----
+public void migrate(Connection connection) throws SQLException {
+⋮----
+// Check if the column already exists
+⋮----
+ResultSet rs = stmt.executeQuery(checkColumn)) {
+⋮----
+columnExists = rs.getInt(1) > 0;
+⋮----
+while (rs.next()) {
+if ("afk_time".equalsIgnoreCase(rs.getString("name"))) {
+⋮----
+// Add columns if they don't exist
+⋮----
+stmt.execute(alter);
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/afk/commands/AFKCommand.java">
+public class AFKCommand {
+⋮----
+public void toggleAFK(CommandSender sender, List<String> args) {
+⋮----
+sender.sendMessage(Messages.ONLY_PLAYER_COMMAND.getMessage());
+⋮----
+PlaytimeUser user = Playtime.getInstance().getPlaytimeUser(player.getUniqueId()).orElse(null);
+⋮----
+if (user.isAfk()) {
+AFKManager.getInstance().setPlayerNotAFK(user);
+player.sendMessage(Messages.PLAYER_MANUALLY_SET_NOT_AFK.getMessage());
+⋮----
+AFKManager.getInstance().setPlayerAFK(user);
+player.sendMessage(Messages.PLAYER_MANUALLY_SET_AFK.getMessage());
+⋮----
+public void status(CommandSender sender, List<String> args) {
+⋮----
+if (args.size() > 0) {
+// Check another player's AFK status
+target = Bukkit.getPlayer(args.get(0));
+⋮----
+sender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
+⋮----
+// Check own AFK status
+⋮----
+PlaytimeUser user = Playtime.getInstance().getPlaytimeUser(target.getUniqueId()).orElse(null);
+⋮----
+long afkDuration = System.currentTimeMillis() - user.getAfkSince();
+int[] time = translateTime(afkDuration);
+⋮----
+sender.sendMessage(Messages.PLAYER_AFK_STATUS.getMessage(
+new Replacement("%player%", target.getName()),
+new Replacement("%D%", String.valueOf(time[0])),
+new Replacement("%H%", String.valueOf(time[1])),
+new Replacement("%M%", String.valueOf(time[2])),
+new Replacement("%S%", String.valueOf(time[3]))
+⋮----
+int[] time = user.translateAfkTime();
+⋮----
+sender.sendMessage(Messages.PLAYER_AFK_TOTAL.getMessage(
+⋮----
+public void activeTime(CommandSender sender, List<String> args) {
+⋮----
+// Check another player's active playtime
+⋮----
+// Check own active playtime
+⋮----
+int[] time = user.translateActiveTime();
+⋮----
+sender.sendMessage(Messages.PLAYER_ACTIVE_TIME.getMessage(
+⋮----
+/**
+     * Translates time in milliseconds to days, hours, minutes, and seconds
+     * @param milliseconds Time in milliseconds
+     * @return An array of [days, hours, minutes, seconds]
+     */
+private int[] translateTime(long milliseconds) {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/afk/listeners/AFKActivityListener.java">
+public class AFKActivityListener implements Listener {
+⋮----
+public void onPlayerJoin(PlayerJoinEvent event) {
+// Reset activity time when player joins
+AFKManager.getInstance().recordActivity(event.getPlayer());
+⋮----
+public void onPlayerQuit(PlayerQuitEvent event) {
+// Remove player from AFK tracking when they quit
+AFKManager.getInstance().removePlayer(event.getPlayer().getUniqueId());
+⋮----
+public void onPlayerChat(AsyncPlayerChatEvent event) {
+if (!Settings.AFK_EVENTS_CHAT.getValueAsBoolean()) return;
+⋮----
+// Reset activity on chat
+Player player = event.getPlayer();
+AFKManager.getInstance().recordActivity(player);
+⋮----
+public void onPlayerMove(PlayerMoveEvent event) {
+if (!Settings.AFK_EVENTS_MOVEMENT.getValueAsBoolean()) return;
+⋮----
+// Only count as movement if position changes, not just head rotation
+if (event.getFrom().getBlockX() == event.getTo().getBlockX() &&
+event.getFrom().getBlockY() == event.getTo().getBlockY() &&
+event.getFrom().getBlockZ() == event.getTo().getBlockZ()) {
+⋮----
+// Reset activity on movement
+⋮----
+public void onPlayerInteract(PlayerInteractEvent event) {
+if (!Settings.AFK_EVENTS_INTERACT.getValueAsBoolean()) return;
+⋮----
+// Reset activity on interaction
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/player/commands/PlayTimeCommand.java">
+public class PlayTimeCommand {
+⋮----
+public void myTime(CommandSender sender, List<String> args) {
+⋮----
+PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(((Player) sender).getUniqueId());
+user.updatePlaytime();
+sender.sendMessage(Messages.PLAYTIME_INFO_OWN.getMessage(
+new Replacement("%D%", String.valueOf(user.translateTime()[0])),
+new Replacement("%H%", String.valueOf(user.translateTime()[1])),
+new Replacement("%M%", String.valueOf(user.translateTime()[2])),
+new Replacement("%S%", String.valueOf(user.translateTime()[3]))
+⋮----
+sender.sendMessage("You need to be a player to use this command");
+⋮----
+public void see(CommandSender sender, List<String> args) {
+String playerName = args.get(0);
+Player player = Bukkit.getPlayer(playerName);
+⋮----
+Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(user -> {
+⋮----
+sender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
+⋮----
+sendPlaytimeInfo(sender, user);
+⋮----
+Playtime.getInstance().getPlaytimeUser(playerName).ifPresent(user -> sendPlaytimeInfo(sender, user));
+⋮----
+public void top(CommandSender sender, List<String> args) {
+⋮----
+if (args.size() == 2) {
+amount = Integer.parseInt(args.get(1));
+⋮----
+Playtime.getInstance().getStorage().getTopUsers(amount, 0).whenCompleteAsync((users, throwable) -> {
+users.forEach(user -> sendPlaytimeInfo(sender, user));
+⋮----
+public void reset(CommandSender sender, List<String> args) {
+String playerName = args.get(1);
+⋮----
+user.setPlaytime(0);
+Playtime.getInstance().getPlaytimeUser(playerName).ifPresent(u -> u.setPlaytime(0));
+Playtime.getInstance().getStorage().saveUser(user).thenAcceptAsync(u -> {
+sender.sendMessage(Messages.PLAYER_RESET_CONFIRM.getMessage());
+⋮----
+public void add(CommandSender sender, List<String> args) {
+⋮----
+String time = args.get(2);
+Map<String, Integer> timeMap = parseTime(time);
+⋮----
+Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(user -> {
+addPlaytime(user, timeMap, time);
+user.save().thenAcceptAsync(test -> {
+sender.sendMessage(Messages.TIME_ADDED.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
+⋮----
+public void remove(CommandSender sender, List<String> args) {
+⋮----
+removePlaytime(user, timeMap, time);
+⋮----
+sender.sendMessage(Messages.TIME_REMOVED.getMessage(new Replacement("<player>", playerName), new Replacement("%playtime%", playerName)));
+⋮----
+public void pluginInfo(CommandSender sender, List<String> args) {
+sender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
+sender.sendMessage(ChatColor.GREEN + "Version: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getVersion());
+sender.sendMessage(ChatColor.GREEN + "Author: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getAuthors());
+sender.sendMessage(ChatColor.GREEN + "Website: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getWebsite());
+Playtime.getInstance().getStorage().getMilestones().whenComplete((milestones, throwable) -> {
+sender.sendMessage(ChatColor.GREEN + "Milestones: " + ChatColor.DARK_GRAY + milestones.size());
+⋮----
+Playtime.getInstance().getStorage().getRepeatingMilestones().whenComplete((milestones, throwable) -> {
+sender.sendMessage(ChatColor.GREEN + "Repeating Milestones: " + ChatColor.DARK_GRAY + milestones.size());
+⋮----
+Playtime.getInstance().getMccore().getUpdate(sender, true);
+⋮----
+private void sendPlaytimeInfo(CommandSender sender, PlaytimeUser user) {
+sender.sendMessage(Messages.PLAYTIME_INFO_OTHER.getMessage(
+new Replacement("%NAME%", user.getName()),
+⋮----
+/**
+     * Parse the time string
+     * @param time The time string
+     * @return The map of time units
+     */
+private Map<String, Integer> parseTime(String time) {
+Pattern pattern = Pattern.compile("(\\d+)([A-Za-z]+)");
+// Parse the time string
+// Example: 1d2h3m4s
+Matcher matcher = pattern.matcher(time);
+⋮----
+while (matcher.find()) {
+int value = Integer.parseInt(matcher.group(1));
+String unit = matcher.group(2);
+timeMap.put(unit, value);
+⋮----
+/**
+     * Add playtime to a user
+     * @param user The user to add playtime to
+     * @param timeMap The map of time units
+     * @param time The time to add
+     */
+private void addPlaytime(PlaytimeUser user, Map<String, Integer> timeMap, String time) {
+if (timeMap.isEmpty()) {
+user.addPlaytime(Long.parseLong(time), TimeUnit.SECONDS);
+⋮----
+timeMap.forEach((unit, value) -> {
+switch (unit.toUpperCase(Locale.ROOT)) {
+⋮----
+user.addPlaytime(value, TimeUnit.SECONDS);
+⋮----
+user.addPlaytime(value, TimeUnit.MINUTES);
+⋮----
+user.addPlaytime(value, TimeUnit.HOURS);
+⋮----
+user.addPlaytime(value, TimeUnit.DAYS);
+⋮----
+user.addPlaytime(value * 7L, TimeUnit.DAYS);
+⋮----
+/**
+     * Remove playtime from a user
+     * @param user The user to remove playtime from
+     * @param timeMap The map of time units
+     * @param time The time to remove
+     */
+private void removePlaytime(PlaytimeUser user, Map<String, Integer> timeMap, String time) {
+⋮----
+user.removePlaytime(Long.parseLong(time), TimeUnit.SECONDS);
+⋮----
+user.removePlaytime(value, TimeUnit.SECONDS);
+⋮----
+user.removePlaytime(value, TimeUnit.MINUTES);
+⋮----
+user.removePlaytime(value, TimeUnit.HOURS);
+⋮----
+user.removePlaytime(value, TimeUnit.DAYS);
+⋮----
+user.removePlaytime(value * 7L, TimeUnit.DAYS);
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/player/listeners/PlayerJoinListener.java">
+public class PlayerJoinListener implements Listener {
+⋮----
+public void onJoin(PlayerJoinEvent event) {
+Playtime.getInstance().getStorage().loadUser(event.getPlayer().getUniqueId()).thenAcceptAsync(playtimeUser -> {
+⋮----
+Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(), playtimeUser);
+⋮----
+PlaytimeUser playtimeUser1 = new PlaytimeUser(event.getPlayer().getUniqueId().toString(), event.getPlayer().getName());
+Playtime.getInstance().getStorage().createUser(playtimeUser1);
+Playtime.getInstance().getPlaytimeUsers().put(event.getPlayer().getUniqueId(), playtimeUser1);
+⋮----
+Bukkit.getPluginManager().callEvent(new PlaytimePlayerLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()), true));
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/player/listeners/PlayerQuitListener.java">
+public class PlayerQuitListener implements Listener {
+⋮----
+public void onQuit(PlayerQuitEvent event) {
+Bukkit.getPluginManager().callEvent(new PlaytimePlayerSaveEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()), false));
+⋮----
+Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(), () -> {
+PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId());
+⋮----
+user.updatePlaytime();
+⋮----
+Playtime.getInstance().getStorage().saveUser(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId())).thenAcceptAsync(aBoolean -> {
+⋮----
+Bukkit.getPluginManager().callEvent(new PlaytimePlayerUnLoadedEvent(Playtime.getInstance().getPlaytimeUsers().get(event.getPlayer().getUniqueId()), true));
+Playtime.getInstance().getPlaytimeUsers().remove(event.getPlayer().getUniqueId());
+⋮----
+Playtime.getPlugin().getLogger().warning("Could not save the user " + event.getPlayer().getName() + " to the storage");
+FileManager.Config config = Playtime.getInstance().getFileManager().getConfig("recover/" + event.getPlayer().getUniqueId() + ".yml");
+config.set("data", new Gson().toJson(user));
+config.save();
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/player/runnables/SavePlayTimeRunnable.java">
+/**
+ * Save the playtime of the players every 5 minutes
+ */
+⋮----
+public class SavePlayTimeRunnable implements Runnable {
+⋮----
+/**
+     * When an object implementing interface {@code Runnable} is used
+     * to create a thread, starting the thread causes the object's
+     * {@code run} method to be called in that separately executing
+     * thread.
+     * <p>
+     * The general contract of the method {@code run} is that it may
+     * take any action whatsoever.
+     *
+     * @see Thread#run()
+     */
+⋮----
+public void run() {
+if (Playtime.getInstance().getPlaytimeUsers().isEmpty()) return;
+Playtime.getPlugin().getLogger().log(Level.INFO, "Saving playtime...");
+for (PlaytimeUser value : Playtime.getInstance().getPlaytimeUsers().values()) {
+Playtime.getInstance().getStorage().saveUser(value);
+⋮----
+Playtime.getPlugin().getLogger().log(Level.INFO, "Saved playtime of {0} players", Playtime.getInstance().getPlaytimeUsers().size());
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/playtime_history/listeners/PlayTimePlayerLoadedListener.java">
+public class PlayTimePlayerLoadedListener implements Listener {
+⋮----
+public void onJoin(PlaytimePlayerLoadedEvent event) {
+Playtime.getInstance().getStorage().addPlaytimeHistory(event.getUser().getUUID(), Storage.Event.JOIN, (int) event.getUser().getTime());
+⋮----
+public void onQuit(PlaytimePlayerUnLoadedEvent event) {
+Playtime.getInstance().getStorage().addPlaytimeHistory(event.getUser().getUUID(), Storage.Event.QUIT, (int) event.getUser().getTime());
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/utils/Replacement.java">
+/**
+ * @author Ruben
+ * @version 1.0
+ * <p>
+ * This class is used to replace a string with a string.
+ * </p>
+ * @since 1.0
+ */
+⋮----
+public class Replacement {
+/**
+     * The string to replace.
+     * -- GETTER --
+     *
+     * @return The string to replace.
+     */
+⋮----
+/**
+     * The string to replace with.
+     * -- GETTER --
+     *
+     * @return The string to replace with.
+     */
+⋮----
+/**
+     * @param from The string to replace.
+     * @param to   The string to replace with.
+     */
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/utils/TimeUtil.java">
+/**
+ * Utility class for handling time conversions and formatting
+ */
+public class TimeUtil {
+⋮----
+/**
+     * Format milliseconds into a human-readable string showing days, hours, minutes, and seconds
+     *
+     * @param millis Time in milliseconds
+     * @return Formatted time string
+     */
+public static String getFormattedTime(long millis) {
+long days = TimeUnit.MILLISECONDS.toDays(millis);
+millis -= TimeUnit.DAYS.toMillis(days);
+long hours = TimeUnit.MILLISECONDS.toHours(millis);
+millis -= TimeUnit.HOURS.toMillis(hours);
+long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+millis -= TimeUnit.MINUTES.toMillis(minutes);
+long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+⋮----
+StringBuilder builder = new StringBuilder();
+⋮----
+builder.append(days).append("d ");
+⋮----
+builder.append(hours).append("h ");
+⋮----
+builder.append(minutes).append("m ");
+⋮----
+builder.append(seconds).append("s");
+⋮----
+return builder.toString();
+</file>
+
+<file path="src/main/resources/plugin.yml">
+name: TDRPlaytime
+version: ${project.version}
+main: nl.thedutchruben.playtime.PlayTimePlugin
+api-version: 1.13
+downloadSource: 'GITHUB'
+authors: [ TheDutchRuben ]
+softdepend:
+  - PlaceholderAPI
+  - EssentialsX
+description: Playtime plugin with milestone support
+commands:
+  afk:
+    aliases:
+      - away
+    description: Toggle AFK status
+    permission: playtime.afk
+  playtime:
+    aliases:
+      - playertime
+      - onlinetime
+    description: Main play time command
+    permission: playtime.playtime
+  milestone:
+    aliases:
+      - mstone
+      - miliestone
+    description: Setup the milestones of the playtime plugin
+    permission: playtime.milestone
+  repeatingmilestone:
+    aliases:
+      - rmstone
+      - rmiliestone
+    description: Setup the repeating milestones of the playtime plugin
+    permission: playtime.repeatingmilestone
+permissions:
+  playtime.playtime:
+    default: true
+  playtime.playtime.other:
+    default: op
+  playtime.playtime.reset:
+    default: op
+  playtime.playtime.top:
+    default: op
+  playtime.milestone:
+    default: op
+  playtime.milestone.additem:
+    default: op
+  playtime.milestone.addcommand:
+    default: op
+  playtime.afk:
+    default: true
+  playtime.afk.status:
+    default: true
+  playtime.afk.active:
+    default: true
+  playtime.afk.kickexempt:
+    default: op
+</file>
+
+<file path=".github/workflows/code-coverage.yml">
+name: Code Coverage
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build with Maven and generate coverage report
+        run: mvn clean verify
+
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          file: ./target/site/jacoco/jacoco.xml
+          fail_ci_if_error: false
+
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+
+      - name: Commit and push the badge (if it changed)
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: 'Update code coverage badges'
+          add: '*.svg'
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/ConfigFiles.java">
+
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/objects/Milestone.java">
+public class Milestone {
+⋮----
+/**
+     * The name of the milestone
+     * -- GETTER --
+     * get the name of the milestone
+     * -- SETTER --
+     * set the name of the milestone
+     */
+⋮----
+/**
+     * The time the player has to be online to get the milestone
+     * -- GETTER --
+     * get the time the player has to be online to get the milestone
+     * -- SETTER --
+     * set the time the player has to be online to get the milestone
+     */
+⋮----
+/**
+     * The list of items to give the player.
+     */
+⋮----
+/**
+     * The list of commands to execute
+     */
+⋮----
+/**
+     * The list of messages to send
+     * -- SETTER --
+     * set the list of messages to send
+     */
+⋮----
+/**
+     * if there shall be a firework show
+     * -- GETTER --
+     * get if there is a firework show
+     * -- SETTER --
+     * set if there is a firework show
+     */
+⋮----
+/**
+     * The amount of fireworks to spawn
+     * -- GETTER --
+     * get the amount of fireworks to spawn
+     * -- SETTER --
+     * set the amount of fireworks to spawn
+     */
+⋮----
+/**
+     * The seconds between the fireworks
+     * -- SETTER --
+     * set the seconds between the fireworks
+     */
+⋮----
+public static Milestone getMilestone(String name) {
+return Playtime.getInstance()
+.getMilestones().stream()
+.filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(name))
+.findFirst().orElse(null);
+⋮----
+/**
+     * Apply the milestone on the player
+     *
+     * @param player The player to apply the milestone to
+     */
+public void apply(Player player) {
+Bukkit.getScheduler().runTask(Playtime.getPlugin(), () ->
+Bukkit.getPluginManager().callEvent(
+new MilestoneReceiveEvent(this, Playtime.getInstance().getPlaytimeUser(player.getUniqueId()).get()))
+⋮----
+_itemStackObjects.add(ItemStack.deserialize(itemStack));
+⋮----
+if (_itemStackObjects != null && !_itemStackObjects.isEmpty()) {
+⋮----
+player.getInventory().addItem(_itemStackObjects.toArray(new ItemStack[0]))
+⋮----
+commands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+command.replaceAll("%playername%", player.getName())
+.replaceAll("%player_name%", player.getName())
+.replaceAll("%playeruuid%", player.getUniqueId().toString())
+.replaceAll("%player_uuid%", player.getUniqueId().toString()))
+⋮----
+messages.forEach(s ->
+player.sendMessage(MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', s)))
+⋮----
+Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(), () -> {
+⋮----
+FireworkUtil.spawnRandomFirework(player.getLocation())
+⋮----
+Thread.sleep(fireworkShowSecondsBetween * 1000L);
+⋮----
+Playtime.getPlugin().getLogger().warning("Error while sleeping the thread: " + e.getMessage());
+⋮----
+/**
+     * Adds an ItemStack to the milestone.
+     *
+     * @param itemStack The ItemStack to add.
+     */
+public void addItemStack(ItemStack itemStack) {
+⋮----
+itemStacks.add(itemStack.serialize());
+⋮----
+/**
+     * Adds a command to the milestone.
+     *
+     * @param command The command to add.
+     */
+public void addCommand(String command) {
+⋮----
+commands.add(command);
+⋮----
+/**
+     * Adds a message to the milestone.
+     *
+     * @param message The message to add.
+     */
+public void addMessage(String message) {
+⋮----
+messages.add(message);
+⋮----
+/**
+     * Removes an ItemStack from the milestone.
+     *
+     * @param itemStack The ItemStack to remove.
+     */
+public void removeItemStack(ItemStack itemStack) {
+⋮----
+itemStacks.remove(itemStack.serialize());
+⋮----
+public long getOnlineTimeInMilliseconds(){
+⋮----
+/**
+     * Removes a command from the milestone.
+     *
+     * @param command The command to remove.
+     */
+public void removeCommand(String command) {
+⋮----
+commands.remove(command);
+⋮----
+/**
+     * Removes a message from the milestone.
+     *
+     * @param message The message to remove.
+     */
+public void removeMessage(String message) {
+⋮----
+messages.remove(message);
+⋮----
+/**
+     * @return The list of items to give the player.
+     */
+public List<Map<String, Object>> getItemStacks() {
+⋮----
+/**
+     * @return The list of commands to execute
+     */
+public List<String> getCommands() {
+⋮----
+/**
+     * get the list of messages to send
+     */
+public List<String> getMessages() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/objects/PlaytimeUser.java">
+public class PlaytimeUser {
+⋮----
+/**
+     * Constructs a PlaytimeUser with the specified UUID, name, and playtime.
+     *
+     * @param uuid The UUID of the user.
+     * @param name The name of the user.
+     * @param time The initial playtime of the user in milliseconds.
+     */
+⋮----
+this.lastActivity = System.currentTimeMillis();
+this.lastChecked = System.currentTimeMillis();
+⋮----
+/**
+     * Constructs a PlaytimeUser with the specified UUID and name.
+     * The initial playtime is set to 0.
+     *
+     * @param uuid The UUID of the user.
+     * @param name The name of the user.
+     */
+⋮----
+/**
+     * Loads a PlaytimeUser asynchronously based on the specified UUID.
+     *
+     * @param uuid The UUID of the user to load.
+     * @return A CompletableFuture that completes with the loaded PlaytimeUser.
+     */
+public static CompletableFuture<PlaytimeUser> loadUser(UUID uuid) {
+return Playtime.getInstance().getStorage().loadUser(uuid);
+⋮----
+/**
+     * Updates the playtime of the user based on the time elapsed since the last check.
+     * Considers AFK status if configured not to count AFK time.
+     * Fires an AsyncPlaytimePlayerUpdatePlaytimeEvent asynchronously.
+     */
+public void updatePlaytime() {
+⋮----
+long elapsedTime = System.currentTimeMillis() - lastChecked;
+⋮----
+// If player is AFK and we don't count AFK time, don't increase playtime
+if (isAfk && !Playtime.getInstance().getAfkManager().shouldCountAfkTime()) {
+// Just update the AFK time
+⋮----
+// Update the total playtime
+⋮----
+Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(),
+() -> Bukkit.getPluginManager().callEvent(new AsyncPlaytimePlayerUpdatePlaytimeEvent(this, true, oldTime, time)));
+lastChecked = System.currentTimeMillis();
+⋮----
+/**
+     * Returns the UUID of the user.
+     *
+     * @return The UUID of the user.
+     */
+public UUID getUUID() {
+return UUID.fromString(this.uuid);
+⋮----
+/**
+     * Adds the specified amount of playtime to the user's total playtime.
+     *
+     * @param time     The amount of time to add.
+     * @param timeUnit The unit of time.
+     */
+public void addPlaytime(long time, TimeUnit timeUnit) {
+this.time = this.time + timeUnit.toMillis(time);
+⋮----
+/**
+     * Saves the user's playtime data asynchronously.
+     *
+     * @return A CompletableFuture that completes when the save operation is done.
+     */
+public CompletableFuture<Boolean> save() {
+return Playtime.getInstance().getStorage().saveUser(this);
+⋮----
+/**
+     * Removes the specified amount of playtime from the user's total playtime.
+     *
+     * @param time     The amount of time to remove.
+     * @param timeUnit The unit of time.
+     */
+public void removePlaytime(long time, TimeUnit timeUnit) {
+this.time = this.time - timeUnit.toMillis(time);
+⋮----
+/**
+     * Sets the user's total playtime to the specified value.
+     *
+     * @param time The new total playtime in milliseconds.
+     */
+public void setPlaytime(float time) {
+⋮----
+/**
+     * Returns the Bukkit Player object associated with the user.
+     *
+     * @return The Bukkit Player object.
+     */
+public Player getBukkitPlayer() {
+return Bukkit.getPlayer(getUUID());
+⋮----
+/**
+     * Translates the user's total playtime into an array of days, hours, minutes, and seconds.
+     *
+     * @return An array containing the days, hours, minutes, and seconds of playtime.
+     */
+public int[] translateTime() {
+⋮----
+/**
+     * Checks if the user is currently AFK
+     * @return true if the user is AFK, false otherwise
+     */
+public boolean isAfk() {
+⋮----
+/**
+     * Sets the user's AFK status
+     * @param afk The new AFK status
+     */
+public void setAfk(boolean afk) {
+⋮----
+/**
+     * Gets the timestamp when the user went AFK
+     * @return The timestamp when the user went AFK
+     */
+public long getAfkSince() {
+⋮----
+/**
+     * Sets the timestamp when the user went AFK
+     * @param afkSince The timestamp when the user went AFK
+     */
+public void setAfkSince(long afkSince) {
+⋮----
+/**
+     * Gets the total time the user has been AFK
+     * @return The total AFK time in milliseconds
+     */
+public float getAfkTime() {
+⋮----
+/**
+     * Adds AFK time to the user's total AFK time
+     * @param time The time to add in milliseconds
+     */
+public void addAfkTime(long time) {
+⋮----
+/**
+     * Gets the timestamp of the user's last activity
+     * @return The timestamp of the user's last activity
+     */
+public long getLastActivity() {
+⋮----
+/**
+     * Sets the timestamp of the user's last activity
+     * @param lastActivity The timestamp of the user's last activity
+     */
+public void setLastActivity(long lastActivity) {
+⋮----
+/**
+     * Gets the user's active playtime (total playtime minus AFK time)
+     * @return The active playtime in milliseconds
+     */
+public float getActivePlaytime() {
+if (!Playtime.getInstance().getAfkManager().shouldCountAfkTime()) {
+⋮----
+/**
+     * Translates the user's active playtime into an array of days, hours, minutes, and seconds.
+     * @return An array containing the days, hours, minutes, and seconds of active playtime.
+     */
+public int[] translateActiveTime() {
+float tempTime = this.getActivePlaytime();
+⋮----
+/**
+     * Translates the user's AFK time into an array of days, hours, minutes, and seconds.
+     * @return An array containing the days, hours, minutes, and seconds of AFK time.
+     */
+public int[] translateAfkTime() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/storage/SqlStatements.java">
+/**
+ * This class contains the SQL statements that are used to create the tables in the database.
+ * The statements are formatted based on the table prefix and the database type.
+ */
+public class SqlStatements {
+⋮----
+/**
+     * Get the SQL statements for creating the tables in the database.
+     *
+     * @param tablePrefix The prefix for the table names.
+     * @param mysql       Whether the database is MySQL or SQLite.
+     * @return The SQL statements for creating the tables in the database.
+     */
+public static List<String> getStatements(String tablePrefix, boolean mysql) {
+⋮----
+statements.add(String.format("%splaytime` (\n  `uuid` varchar(36),\n  `name` varchar(16),\n  `time` BIGINT \n);\n", prefix));
+statements.add(String.format("%smilestones` (\n  `name` varchar(40),\n  `data` TEXT \n);\n", prefix));
+statements.add(String.format("%srepeating_milestones` (\n  `name` varchar(40),\n  `data` TEXT \n);\n", prefix));
+statements.add(String.format("%splaytime_milestones` (\n  `uuid` varchar(36),\n  `milestone` varchar(40),\n  `claimed` BOOLEAN \n);\n", prefix));
+⋮----
+? String.format("%splaytime_history` (\n  `id` INT NOT NULL AUTO_INCREMENT , \n  `uuid` VARCHAR(40) NOT NULL \n,  `event` VARCHAR(40) NOT NULL , \n  `start_time` BIGINT NOT NULL , \n  `date` DATETIME NOT NULL , \n  PRIMARY KEY (`id`)) ENGINE = InnoDB;", prefix)
+: String.format("CREATE TABLE IF NOT EXISTS `%splaytime_history` (\n" +
+⋮----
+statements.add(playtimeHistory);
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/extentions/PlaceholderAPIExtension.java">
+public class PlaceholderAPIExtension extends PlaceholderExpansion {
+⋮----
+public String getIdentifier() {
+⋮----
+public String getAuthor() {
+return Playtime.getPlugin().getDescription().getAuthors().toString();
+⋮----
+public String getVersion() {
+return Playtime.getPlugin().getDescription().getVersion();
+⋮----
+public List<String> getPlaceholders() {
+⋮----
+placeholders.add("%tdrplaytime_time%");
+placeholders.add("%tdrplaytime_time_days_number%");
+placeholders.add("%tdrplaytime_time_hour_number%");
+placeholders.add("%tdrplaytime_time_minutes_number%");
+placeholders.add("%tdrplaytime_time_seconds_number%");
+⋮----
+placeholders.add("%tdrplaytime_top_names_" + i + "%");
+placeholders.add("%tdrplaytime_top_time_" + i + "_days%");
+placeholders.add("%tdrplaytime_top_time_" + i + "_hours%");
+placeholders.add("%tdrplaytime_top_time_" + i + "_minutes%");
+placeholders.add("%tdrplaytime_top_time_" + i + "_seconds%");
+⋮----
+placeholders.add("%tdrplaytime_afk_status%");
+placeholders.add("%tdrplaytime_afk_time%");
+placeholders.add("%tdrplaytime_afk_time_days_number%");
+placeholders.add("%tdrplaytime_afk_time_hours_number%");
+placeholders.add("%tdrplaytime_afk_time_minutes_number%");
+placeholders.add("%tdrplaytime_afk_time_seconds_number%");
+placeholders.add("%tdrplaytime_active_time%");
+placeholders.add("%tdrplaytime_active_time_days_number%");
+placeholders.add("%tdrplaytime_active_time_hours_number%");
+placeholders.add("%tdrplaytime_active_time_minutes_number%");
+placeholders.add("%tdrplaytime_active_time_seconds_number%");
+⋮----
+public String onPlaceholderRequest(Player player, String params) {
+String dummyProofParams = params.toLowerCase().replace('-', '_');
+PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(player.getUniqueId());
+⋮----
+if (dummyProofParams.equals("time")) {
+return Messages.PLAYTIME_INFO_OWN.getMessage(
+new Replacement("%D%", String.valueOf(user.translateTime()[0])),
+new Replacement("%H%", String.valueOf(user.translateTime()[1])),
+new Replacement("%M%", String.valueOf(user.translateTime()[2])),
+new Replacement("%S%", String.valueOf(user.translateTime()[3]))
+⋮----
+if (dummyProofParams.contains("days_number")) {
+return String.valueOf(user.translateTime()[0]);
+} else if (dummyProofParams.contains("hour_number")) {
+return String.valueOf(user.translateTime()[1]);
+} else if (dummyProofParams.contains("minutes_number")) {
+return String.valueOf(user.translateTime()[2]);
+} else if (dummyProofParams.contains("seconds_number")) {
+return String.valueOf(user.translateTime()[3]);
+⋮----
+if (dummyProofParams.contains("top_names_")) {
+int placeNumber = parsePlaceNumber(dummyProofParams);
+return getTopUserName(placeNumber);
+⋮----
+if (dummyProofParams.contains("top_time_")) {
+⋮----
+return getTopUserTime(dummyProofParams, placeNumber);
+⋮----
+// Add this to the onPlaceholderRequest method
+if (dummyProofParams.equals("afk_status")) {
+return user.isAfk() ? "AFK" : "Online";
+⋮----
+if (dummyProofParams.equals("afk_time")) {
+int[] afkTime = user.translateAfkTime();
+return Messages.PLAYER_AFK_TOTAL.getMessage(
+new Replacement("%player%", player.getName()),
+new Replacement("%D%", String.valueOf(afkTime[0])),
+new Replacement("%H%", String.valueOf(afkTime[1])),
+new Replacement("%M%", String.valueOf(afkTime[2])),
+new Replacement("%S%", String.valueOf(afkTime[3]))
+⋮----
+if (dummyProofParams.contains("afk_time_days_number")) {
+return String.valueOf(user.translateAfkTime()[0]);
+} else if (dummyProofParams.contains("afk_time_hours_number")) {
+return String.valueOf(user.translateAfkTime()[1]);
+} else if (dummyProofParams.contains("afk_time_minutes_number")) {
+return String.valueOf(user.translateAfkTime()[2]);
+} else if (dummyProofParams.contains("afk_time_seconds_number")) {
+return String.valueOf(user.translateAfkTime()[3]);
+⋮----
+if (dummyProofParams.equals("active_time")) {
+int[] activeTime = user.translateActiveTime();
+return Messages.PLAYER_ACTIVE_TIME.getMessage(
+⋮----
+new Replacement("%D%", String.valueOf(activeTime[0])),
+new Replacement("%H%", String.valueOf(activeTime[1])),
+new Replacement("%M%", String.valueOf(activeTime[2])),
+new Replacement("%S%", String.valueOf(activeTime[3]))
+⋮----
+if (dummyProofParams.contains("active_time_days_number")) {
+return String.valueOf(user.translateActiveTime()[0]);
+} else if (dummyProofParams.contains("active_time_hours_number")) {
+return String.valueOf(user.translateActiveTime()[1]);
+} else if (dummyProofParams.contains("active_time_minutes_number")) {
+return String.valueOf(user.translateActiveTime()[2]);
+} else if (dummyProofParams.contains("active_time_seconds_number")) {
+return String.valueOf(user.translateActiveTime()[3]);
+⋮----
+return super.onPlaceholderRequest(player, params);
+⋮----
+private int parsePlaceNumber(String params) {
+⋮----
+String[] parts = params.split("_");
+return Math.max(Integer.parseInt(parts[parts.length - 1]), 1);
+⋮----
+Bukkit.getLogger().log(Level.WARNING, "Wrong number format");
+⋮----
+private String getTopUserName(int placeNumber) {
+⋮----
+PlaytimeUser playtimeUser = Playtime.getInstance().getStorage().getTopUser(placeNumber - 1).get();
+return playtimeUser != null ? playtimeUser.getName() : "No user found";
+⋮----
+throw new RuntimeException(e);
+⋮----
+private String getTopUserTime(String params, int placeNumber) {
+⋮----
+if (Bukkit.getPlayer(playtimeUser.getUUID()) != null) {
+playtimeUser = Playtime.getInstance().getPlaytimeUser(playtimeUser.getUUID()).get();
+⋮----
+if (params.endsWith("_days")) {
+return String.valueOf(playtimeUser.translateTime()[0]);
+} else if (params.endsWith("_hours")) {
+return String.valueOf(playtimeUser.translateTime()[1]);
+} else if (params.endsWith("_minutes")) {
+return String.valueOf(playtimeUser.translateTime()[2]);
+} else if (params.endsWith("_seconds")) {
+return String.valueOf(playtimeUser.translateTime()[3]);
+⋮----
+return String.valueOf(playtimeUser.getTime());
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/milestones/commands/MileStoneCommand.java">
+public class MileStoneCommand {
+⋮----
+public void create(CommandSender commandSender, List<String> args) {
+Milestone milestone = new Milestone();
+milestone.setMilestoneName(args.get(1));
+long time = getTime(args.get(2));
+milestone.setOnlineTime(time);
+Playtime.getInstance().getStorage().saveMilestone(milestone).thenAcceptAsync(aBoolean -> {
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_CREATED.getMessage());
+Playtime.getInstance().getMilestones().add(milestone);
+Bukkit.getPluginManager().callEvent(new MilestoneCreateEvent(milestone));
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_COULD_NOT_BE_CREATED.getMessage());
+⋮----
+public void delete(CommandSender commandSender, List<String> args) {
+Milestone milestone = Milestone.getMilestone(args.get(1));
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
+⋮----
+Playtime.getInstance().getStorage().deleteMilestone(milestone).thenAcceptAsync(aBoolean -> {
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_REMOVED.getMessage());
+Bukkit.getPluginManager().callEvent(new MilestoneDeleteEvent(milestone));
+Playtime.getInstance().getMilestones().removeIf(milestone1 -> milestone1.getMilestoneName().equals(milestone.getMilestoneName()));
+⋮----
+public void list(CommandSender commandSender, List<String> args) {
+List<Milestone> milestones = Playtime.getInstance().getMilestones();
+commandSender.sendMessage("Milestones: ");
+⋮----
+TextComponent message = new TextComponent(Messages.MILESTONE_LIST.getMessage(
+new Replacement("%MILESTONE_NAME%", milestone.getMilestoneName()),
+new Replacement("%D%", String.valueOf(TimeUnit.SECONDS.toDays(milestone.getOnlineTime()))),
+new Replacement("%H%", String.valueOf(TimeUnit.SECONDS.toHours(milestone.getOnlineTime()) % 24)),
+new Replacement("%M%", String.valueOf(TimeUnit.SECONDS.toMinutes(milestone.getOnlineTime()) % 60)),
+new Replacement("%S%", String.valueOf(TimeUnit.SECONDS.toSeconds(milestone.getOnlineTime()) % 60))
+⋮----
+message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone info " + milestone.getMilestoneName()));
+commandSender.spigot().sendMessage(message);
+⋮----
+public void info(CommandSender commandSender, List<String> args) {
+⋮----
+commandSender.sendMessage("Milestone: " + milestone.getMilestoneName());
+commandSender.sendMessage(" Time: " + milestone.getOnlineTime());
+commandSender.sendMessage(" Rewards("+ milestone.getItemStacks().size() +"): ");
+milestone.getItemStacks().forEach(map -> commandSender.sendMessage("  " + map.toString()));
+commandSender.sendMessage(" Commands("+ milestone.getCommands().size() +"): ");
+milestone.getCommands().forEach(command -> commandSender.sendMessage("  " + command));
+commandSender.sendMessage(" Messages("+ milestone.getMessages().size() +"): ");
+milestone.getMessages().forEach(message -> commandSender.sendMessage("  " + message));
+commandSender.sendMessage(" Firework show: " + milestone.isFireworkShow());
+if (milestone.isFireworkShow()) {
+commandSender.sendMessage(" Firework show delay: " + milestone.getFireworkShowSecondsBetween());
+commandSender.sendMessage(" Firework show amount: " + milestone.getFireworkShowAmount());
+⋮----
+public void test(CommandSender commandSender, List<String> args) {
+⋮----
+milestone.apply((Player) commandSender);
+commandSender.sendMessage(Messages.MILESTONE_REWARDS_APPLIED.getMessage());
+⋮----
+public void addItemToMilestone(CommandSender commandSender, List<String> args) {
+⋮----
+milestone.addItemStack(player.getInventory().getItemInMainHand());
+Playtime.getInstance().getStorage().updateMilestone(milestone);
+commandSender.sendMessage(Messages.MILESTONE_ITEM_ADDED.getMessage());
+Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
+⋮----
+public void addCommandToMilestone(CommandSender commandSender, List<String> args) {
+⋮----
+String command = String.join(" ", args.subList(2, args.size()));
+milestone.addCommand(command);
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_COMMAND_ADDED.getMessage());
+⋮----
+public void removeCommandFromMilestone(CommandSender commandSender, List<String> args) {
+⋮----
+String command = String.join(" ", args.subList(1, args.size()));
+milestone.removeCommand(command);
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_COMMAND_REMOVED.getMessage());
+⋮----
+public void toggleFirework(CommandSender commandSender, List<String> args) {
+⋮----
+milestone.setFireworkShow(!milestone.isFireworkShow());
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_FIREWORK_TOGGLED.getMessage(new Replacement("<state>", milestone.isFireworkShow() ? "enabled" : "disabled")));
+⋮----
+public void setFireworkAmount(CommandSender commandSender, List<String> args) {
+⋮----
+int amount = Integer.parseInt(args.get(2));
+milestone.setFireworkShowAmount(amount);
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_SET_FIREWORK_AMOUNT.getMessage(new Replacement("<amount>", String.valueOf(amount))));
+⋮----
+public void setFireworkDelay(CommandSender commandSender, List<String> args) {
+⋮----
+int delay = Integer.parseInt(args.get(2));
+milestone.setFireworkShowSecondsBetween(delay);
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_SET_FIREWORK_DELAY.getMessage(new Replacement("<amount>", String.valueOf(delay))));
+⋮----
+public void addMessage(CommandSender commandSender, List<String> args) {
+⋮----
+String message = String.join(" ", args.subList(2, args.size()));
+milestone.addMessage(message);
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_MESSAGE_ADDED.getMessage());
+⋮----
+public void removeMessage(CommandSender commandSender, List<String> args) {
+⋮----
+milestone.removeMessage(message);
+⋮----
+commandSender.sendMessage(Messages.MILESTONE_MESSAGE_REMOVED.getMessage());
+⋮----
+private Map<String, Integer> parseTime(String time) {
+Pattern pattern = Pattern.compile("(\\d+)([A-Za-z]+)");
+Matcher matcher = pattern.matcher(time);
+⋮----
+while (matcher.find()) {
+int value = Integer.parseInt(matcher.group(1));
+String unit = matcher.group(2);
+timeMap.put(unit, value);
+⋮----
+private long getTime(String time) {
+AtomicLong parsedTime = new AtomicLong();
+Map<String, Integer> timeMap = parseTime(time);
+timeMap.forEach((unit, value) -> {
+switch (unit.toLowerCase(Locale.ROOT)) {
+⋮----
+parsedTime.addAndGet(TimeUnit.SECONDS.toSeconds(value));
+⋮----
+parsedTime.addAndGet(TimeUnit.MINUTES.toSeconds(value));
+⋮----
+parsedTime.addAndGet(TimeUnit.HOURS.toSeconds(value));
+⋮----
+parsedTime.addAndGet(TimeUnit.DAYS.toSeconds(value));
+⋮----
+parsedTime.addAndGet(TimeUnit.DAYS.toSeconds(value * 7L));
+⋮----
+parsedTime.addAndGet(TimeUnit.DAYS.toSeconds(value * 30));
+⋮----
+parsedTime.addAndGet(TimeUnit.DAYS.toSeconds(value * 365L));
+⋮----
+return parsedTime.get();
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/milestones/listeners/UpdatePlaytimeListener.java">
+/**
+ * Listener class that handles the update of player playtime milestones.
+ */
+⋮----
+public class UpdatePlaytimeListener implements Listener {
+⋮----
+/**
+     * Event handler for updating player playtime.
+     *
+     * @param event The event that contains the old and new playtime of the player.
+     */
+⋮----
+public void updatePlaytime(AsyncPlaytimePlayerUpdatePlaytimeEvent event) {
+// todo move to debug message
+//        Playtime.getPlugin().getLogger().log(Level.INFO, "Updating playtime for player " + event.getUser().getBukkitPlayer().getName() + " from " + event.getOldPlaytime() + " to " + event.getNewPlaytime());
+Playtime.getInstance().getMilestones().forEach(milestone -> Playtime.getPlugin().getLogger().log(Level.INFO, "Milestone: " + milestone.getOnlineTimeInMilliseconds()));
+// Check and apply milestones that are not repeating
+Playtime.getInstance().getMilestones().stream()
+.filter(milestone -> milestone.getOnlineTimeInMilliseconds() <= event.getNewPlaytime()
+&& milestone.getOnlineTimeInMilliseconds() > event.getOldPlaytime())
+.forEach(milestone -> milestone.apply(event.getUser().getBukkitPlayer()));
+⋮----
+// Check and apply repeating milestones
+for (float i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
+⋮----
+Playtime.getInstance().getRepeatingMilestones().stream()
+.filter(repeatingMilestone -> finalI % (repeatingMilestone.getOnlineTimeInMilliseconds() * 1000) == 1)
+.forEach(repeatingMilestone -> repeatingMilestone.apply(event.getUser().getBukkitPlayer()));
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/player/runnables/UpdatePlayTimeRunnable.java">
+/**
+ * Every 15 seconds the playtime will update for scoreboards and for getting the milestones
+ */
+⋮----
+public class UpdatePlayTimeRunnable implements Runnable {
+⋮----
+/**
+     * When an object implementing interface {@code Runnable} is used
+     * to create a thread, starting the thread causes the object's
+     * {@code run} method to be called in that separately executing
+     * thread.
+     * <p>
+     * The general contract of the method {@code run} is that it may
+     * take any action whatsoever.
+     *
+     * @see Thread#run()
+     */
+⋮----
+public void run() {
+// Update AFK statuses first
+AFKManager.getInstance().checkAllPlayers();
+⋮----
+// Check if any players need to be kicked for being AFK too long
+if (Settings.AFK_KICK_ENABLED.getValueAsBoolean()) {
+long kickThresholdMillis = Settings.AFK_KICK_THRESHOLD_MINUTES.getValueAsInteger() * 60 * 1000;
+String kickMessage = Settings.AFK_KICK_MESSAGE.getValueAsString();
+⋮----
+for (PlaytimeUser playtimeUser : Playtime.getInstance().getPlaytimeUsers().values()) {
+if (playtimeUser.isAfk()) {
+long afkDuration = System.currentTimeMillis() - playtimeUser.getAfkSince();
+⋮----
+Player player = playtimeUser.getBukkitPlayer();
+if (player != null && !player.hasPermission("playtime.afk.kickexempt")) {
+Bukkit.getScheduler().runTask(Playtime.getPlugin(), () ->
+player.kickPlayer(kickMessage)
+⋮----
+// Update playtimes
+⋮----
+playtimeUser.updatePlaytime();
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/playtime_history/commands/PlaytimeHistoryCommand.java">
+/**
+ * Command to view playtime history for yourself or other players
+ */
+⋮----
+public class PlaytimeHistoryCommand {
+⋮----
+/**
+     * Default command to view your own playtime history or another player's history
+     *
+     * @param commandSender The sender of the command
+     * @param args Command arguments
+     */
+public void execute(CommandSender commandSender, String[] args) {
+int limit = Settings.PLAYTIME_HISTORY_MAX_ENTRIES.getValueAsInteger();
+⋮----
+// View own history (only players can do this, not console)
+⋮----
+commandSender.sendMessage(Messages.ONLY_PLAYER_COMMAND.getMessage());
+⋮----
+showPlaytimeHistory(player.getUniqueId(), player.getName(), commandSender, limit);
+⋮----
+// Check permission for viewing other players' history
+if (!commandSender.hasPermission("playtime.history.others")) {
+⋮----
+// Try to parse custom limit if provided
+⋮----
+limit = Integer.parseInt(args[1]);
+⋮----
+// Ignore invalid number and use default limit
+⋮----
+// Find player UUID from name
+Player targetPlayer = Bukkit.getPlayer(targetName);
+⋮----
+showPlaytimeHistory(targetPlayer.getUniqueId(), targetPlayer.getName(), commandSender, limit);
+⋮----
+// Player not online, load from storage by name
+⋮----
+Playtime.getInstance().getStorage().loadUserByName(targetName)
+.thenAccept(playtimeUser -> {
+⋮----
+commandSender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
+⋮----
+showPlaytimeHistoryByName(targetName, commandSender, finalLimit);
+⋮----
+/**
+     * Show playtime history using player UUID
+     *
+     * @param uuid The UUID of the player
+     * @param playerName The player's name for display purposes
+     * @param sender The command sender who will receive the history
+     * @param limit Maximum number of entries to show
+     */
+private void showPlaytimeHistory(UUID uuid, String playerName, CommandSender sender, int limit) {
+Playtime.getInstance().getStorage().getPlaytimeHistory(uuid, limit)
+.thenAccept(history -> displayPlaytimeHistory(history, playerName, sender, limit));
+⋮----
+/**
+     * Show playtime history using player name
+     *
+     * @param playerName The player's name
+     * @param sender The command sender who will receive the history
+     * @param limit Maximum number of entries to show
+     */
+private void showPlaytimeHistoryByName(String playerName, CommandSender sender, int limit) {
+Playtime.getInstance().getStorage().getPlaytimeHistoryByName(playerName, limit)
+⋮----
+/**
+     * Display formatted history entries to the command sender
+     *
+     * @param history The list of history entries to display
+     * @param playerName The player's name for display purposes
+     * @param sender The command sender who will receive the history
+     * @param limit The requested maximum entries
+     */
+private void displayPlaytimeHistory(List<PlaytimeHistory> history, String playerName, CommandSender sender, int limit) {
+if (history.isEmpty()) {
+sender.sendMessage(Messages.PLAYTIME_HISTORY_NO_ENTRIES.getMessage(
+new Replacement("%NAME%", playerName)));
+⋮----
+// Get the date format from settings
+String dateFormat = Settings.PLAYTIME_HISTORY_DATE_FORMAT.getValueAsString();
+⋮----
+// Send header
+sender.sendMessage(Messages.PLAYTIME_HISTORY_HEADER.getMessage(
+⋮----
+// Send each history entry
+⋮----
+String eventType = entry.getEvent().toString();
+String formattedDate = entry.getFormattedDate(dateFormat);
+String formattedTime = TimeUtil.getFormattedTime(entry.getTime());
+⋮----
+sender.sendMessage(Messages.PLAYTIME_HISTORY_ENTRY.getMessage(
+new Replacement("%EVENT%", eventType),
+new Replacement("%DATE%", formattedDate),
+new Replacement("%TIME%", formattedTime)));
+⋮----
+// Send footer with entry count
+sender.sendMessage(Messages.PLAYTIME_HISTORY_FOOTER.getMessage(
+new Replacement("%CURRENT%", String.valueOf(history.size())),
+new Replacement("%TOTAL%", String.valueOf(limit))));
+</file>
+
+<file path=".github/workflows/notification.yaml">
+name: Discord Notification
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  report-status:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Java JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+          java-package: jdk
+          architecture: x64
+      - name: Run Discord Webhook
+        uses: baked-libs/discord-webhook@main
+        with:
+          id: ${{ secrets.DISCORD_NOTIFICATION_ID }}
+          token: ${{ secrets.DISCORD_NOTIFICATION_TOKEN }}
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/DependencyLoader.java">
+public class DependencyLoader {
+⋮----
+public static void load(Plugin plugin) {
+plugin.getLogger().info("Loading dependencies");
+⋮----
+BukkitLibraryManager libraryManager = new BukkitLibraryManager(plugin);
+// setup repo's
+libraryManager.addMavenCentral();
+libraryManager.addJitPack();
+libraryManager.addRepository("https://maven.thedutchservers.com/releases");
+libraryManager.setLogLevel(LogLevel.INFO);
+⋮----
+//build array with all the dependencies as liberies
+⋮----
+for (Dependency dependency : Dependency.values()) {
+Library.Builder builder = Library.builder()
+.groupId(dependency.getGroupId()) // "{}" is replaced with ".", useful to avoid unwanted changes made by maven-shade-plugin
+.artifactId(dependency.getArtifactID())
+.version(dependency.getVersion());
+⋮----
+if (dependency.getRelocation() != null) {
+builder.relocate(dependency.getGroupId(), dependency.getRelocation());
+⋮----
+libraries.add(builder.build());
+⋮----
+// Load all the dependencies
+⋮----
+libraryManager.loadLibrary(library);
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/objects/RepeatingMilestone.java">
+/**
+ * @author Ruben
+ * @version 1.0
+ */
+public class RepeatingMilestone {
+⋮----
+/**
+     * The list of items to give the player.
+     */
+⋮----
+/**
+     * The name of the milestone.
+     */
+⋮----
+/**
+     * Apply the milestone on the player
+     *
+     * @param player The player to apply the milestone to
+     */
+public void apply(Player player) {
+⋮----
+_itemStackObjects.add(ItemStack.deserialize(itemStack));
+⋮----
+player.getInventory().addItem(itemStack);
+⋮----
+Bukkit.getScheduler().runTask(Playtime.getPlugin(), () -> {
+⋮----
+Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+command.replaceAll("%playername%", player.getName())
+.replaceAll("%player_name%", player.getName())
+.replaceAll("%playeruuid%", player.getUniqueId().toString())
+.replaceAll("%player_uuid%", player.getUniqueId().toString()));
+⋮----
+messages.forEach(s -> {
+String formattedString = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', s));
+player.sendMessage(formattedString);
+⋮----
+Bukkit.getScheduler().runTaskAsynchronously(Playtime.getPlugin(), () -> {
+⋮----
+FireworkUtil.spawnRandomFirework(player.getLocation());
+⋮----
+Thread.sleep(fireworkShowSecondsBetween * 1000L);
+⋮----
+Playtime.getPlugin().getLogger().warning("Error while sleeping the thread :" + e.getMessage());
+⋮----
+public List<Map<String, Object>> getItemStacks() {
+⋮----
+public void setItemStacks(List<Map<String, Object>> itemStacks) {
+⋮----
+public List<String> getCommands() {
+⋮----
+public void setCommands(List<String> commands) {
+⋮----
+public String getMilestoneName() {
+⋮----
+public List<String> getMessages() {
+⋮----
+public long getOnlineTimeInMilliseconds(){
+⋮----
+public void setMessages(List<String> messages) {
+⋮----
+public void setItemStackObjects(List<ItemStack> itemStackObjects) {
+⋮----
+public boolean isFireworkShow() {
+⋮----
+public void setFireworkShow(boolean fireworkShow) {
+⋮----
+public int getFireworkShowAmount() {
+⋮----
+public void setFireworkShowAmount(int fireworkShowAmount) {
+⋮----
+public int getFireworkShowSecondsBetween() {
+⋮----
+public void setOverrideMe(boolean overrideMe) {
+⋮----
+/**
+     * Add an ItemStack to the milestone
+     * @param itemStack The itemStack to add
+     */
+public void addItemStack(ItemStack itemStack) {
+getItemStacks().add(itemStack.serialize());
+⋮----
+/**
+     * Add a command to the milestone
+     * @param command The command to add
+     */
+public void addCommand(String command) {
+getCommands().add(command);
+⋮----
+/**
+     * Remove a command from the milestone
+     * @param command The command to remove
+     */
+public void removeCommand(String command) {
+getCommands().remove(command);
+⋮----
+/**
+     * Add a message to the milestone
+     *
+     * @param message The message to add
+     */
+public void addMessage(String message) {
+getMessages().add(message);
+⋮----
+/**
+     * Remove a message from the milestone
+     *
+     * @param message The message to remove
+     */
+public void removeMessage(String message) {
+getMessages().remove(message);
+⋮----
+/**
+     * Get a milestone by name
+     *
+     * @param name The name of the milestone
+     * @see RepeatingMilestone
+     * @return The milestone
+     */
+public static RepeatingMilestone get(String name) {
+return Playtime.getInstance()
+.getRepeatingMilestones().stream()
+.filter(milestone -> milestone.getMilestoneName().equalsIgnoreCase(name))
+.findFirst().orElse(null);
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/Settings.java">
+// Playtime history settings
+⋮----
+this.fileName = configFile.getFileName();
+⋮----
+/**
+     * Set up the default config
+     */
+public static void setupDefaults() {
+for (Settings value : Settings.values()) {
+YamlConfiguration yamlConfiguration = Playtime.getInstance().getFileManager().getConfig(value.getFileName()).get();
+if (yamlConfiguration.get(value.getPath()) == null) {
+yamlConfiguration.set(value.getPath(), value.getDefaultValue());
+Playtime.getInstance().getFileManager().getConfig(value.getFileName()).save();
+⋮----
+/**
+     * Get the config
+     *
+     * @param fileName the file name
+     * @return the config
+     */
+public YamlConfiguration getConfig(String fileName) {
+return Playtime.getInstance().getFileManager().getConfig(fileName).get();
+⋮----
+public Object getValue() {
+return getConfig(this.fileName).get(path, defaultValue);
+⋮----
+public String getValueAsString() {
+return getConfig(this.fileName).getString(path, (String) defaultValue);
+⋮----
+public Boolean getValueAsBoolean() {
+return getConfig(this.fileName).getBoolean(path, (Boolean) defaultValue);
+⋮----
+public Integer getValueAsInteger() {
+return getConfig(this.fileName).getInt(path, (Integer) defaultValue);
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/storage/Storage.java">
+public abstract class Storage {
+⋮----
+this.gson =  GsonUtil.createGson();
+⋮----
+/**
+     * Get the name of the storage type
+     *
+     * @return The name of the storage type
+     */
+public abstract String getName();
+⋮----
+/**
+     * Set up the storage such as the database connection
+     */
+public abstract boolean setup();
+⋮----
+/**
+     * Stops the storage such things as the database connection
+     */
+public abstract void stop();
+⋮----
+/**
+     * Load the user from the storage
+     *
+     * @param uuid The uuid of the player
+     * @return The playtime user
+     */
+⋮----
+public abstract CompletableFuture<PlaytimeUser> loadUser(UUID uuid);
+⋮----
+/**
+     * Load user loaded by name
+     *
+     * @param name
+     * @return
+     */
+public abstract CompletableFuture<PlaytimeUser> loadUserByName(String name);
+⋮----
+/**
+     * Save the user to the storage
+     *
+     * @param playtimeUser The playtime user
+     * @return If the user is saved
+     */
+public abstract CompletableFuture<Boolean> saveUser(PlaytimeUser playtimeUser);
+⋮----
+/**
+     * Create the user
+     *
+     * @param playtimeUser
+     * @return
+     */
+public abstract CompletableFuture<Boolean> createUser(PlaytimeUser playtimeUser);
+⋮----
+/**
+     * Get the top users
+     *
+     * @param amount The amount of users
+     * @param skip   The amount of users to skip
+     * @return The list of users
+     */
+public abstract CompletableFuture<List<PlaytimeUser>> getTopUsers(int amount, int skip);
+⋮----
+/**
+     * Get the top user
+     *
+     * @param place The place of the user
+     * @return The user
+     */
+public abstract CompletableFuture<PlaytimeUser> getTopUser(int place);
+⋮----
+/**
+     * Get the milestones
+     *
+     * @return The list of milestones
+     */
+public abstract CompletableFuture<List<Milestone>> getMilestones();
+⋮----
+/**
+     * Save the milestone
+     *
+     * @param milestone The milestone to save
+     * @return If the milestone is saved
+     */
+public abstract CompletableFuture<Boolean> saveMilestone(Milestone milestone);
+⋮----
+/**
+     * Delete the milestone
+     *
+     * @param milestone The milestone to delete
+     * @return If the milestone is deleted
+     */
+public abstract CompletableFuture<Boolean> deleteMilestone(Milestone milestone);
+⋮----
+/**
+     * Update the milestone
+     *
+     * @param milestone The milestone to update
+     * @return If the milestone is updated
+     */
+public abstract CompletableFuture<Boolean> updateMilestone(Milestone milestone);
+⋮----
+/**
+     * Get the repeating milestones
+     *
+     * @return The list of repeating milestones
+     */
+public abstract CompletableFuture<List<RepeatingMilestone>> getRepeatingMilestones();
+⋮----
+/**
+     * Save the repeating milestone
+     *
+     * @param repeatingMilestone The repeating milestone to save
+     * @return If the repeating milestone is saved
+     */
+public abstract CompletableFuture<Boolean> saveRepeatingMilestone(RepeatingMilestone repeatingMilestone);
+⋮----
+/**
+     * Delete the repeating milestone
+     *
+     * @param repeatingMilestone The repeating milestone to delete
+     * @return If the repeating milestone is deleted
+     */
+public abstract CompletableFuture<Boolean> deleteRepeatingMilestone(RepeatingMilestone repeatingMilestone);
+⋮----
+/**
+     * Update the repeating milestone
+     *
+     * @param repeatingMilestone The repeating milestone to update
+     * @return If the repeating milestone is updated
+     */
+public abstract CompletableFuture<Boolean> updateRepeatingMilestone(RepeatingMilestone repeatingMilestone);
+⋮----
+/**
+     *
+     * @param uuid
+     * @param event
+     * @param time
+     * @return
+     */
+public abstract CompletableFuture<Boolean> addPlaytimeHistory(UUID uuid, Event event, int time);
+⋮----
+/**
+     * Get playtime history for a user
+     *
+     * @param uuid The uuid of the player
+     * @param limit Maximum number of entries to return
+     * @return List of playtime history entries
+     */
+public abstract CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistory(UUID uuid, int limit);
+⋮----
+/**
+     * Get playtime history for a user by name
+     *
+     * @param name The name of the player
+     * @param limit Maximum number of entries to return
+     * @return List of playtime history entries
+     */
+public abstract CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistoryByName(String name, int limit);
+⋮----
+public Gson getGson() {
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/modules/milestones/commands/RepeatingMilestoneCommand.java">
+public class RepeatingMilestoneCommand {
+⋮----
+public void create(CommandSender commandSender, List<String> args) {
+RepeatingMilestone repeatingMilestone = new RepeatingMilestone();
+repeatingMilestone.setMilestoneName(args.get(1));
+long time = getTime(args.get(2));
+repeatingMilestone.setOnlineTime(time);
+Playtime.getInstance().getStorage().saveRepeatingMilestone(repeatingMilestone).thenAcceptAsync(aBoolean -> {
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_CREATED.getMessage());
+Bukkit.getPluginManager().callEvent(new RepeatingMilestoneCreateEvent(repeatingMilestone));
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_COULD_NOT_BE_CREATED.getMessage());
+⋮----
+public void delete(CommandSender commandSender, List<String> args) {
+RepeatingMilestone milestone = RepeatingMilestone.get(args.get(1));
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
+⋮----
+Playtime.getInstance().getStorage().deleteRepeatingMilestone(milestone).thenAcceptAsync(aBoolean -> {
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_DELETED.getMessage());
+Bukkit.getPluginManager().callEvent(new RepeatingMilestoneDeleteEvent(milestone));
+⋮----
+public void list(CommandSender commandSender, List<String> args) {
+List<RepeatingMilestone> repeatingMilestones = Playtime.getInstance().getRepeatingMilestones();
+commandSender.sendMessage("Repeating milestones: ");
+⋮----
+TextComponent message = new TextComponent(Messages.REPEATING_MILESTONE_LIST.getMessage(
+new Replacement("%REPEATING_MILESTONE_NAME%", milestone.getMilestoneName()),
+new Replacement("%D%", String.valueOf(TimeUnit.SECONDS.toDays(milestone.getOnlineTime()))),
+new Replacement("%H%", String.valueOf(TimeUnit.SECONDS.toHours(milestone.getOnlineTime()) % 24)),
+new Replacement("%M%", String.valueOf(TimeUnit.SECONDS.toMinutes(milestone.getOnlineTime()) % 60)),
+new Replacement("%S%", String.valueOf(TimeUnit.SECONDS.toSeconds(milestone.getOnlineTime()) % 60))
+⋮----
+message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/repeatingmilestone info " + milestone.getMilestoneName()));
+commandSender.spigot().sendMessage(message);
+⋮----
+public void info(CommandSender commandSender, List<String> args) {
+RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+⋮----
+commandSender.sendMessage("Repeating milestone: " + repeatingMilestone.getMilestoneName());
+commandSender.sendMessage(" Time: " + repeatingMilestone.getOnlineTime());
+commandSender.sendMessage(" Rewards("+ repeatingMilestone.getItemStacks().size() +"): ");
+repeatingMilestone.getItemStacks().forEach(map -> commandSender.sendMessage("  " + map.toString()));
+commandSender.sendMessage(" Commands("+ repeatingMilestone.getCommands().size() +"): ");
+repeatingMilestone.getCommands().forEach(command -> commandSender.sendMessage("  " + command));
+commandSender.sendMessage(" Messages("+ repeatingMilestone.getMessages().size() +"): ");
+repeatingMilestone.getMessages().forEach(message -> commandSender.sendMessage("  " + message));
+commandSender.sendMessage(" Firework show: " + repeatingMilestone.isFireworkShow());
+if (repeatingMilestone.isFireworkShow()) {
+commandSender.sendMessage(" Firework show delay: " + repeatingMilestone.getFireworkShowSecondsBetween());
+commandSender.sendMessage(" Firework show amount: " + repeatingMilestone.getFireworkShowAmount());
+⋮----
+public void test(CommandSender commandSender, List<String> args) {
+⋮----
+repeatingMilestone.apply((Player) commandSender);
+commandSender.sendMessage(Messages.MILESTONE_REWARDS_APPLIED.getMessage());
+⋮----
+public void addItemToMilestone(CommandSender commandSender, List<String> args) {
+⋮----
+repeatingMilestone.addItemStack(player.getInventory().getItemInMainHand());
+Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_ITEM_ADDED.getMessage());
+Bukkit.getPluginManager().callEvent(new RepeatingMilestoneUpdateEvent(repeatingMilestone));
+⋮----
+public void addCommandToMilestone(CommandSender commandSender, List<String> args) {
+⋮----
+String command = String.join(" ", args.subList(2, args.size()));
+repeatingMilestone.addCommand(command);
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_COMMAND_ADDED.getMessage());
+⋮----
+public void removeCommandFromMilestone(CommandSender commandSender, List<String> args) {
+⋮----
+repeatingMilestone.removeCommand(command);
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_ITEM_REMOVED.getMessage());
+⋮----
+public void toggleFirework(CommandSender commandSender, List<String> args) {
+⋮----
+repeatingMilestone.setFireworkShow(!repeatingMilestone.isFireworkShow());
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_FIREWORK_TOGGLED.getMessage(new Replacement("<state>", repeatingMilestone.isFireworkShow() ? "enabled" : "disabled")));
+⋮----
+public void setFireworkAmount(CommandSender commandSender, List<String> args) {
+⋮----
+int amount = Integer.parseInt(args.get(2));
+repeatingMilestone.setFireworkShowAmount(amount);
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_SET_FIREWORK_AMOUNT.getMessage(new Replacement("<amount>", String.valueOf(amount))));
+⋮----
+public void setFireworkDelay(CommandSender commandSender, List<String> args) {
+⋮----
+int delay = Integer.parseInt(args.get(2));
+repeatingMilestone.setFireworkShowSecondsBetween(delay);
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_SET_FIREWORK_DELAY.getMessage(new Replacement("<amount>", String.valueOf(delay))));
+⋮----
+public void addMessage(CommandSender commandSender, List<String> args) {
+⋮----
+String message = String.join(" ", args.subList(2, args.size()));
+repeatingMilestone.addMessage(message);
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_MESSAGE_ADDED.getMessage());
+⋮----
+public void removeMessage(CommandSender commandSender, List<String> args) {
+⋮----
+repeatingMilestone.removeMessage(message);
+⋮----
+commandSender.sendMessage(Messages.REPEATING_MILESTONE_MESSAGE_REMOVED.getMessage());
+⋮----
+private Map<String, Integer> parseTime(String time) {
+Pattern pattern = Pattern.compile("(\\d+)([A-Za-z]+)");
+Matcher matcher = pattern.matcher(time);
+⋮----
+while (matcher.find()) {
+int value = Integer.parseInt(matcher.group(1));
+String unit = matcher.group(2);
+timeMap.put(unit, value);
+⋮----
+private long getTime(String time) {
+AtomicLong parsedTime = new AtomicLong();
+Map<String, Integer> timeMap = parseTime(time);
+timeMap.forEach((unit, value) -> {
+switch (unit.toLowerCase(Locale.ROOT)) {
+⋮----
+parsedTime.addAndGet(TimeUnit.SECONDS.toSeconds(value));
+⋮----
+parsedTime.addAndGet(TimeUnit.MINUTES.toSeconds(value));
+⋮----
+parsedTime.addAndGet(TimeUnit.HOURS.toSeconds(value));
+⋮----
+parsedTime.addAndGet(TimeUnit.DAYS.toSeconds(value));
+⋮----
+parsedTime.addAndGet(TimeUnit.DAYS.toSeconds(value * 7L));
+⋮----
+parsedTime.addAndGet(TimeUnit.DAYS.toSeconds(value * 30));
+⋮----
+parsedTime.addAndGet(TimeUnit.DAYS.toSeconds(value * 365L));
+⋮----
+return parsedTime.get();
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/Playtime.java">
+/**
+ * Tdrplaytime is the playtime plugin you need to track the time of your players
+ * and reward them for beeing online
+ */
+public class Playtime {
+⋮----
+/**
+     * Instance of playtime
+     */
+⋮----
+/**
+     * Instance of the JavaPlugin
+     */
+⋮----
+/**
+     * Cache of the PlaytimeUsers
+     */
+⋮----
+/**
+     * The selected storage method
+     */
+⋮----
+/**
+     * Cache of the Milestones
+     */
+⋮----
+/**
+     * Cache of the RepeatingMilestones
+     */
+⋮----
+/**
+     * Instance of the core
+     */
+⋮----
+/**
+     * Instance of the FileManager
+     */
+⋮----
+public void onEnable(JavaPlugin playTimePlugin) {
+⋮----
+this.fileManager = new FileManager(plugin);
+⋮----
+Settings.setupDefaults();
+Messages.setupDefaults();
+⋮----
+//set up the storage
+this.storage = getSelectedStorage();
+this.storage.setup();
+⋮----
+this.afkManager = new AFKManager();
+⋮----
+// Register the mc core
+mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
+if (Settings.UPDATE_CHECK.getValueAsBoolean()) {
+mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin", 60));
+⋮----
+mccore.registerCompleters();
+// Register the bstats
+new BStatsExtension().startBStats(playTimePlugin);
+⋮----
+// Register the placeholder api
+if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+new PlaceholderAPIExtension().register();
+⋮----
+// Load the messages
+this.storage.getMilestones().thenAccept(milestones -> this.milestones = milestones).join();
+getPlugin().getLogger().log(Level.INFO, "Loaded {0} milestones", Optional.of(this.milestones.size()));
+this.storage.getRepeatingMilestones().thenAccept(repeatingMilestones -> this.repeatingMilestones = repeatingMilestones).join();
+getPlugin().getLogger().log(Level.INFO, "Loaded {0} repeatingmilestones", Optional.of(this.repeatingMilestones.size()));
+⋮----
+for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+UUID playerUUID = onlinePlayer.getUniqueId();
+Playtime.getInstance().getStorage().loadUser(playerUUID).thenAccept(playtimeUser -> {
+⋮----
+playtimeUser = new PlaytimeUser(playerUUID.toString(), onlinePlayer.getName());
+Playtime.getInstance().getStorage().createUser(playtimeUser);
+⋮----
+Playtime.getInstance().getPlaytimeUsers().put(playerUUID, playtimeUser);
+⋮----
+CommandRegistry.getTabCompletable().put("milestone", commandSender ->
+this.milestones.stream().map(Milestone::getMilestoneName)
+.collect(Collectors.toSet())
+⋮----
+CommandRegistry.getTabCompletable().put("repeatingMilestone", commandSender ->
+this.repeatingMilestones.stream().map(RepeatingMilestone::getMilestoneName)
+⋮----
+public Storage getSelectedStorage() {
+String storageType = Settings.STORAGE_TYPE.getValueAsString().toLowerCase();
+⋮----
+return new Mongodb();
+⋮----
+return new Mysql();
+⋮----
+getPlugin().getLogger().log(Level.WARNING, "Yaml storage is not recommended. If you have a lot of players it can cause lag. Please use sqlLite, mysql or mongodb");
+return new Yaml();
+⋮----
+return new SqlLite();
+⋮----
+throw new StorageTypeNotFoundException("Postgresql is not supported yet");
+⋮----
+throw new StorageTypeNotFoundException("H2 is not supported yet");
+⋮----
+throw new StorageTypeNotFoundException("Storage type " + storageType + " not found");
+⋮----
+public void onDisable() {
+⋮----
+for (PlaytimeUser playtimeUser : playtimeUsers.values()) {
+storage.saveUser(playtimeUser);
+⋮----
+this.storage.stop();
+this.milestones.clear();
+this.repeatingMilestones.clear();
+Messages.getMessages().clear();
+⋮----
+/**
+     * Get the playtime user from the cache or load it from the storage
+     *
+     * @param uuid The uuid of the player
+     * @return The playtime user
+     */
+public Optional<PlaytimeUser> getPlaytimeUser(UUID uuid) {
+return Optional.of(playtimeUsers.get(uuid));
+⋮----
+/**
+     * Get a playtime user by name
+     *
+     * @param name The name of the player
+     * @return The playtime user if exist
+     */
+public Optional<PlaytimeUser> getPlaytimeUser(String name) {
+return playtimeUsers.values().stream().filter(item -> item.getName().equalsIgnoreCase(name)).findFirst();
+</file>
+
+<file path=".github/workflows/build-release-versions.yml">
+on: [release, workflow_dispatch]
+name: Build plugin for all platforms
+
+jobs:
+  build:
+    name: Build Plugin
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        downloadSource: [GITHUB, SPIGOT, HANGAR, MODRINTH, CURSE_FORGE]
+        java-version: [17] # Adjust if versions differ per platform
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java-version }}
+          java-package: jdk
+          architecture: x64
+      - name: Set downloadSource in plugin.yml
+        run: |
+          sed -i "s/downloadSource:.*/downloadSource: '${{ matrix.downloadSource }}'/" src/main/resources/plugin.yml
+          cat src/main/resources/plugin.yml
+      - name: Build with Maven
+        run: |
+          mvn install
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          echo "git_hash=$git_hash" >> $GITHUB_ENV
+          echo "artifactPath=$(pwd)/target" >> $GITHUB_ENV
+      - name: Extract Maven project version
+        id: project
+        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+      - name: Upload Plugin jar to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Plugin-${{ matrix.downloadSource }}.jar
+          path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
+
+  test-plugins:
+    name: Test Plugin
+    runs-on: ubuntu-latest
+
+    needs: build
+    strategy:
+      matrix:
+        downloadSource: [GITHUB, SPIGOT, HANGAR, MODRINTH, CURSE_FORGE]
+        runtime: ['paper', 'spigot']
+        version: [1.18.2, 1.19.4, 1.20.4]
+        include:
+          - version: 1.18.2
+            java-version: 17
+          - version: 1.19.4
+            java-version: 17
+          - version: 1.20.4
+            java-version: 17
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Plugin-${{ matrix.downloadSource }}.jar
+          path: ./plugin
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java-version }}
+          java-package: jdk
+          architecture: x64
+      - name: Test Plugin - ${{ matrix.downloadSource }} - ${{ matrix.version }}
+        uses:  gmitch215/TestMC@v2
+        with:
+          path: ./plugin/Plugin-${{ matrix.downloadSource }}.jar
+          runtime: ${{ matrix.runtime }}
+          version: ${{ matrix.version }}
+  update-realses :
+    name: Update Releases
+    runs-on: ubuntu-latest
+    needs: test-plugins
+    steps:
+      - name: Generate Commit Message List since last release
+        id: commit_messages
+        run: |
+          last_tag=$(git describe --tags --abbrev=0)
+          echo "Last release tag: $last_tag"
+          commit_messages=$(git log $last_tag..HEAD --pretty=format:"- %s (%h)")
+          echo "commit_messages=$commit_messages" >> $GITHUB_ENV
+      - name: Create Pre-release and Upload Asset
+        uses: actions/github-script@v7
+        if: github.event_name == 'release'
+        with:
+          script: |
+            const fs = require('fs');
+            const path = `${process.env.artifactPath}/TDRPlaytime-${{ steps.project.outputs.version }}.jar`;
+
+            // Generate the release body with commit messages
+            const body = `### Changes since last release:\n${process.env.commit_messages}`;
+
+            // get the realease
+            const { data: release } = await github.rest.repos.getLatestRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            release.body = release.body + body;
+            
+            // update release
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              tag_name: release.tag_name,
+              name: release.name,
+              body: release.body,
+              draft: false,
+              prerelease: false
+            });
+</file>
+
+<file path="src/main/java/nl/thedutchruben/playtime/core/translations/Messages.java">
+// Playtime history messages
+⋮----
+/**
+     * Set up the default messages
+     */
+public static void setupDefaults() {
+YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("translations.yml").get();
+for (Messages value : Messages.values()) {
+if (!file.contains(value.path)) {
+file.set(value.path, value.fallBack);
+⋮----
+Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").save();
+⋮----
+/**
+     * Get the message from the path
+     *
+     * @param replacements The replacements to replace in the message
+     * @return The message
+     */
+public String getMessage(Replacement... replacements) {
+String message = messages.computeIfAbsent(path, a -> {
+YamlConfiguration file = Playtime.getInstance().getFileManager().getConfig("lang/translations.yml").get();
+return file.getString(path, fallBack);
+⋮----
+message = MessageUtil.translateHexColorCodes("<", ">", ChatColor.translateAlternateColorCodes('&', message));
+⋮----
+message = message.replace(replacement.getFrom(), replacement.getTo());
+</file>
+
+<file path="pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>nl.thedutchruben</groupId>
+    <artifactId>playtime</artifactId>
+    <version>2.0.0-BETA</version>
+    <packaging>jar</packaging>
+
+    <name>TDRPlaytime</name>
+
+    <description>Playtime plugin</description>
+    <properties>
+        <java.version>1.9</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <finalName>TDRPlaytime-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.2</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                    <encoding>UTF-8</encoding>
+                    <show>protected</show>
+                    <links>
+                        <link>https://docs.oracle.com/en/java/javase/11/docs/api/</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>nl.thedutchruben.playtime.bstats</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.38</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <!-- Configure Surefire for JUnit 5 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+            <!-- JaCoCo for code coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.13</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>thedutchruben-repo</id>
+            <url>https://maven.thedutchservers.com/releases</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>CodeMC</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
+            <id>jeff-media-public</id>
+            <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
+        </repository>
+        <repository>
+            <id>essentialsx-releases</id>
+            <name>EssentialsX API Repository</name>
+            <url>https://repo.essentialsx.net/releases</url>
+        </repository>
+        <repository>
+            <id>paper-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>AlessioDP</id>
+            <url>https://repo.alessiodp.com/releases/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.byteflux</groupId>
+            <artifactId>libby-bukkit</artifactId>
+            <version>1.3.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>6.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.21.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>nl.thedutchruben</groupId>
+            <artifactId>mccore</artifactId>
+            <version>1.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.essentialsx</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.20.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+            <version>5.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.14.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.seeseemelk</groupId>
+            <artifactId>MockBukkit-v1.20</artifactId>
+            <version>3.93.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.46.1.2</version>
+        </dependency>
+    </dependencies>
+</project>
+</file>
+
+<file path=".github/workflows/pre-release.yml">
+name: Create/Update Pre-release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  pre_release:
+    name: Create/Update Pre-release
+    concurrency:
+      group: ${{ github.repository }}-pre-release
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}-test-server
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+          java-package: jdk
+          architecture: x64
+      - name: Build with Maven
+        run: |
+          mvn install
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          echo "git_hash=$git_hash" >> $GITHUB_ENV
+          echo "artifactPath=$(pwd)/target" >> $GITHUB_ENV
+      - name: Extract Maven project version
+        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+        id: project
+      - name: Upload Plugin jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: Plugin-${{ env.snapshotVersion }}-${{ env.git_hash }}.jar
+          path: ${{ env.artifactPath }}/TDRPlaytime-${{ steps.project.outputs.version }}.jar
+      - name: Sleep for 5 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '5s'
+      - name: Generate Commit Message List
+        id: commit_messages
+        run: |
+          last_tag=$(git describe --tags --abbrev=0)
+          echo "Last release tag: $last_tag"
+          commit_messages=$(git log $last_tag..HEAD --pretty=format:"- %s (%h)" | tr '\n' '|' )
+          echo "commit_messages=$commit_messages" >> $GITHUB_ENV
+      - name: Create Pre-release and Upload Asset
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = `${process.env.artifactPath}/TDRPlaytime-${{ steps.project.outputs.version }}.jar`;
+            
+            // Decode commit messages
+            const commitMessages = process.env.commit_messages.replace(/\|/g, '\n');
+            const body = `### Changes since last release:\n${commitMessages}`;
+            
+            // Create the release
+            const { data: release } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: `pre-release-${process.env.git_hash}`,
+              target_commitish: context.sha,
+              name: `Pre-release ${process.env.git_hash}`,
+              body: body,
+              draft: false,
+              prerelease: true
+            });
+            
+            console.log(`Created release: ${release.id}`);
+            
+            // Upload the JAR file as an asset
+            const { data: asset } = await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              name: `TDRPlaytime-${process.env.git_hash}.jar`,
+              data: fs.readFileSync(path),
+              headers: {
+                'content-type': 'application/java-archive',
+                'content-length': fs.statSync(path).size
+              }
+            });
+            
+            console.log(`Uploaded asset: ${asset.name}`);
+</file>
+
+<file path=".github/workflows/comment-on-pr.yml">
+name: Comment on Pull Request
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Set up Java and Maven
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    # Build the Maven project
+    - name: Build with Maven
+      run: mvn clean package
+
+    # Upload build artifacts
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: maven-build
+        path: target/*
+
+  comment:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Post comment on PR
+      if: ${{ needs.build.result == 'success' || needs.build.result == 'failure' }}
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const status = '${{ needs.build.result }}';
+          const artifactUrl = status === 'success' ? 'Artifacts were uploaded successfully.' : 'No artifacts were uploaded.';
+          const commentBody = `**Build Status:** ${status.toUpperCase()}\n\n${artifactUrl}`;
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number
+          });
+
+          const existingComment = comments.find(comment => comment.body.includes('**Build Status:**'));
+
+          if (existingComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: existingComment.id,
+              body: commentBody
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody
+            });
+          }
+</file>
+
+</files>
