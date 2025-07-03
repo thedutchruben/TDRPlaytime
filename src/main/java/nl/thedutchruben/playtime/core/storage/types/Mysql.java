@@ -62,7 +62,7 @@ public class Mysql extends Storage {
             }
         }
 
-        MigrationManager migrationManager = new MigrationManager(connection, false);
+        MigrationManager migrationManager = new MigrationManager(connection, true);
         migrationManager.runMigrations();
 
         return ds.isRunning();

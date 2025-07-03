@@ -3,6 +3,8 @@ package nl.thedutchruben.playtime.modules.afk.listeners;
 import nl.thedutchruben.mccore.spigot.listeners.TDRListener;
 import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.afk.AFKManager;
+import nl.thedutchruben.playtime.core.events.player.PlaytimePlayerLoadedEvent;
+import nl.thedutchruben.playtime.core.events.player.PlaytimePlayerUnLoadedEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,15 +15,15 @@ import org.bukkit.event.player.*;
 public class AFKActivityListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlaytimePlayerLoadedEvent event) {
         // Reset activity time when player joins
-        AFKManager.getInstance().recordActivity(event.getPlayer());
+        AFKManager.getInstance().recordActivity(event.getUser().getBukkitPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    public void onPlayerQuit(PlaytimePlayerUnLoadedEvent event) {
         // Remove player from AFK tracking when they quit
-        AFKManager.getInstance().removePlayer(event.getPlayer().getUniqueId());
+        AFKManager.getInstance().removePlayer(event.getUser().getUUID());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -101,7 +101,7 @@ public class Playtime {
             mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin", 60));
         }
 
-        mccore.registerCompleters();
+        mccore.registerTabCompletions();
         // Register the bstats
         new BStatsExtension().startBStats(playTimePlugin);
 

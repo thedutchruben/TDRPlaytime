@@ -27,30 +27,31 @@ public class UpdatePlayTimeRunnable implements Runnable {
      */
     @Override
     public void run() {
-        // Update AFK statuses first
-        AFKManager.getInstance().checkAllPlayers();
+        // Run AFK checks on the main thread since they trigger synchronous events
+        Bukkit.getScheduler().runTask(Playtime.getPlugin(), () -> {
+            // Update AFK statuses first
+            AFKManager.getInstance().checkAllPlayers();
 
-        // Check if any players need to be kicked for being AFK too long
-        if (Settings.AFK_KICK_ENABLED.getValueAsBoolean()) {
-            long kickThresholdMillis = Settings.AFK_KICK_THRESHOLD_MINUTES.getValueAsInteger() * 60 * 1000;
-            String kickMessage = Settings.AFK_KICK_MESSAGE.getValueAsString();
+            // Check if any players need to be kicked for being AFK too long
+            if (Settings.AFK_KICK_ENABLED.getValueAsBoolean()) {
+                long kickThresholdMillis = Settings.AFK_KICK_THRESHOLD_MINUTES.getValueAsInteger() * 60 * 1000;
+                String kickMessage = Settings.AFK_KICK_MESSAGE.getValueAsString();
 
-            for (PlaytimeUser playtimeUser : Playtime.getInstance().getPlaytimeUsers().values()) {
-                if (playtimeUser.isAfk()) {
-                    long afkDuration = System.currentTimeMillis() - playtimeUser.getAfkSince();
-                    if (afkDuration >= kickThresholdMillis) {
-                        Player player = playtimeUser.getBukkitPlayer();
-                        if (player != null && !player.hasPermission("playtime.afk.kickexempt")) {
-                            Bukkit.getScheduler().runTask(Playtime.getPlugin(), () ->
-                                    player.kickPlayer(kickMessage)
-                            );
+                for (PlaytimeUser playtimeUser : Playtime.getInstance().getPlaytimeUsers().values()) {
+                    if (playtimeUser.isAfk()) {
+                        long afkDuration = System.currentTimeMillis() - playtimeUser.getAfkSince();
+                        if (afkDuration >= kickThresholdMillis) {
+                            Player player = playtimeUser.getBukkitPlayer();
+                            if (player != null && !player.hasPermission("playtime.afk.kickexempt")) {
+                                player.kickPlayer(kickMessage);
+                            }
                         }
                     }
                 }
             }
-        }
+        });
 
-        // Update playtimes
+        // Update playtimes (can remain async)
         for (PlaytimeUser playtimeUser : Playtime.getInstance().getPlaytimeUsers().values()) {
             playtimeUser.updatePlaytime();
         }

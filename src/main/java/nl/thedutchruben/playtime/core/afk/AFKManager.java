@@ -88,7 +88,9 @@ public class AFKManager {
         if (player != null) {
             // Fire AFK event
             PlayerAFKEvent event = new PlayerAFKEvent(user, false);
-            Bukkit.getPluginManager().callEvent(event);
+            Playtime.getPlugin().getServer().getScheduler().runTask(Playtime.getPlugin(), () -> {
+                Bukkit.getPluginManager().callEvent(event);
+            });
 
             // Broadcast message if enabled
             if (Settings.AFK_BROADCAST_MESSAGES.getValueAsBoolean()) {
@@ -119,7 +121,9 @@ public class AFKManager {
         if (player != null) {
             // Fire return from AFK event
             PlayerReturnFromAFKEvent event = new PlayerReturnFromAFKEvent(user, false, afkDuration);
-            Bukkit.getPluginManager().callEvent(event);
+            Playtime.getPlugin().getServer().getScheduler().runTask(Playtime.getPlugin(), () -> {
+                Bukkit.getPluginManager().callEvent(event);
+            });
 
             // Broadcast message if enabled
             if (Settings.AFK_BROADCAST_MESSAGES.getValueAsBoolean()) {
