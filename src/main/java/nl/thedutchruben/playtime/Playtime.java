@@ -4,6 +4,7 @@ import lombok.Getter;
 import nl.thedutchruben.mccore.Mccore;
 import nl.thedutchruben.mccore.config.UpdateCheckerConfig;
 import nl.thedutchruben.mccore.spigot.commands.CommandRegistry;
+import nl.thedutchruben.mccore.spigot.ui.GUIManager;
 import nl.thedutchruben.mccore.utils.config.FileManager;
 import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.afk.AFKManager;
@@ -97,8 +98,12 @@ public class Playtime {
 
         // Register the mc core
         mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
+
+//        Temporary fix till loading to mccore initialization is fixed
+        GUIManager.initialize(plugin);
+
         if (Settings.UPDATE_CHECK.getValueAsBoolean()) {
-            mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.admin", 60));
+            mccore.startUpdateChecker(new UpdateCheckerConfig("tdrplaytime.updatecheck", 60));
         }
 
         mccore.registerTabCompletions();

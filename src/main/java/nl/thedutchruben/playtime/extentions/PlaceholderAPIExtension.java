@@ -7,6 +7,7 @@ import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class PlaceholderAPIExtension extends PlaceholderExpansion {
     }
 
     @Override
-    public List<String> getPlaceholders() {
+    public @NotNull List<String> getPlaceholders() {
         List<String> placeholders = new ArrayList<>();
         placeholders.add("%tdrplaytime_time%");
         placeholders.add("%tdrplaytime_time_days_number%");

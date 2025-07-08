@@ -33,5 +33,7 @@ public class PlayTimePlugin extends JavaPlugin {
         if (playtime != null) {
             playtime.onDisable();
         }
+
+        playtime = null;
     }
 }
