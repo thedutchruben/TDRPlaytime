@@ -49,21 +49,20 @@ public class Mysql extends Storage {
         HikariConfig config = getHikariConfig();
         ds = new HikariDataSource(config);
 
-        try {
-            this.connection = ds.getConnection();
+        try (Connection connection = ds.getConnection()) {
+            for (String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), true)) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                } catch (SQLException sqlException) {
+                    Playtime.getPlugin().getLogger().severe("Error while creating table in database: " + sqlException.getMessage());
+                }
+            }
+
+            MigrationManager migrationManager = new MigrationManager(connection, true);
+            migrationManager.runMigrations();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for (String statement : SqlStatements.getStatements(Settings.STORAGE_MYSQL_PREFIX.getValueAsString(), true)) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
-                preparedStatement.executeUpdate();
-            } catch (SQLException sqlException) {
-                Playtime.getPlugin().getLogger().severe("Error while creating table in database: " + sqlException.getMessage());
-            }
-        }
-
-        MigrationManager migrationManager = new MigrationManager(connection, true);
-        migrationManager.runMigrations();
 
         return ds.isRunning();
     }
@@ -382,7 +381,7 @@ public class Mysql extends Storage {
     public CompletableFuture<Boolean> saveRepeatingMilestone(RepeatingMilestone repeatingMilestone) {
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection
-                    .prepareStatement("INSERT INTO " + getTableName("repeating_milestones") + "`(`name`, `data`) VALUES (?,?)")) {
+                    .prepareStatement("INSERT INTO " + getTableName("repeating_milestones") + " (`name`, `data`) VALUES (?,?)")) {
                 preparedStatement.setString(1, repeatingMilestone.getMilestoneName());
                 preparedStatement.setString(2, getGson().toJson(repeatingMilestone));
                 preparedStatement.executeUpdate();
