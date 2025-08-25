@@ -1,9 +1,12 @@
-package nl.thedutchruben.playtime.core.gui;
+package nl.thedutchruben.playtime.modules.milestones.gui;
 
 import nl.thedutchruben.mccore.spigot.ui.GUI;
 import nl.thedutchruben.mccore.spigot.ui.GUIItem;
 import nl.thedutchruben.mccore.utils.item.ItemBuilder;
+import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneUpdateEvent;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,9 +65,12 @@ public class MilestoneCommandsGui {
                         .lore(lore)
                         .build(), (event -> {
                     if (event.isRightClick()) {
+                        String removedCommand = milestone.getCommands().get(index);
                         milestone.removeCommand(index);
+                        Playtime.getInstance().getStorage().updateMilestone(milestone);
+                        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
                         buildGui(); // Refresh the GUI
-                        event.getWhoClicked().sendMessage(ChatColor.GREEN + "Command removed!");
+                        event.getWhoClicked().sendMessage(ChatColor.GREEN + "Command removed: " + ChatColor.GRAY + removedCommand);
                     }
                 }));
 
@@ -89,8 +95,43 @@ public class MilestoneCommandsGui {
                 .lore(ChatColor.GRAY + "%player_uuid% - Player's UUID")
                 .build(), (event -> {
             event.getWhoClicked().closeInventory();
-            event.getWhoClicked().sendMessage(ChatColor.YELLOW + "Type the command to add in chat (without /):");
-            // TODO: Add chat listener for command input
+            Player player = (Player) event.getWhoClicked();
+            
+            ChatInputManager.getInstance().requestInput(player,
+                "Enter the command to add (without /):\n" +
+                ChatColor.GRAY + "Available placeholders:\n" +
+                ChatColor.GRAY + "%playername% or %player_name% - Player's name\n" +
+                ChatColor.GRAY + "%playeruuid% or %player_uuid% - Player's UUID\n" +
+                ChatColor.GRAY + "Example: give %playername% diamond 5",
+                parentGui,
+                (p, input) -> {
+                    if (input.isEmpty()) {
+                        p.sendMessage(ChatColor.RED + "Command cannot be empty!");
+                        this.open(p);
+                        return;
+                    }
+                    
+                    // Remove leading slash if present
+                    if (input.startsWith("/")) {
+                        input = input.substring(1);
+                    }
+                    
+                    // Check if command already exists
+                    if (milestone.getCommands().contains(input)) {
+                        p.sendMessage(ChatColor.RED + "This command already exists in the milestone!");
+                        this.open(p);
+                        return;
+                    }
+                    
+                    milestone.addCommand(input);
+                    Playtime.getInstance().getStorage().updateMilestone(milestone);
+                    Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
+                    
+                    p.sendMessage(ChatColor.GREEN + "Command added: " + ChatColor.GRAY + input);
+                    this.buildGui(); // Refresh to show new command
+                    this.open(p);
+                }
+            );
         }));
 
         // Navigation buttons

@@ -1,9 +1,12 @@
-package nl.thedutchruben.playtime.core.gui;
+package nl.thedutchruben.playtime.modules.milestones.gui;
 
 import nl.thedutchruben.mccore.spigot.ui.GUI;
 import nl.thedutchruben.mccore.spigot.ui.GUIItem;
 import nl.thedutchruben.mccore.utils.item.ItemBuilder;
+import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneUpdateEvent;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -68,7 +71,10 @@ public class MilestoneMessagesGui {
                         .lore(lore)
                         .build(), (event -> {
                     if (event.isRightClick()) {
+                        String removedMessage = milestone.getMessages().get(index);
                         milestone.removeMessage(index);
+                        Playtime.getInstance().getStorage().updateMilestone(milestone);
+                        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
                         buildGui(); // Refresh the GUI
                         event.getWhoClicked().sendMessage(ChatColor.GREEN + "Message removed!");
                     }
@@ -93,10 +99,39 @@ public class MilestoneMessagesGui {
                 .lore(ChatColor.GRAY + "Hex colors: <#FF0000>")
                 .build(), (event -> {
             event.getWhoClicked().closeInventory();
-            event.getWhoClicked().sendMessage(ChatColor.YELLOW + "Type the message to add in chat:");
-            event.getWhoClicked().sendMessage(ChatColor.GRAY + "You can use color codes like &a, &b, &c, etc.");
-            event.getWhoClicked().sendMessage(ChatColor.GRAY + "You can also use hex colors like <#FF0000>");
-            // TODO: Add chat listener for message input
+            Player player = (Player) event.getWhoClicked();
+            
+            ChatInputManager.getInstance().requestInput(player,
+                "Enter the message to add:\n" +
+                ChatColor.GRAY + "Supports color codes: &a, &b, &c, etc.\n" +
+                ChatColor.GRAY + "Supports hex colors: <#FF0000>\n" +
+                ChatColor.GRAY + "Example: &aCongratulations! You've reached a milestone!",
+                parentGui,
+                (p, input) -> {
+                    if (input.isEmpty()) {
+                        p.sendMessage(ChatColor.RED + "Message cannot be empty!");
+                        this.open(p);
+                        return;
+                    }
+                    
+                    // Check if message already exists
+                    if (milestone.getMessages().contains(input)) {
+                        p.sendMessage(ChatColor.RED + "This message already exists in the milestone!");
+                        this.open(p);
+                        return;
+                    }
+                    
+                    milestone.addMessage(input);
+                    Playtime.getInstance().getStorage().updateMilestone(milestone);
+                    Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
+                    
+                    // Preview the message with color codes applied
+                    String coloredMessage = ChatColor.translateAlternateColorCodes('&', input);
+                    p.sendMessage(ChatColor.GREEN + "Message added: " + coloredMessage);
+                    this.buildGui(); // Refresh to show new message
+                    this.open(p);
+                }
+            );
         }));
 
         // Navigation buttons

@@ -35,15 +35,15 @@ public class RepeatingMilestoneCommand {
     @SubCommand(
             subCommand = "create",
             description = "Create a new reapeating milestone",
-            usage = "<name> <time>",
+            usage = "<n> <time>",
             permission = "playtime.repeatingmilestone.create",
             console = true,
-            minParams = 3,
-            maxParams = 3)
+            minParams = 2,
+            maxParams = 2)
     public void create(CommandSender commandSender, List<String> args) {
         RepeatingMilestone repeatingMilestone = new RepeatingMilestone();
-        repeatingMilestone.setMilestoneName(args.get(1));
-        long time = getTime(args.get(2));
+        repeatingMilestone.setMilestoneName(args.get(0));
+        long time = getTime(args.get(1));
         repeatingMilestone.setOnlineTime(time);
         Playtime.getInstance().getStorage().saveRepeatingMilestone(repeatingMilestone).thenAcceptAsync(aBoolean -> {
             if (aBoolean) {
@@ -60,12 +60,12 @@ public class RepeatingMilestoneCommand {
             description = "Delete a repeating milestone",
             usage = "<repeatingMilestone>",
             permission = "playtime.repeatingmilestone.delete",
-            minParams = 2,
-            maxParams = 2,
+            minParams = 1,
+            maxParams = 1,
             console = true
     )
     public void delete(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone milestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone milestone = RepeatingMilestone.get(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -108,12 +108,12 @@ public class RepeatingMilestoneCommand {
         description = "Get info about a milestone",
         usage = "<repeatingMilestone>",
         permission = "playtime.repeatingmilestone.info",
-        minParams = 2,
-        maxParams = 2,
+        minParams = 1,
+        maxParams = 1,
         console = true
     )
     public void info(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -138,11 +138,11 @@ public class RepeatingMilestoneCommand {
         description = "Execute the rewards of a repeatingmilestone on yourself",
         usage = "<repeatingMilestone>",
         permission = "playtime.repeatingmilestone.test",
-        minParams = 2,
-        maxParams = 2
+        minParams = 1,
+        maxParams = 1
     )
     public void test(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -156,12 +156,12 @@ public class RepeatingMilestoneCommand {
         description = "Add the item in your main hand to the milestone",
         usage = "<repeatingMilestone>",
         permission = "playtime.repeatingmilestone.addItemToMilestone",
-        minParams = 2,
-        maxParams = 2
+        minParams = 1,
+        maxParams = 1
     )
     public void addItemToMilestone(CommandSender commandSender, List<String> args) {
         Player player = (Player) commandSender;
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
 
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
@@ -179,19 +179,19 @@ public class RepeatingMilestoneCommand {
         description = "Add a command to the milestone",
         usage = "<repeatingMilestone> <command>",
         permission = "playtime.repeatingmilestone.addCommand",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void addCommandToMilestone(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
 
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
 
-        String command = String.join(" ", args.subList(2, args.size()));
+        String command = String.join(" ", args.subList(1, args.size()));
         repeatingMilestone.addCommand(command);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_COMMAND_ADDED.getMessage());
@@ -203,19 +203,19 @@ public class RepeatingMilestoneCommand {
         description = "Remove a command from the milestone",
         usage = "<repeatingMilestone> <command>",
         permission = "playtime.repeatingmilestone.removeCommand",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void removeCommandFromMilestone(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
 
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
 
-        String command = String.join(" ", args.subList(2, args.size()));
+        String command = String.join(" ", args.subList(1, args.size()));
         repeatingMilestone.removeCommand(command);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_ITEM_REMOVED.getMessage());
@@ -227,12 +227,12 @@ public class RepeatingMilestoneCommand {
         description = "Toggle the firework for a milestone",
         usage = "<repeatingMilestone>",
         permission = "playtime.repeatingmilestone.togglefirework",
-        minParams = 2,
-        maxParams = 2,
+        minParams = 1,
+        maxParams = 1,
         console = true
     )
     public void toggleFirework(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
 
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
@@ -250,19 +250,19 @@ public class RepeatingMilestoneCommand {
         description = "Set the amount of firework for a milestone",
         usage = "<repeatingMilestone> <amount>",
         permission = "playtime.repeatingmilestone.setfireworkamount",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void setFireworkAmount(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
 
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
 
-        int amount = Integer.parseInt(args.get(2));
+        int amount = Integer.parseInt(args.get(1));
         repeatingMilestone.setFireworkShowAmount(amount);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_SET_FIREWORK_AMOUNT.getMessage(new Replacement("<amount>", String.valueOf(amount))));
@@ -274,17 +274,17 @@ public class RepeatingMilestoneCommand {
         description = "Set the delay between fireworks for a milestone",
         usage = "<repeatingMilestone> <time in seconds>",
         permission = "playtime.repeatingmilestone.setfireworkdelay",
-        minParams = 4,
-        maxParams = 4,
+        minParams = 3,
+        maxParams = 3,
         console = true
     )
     public void setFireworkDelay(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        int delay = Integer.parseInt(args.get(2));
+        int delay = Integer.parseInt(args.get(1));
         repeatingMilestone.setFireworkShowSecondsBetween(delay);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_SET_FIREWORK_DELAY.getMessage(new Replacement("<amount>", String.valueOf(delay))));
@@ -296,17 +296,17 @@ public class RepeatingMilestoneCommand {
         description = "Add a message to a milestone",
         usage = "<repeatingMilestone> <message>",
         permission = "playtime.repeatingmilestone.addMessage",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void addMessage(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String message = String.join(" ", args.subList(2, args.size()));
+        String message = String.join(" ", args.subList(1, args.size()));
         repeatingMilestone.addMessage(message);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_MESSAGE_ADDED.getMessage());
@@ -318,17 +318,17 @@ public class RepeatingMilestoneCommand {
         description = "Remove a message from a milestone",
         usage = "<repeatingMilestone> <message>",
         permission = "playtime.repeatingmilestone.removeMessage",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void removeMessage(CommandSender commandSender, List<String> args) {
-        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(1));
+        RepeatingMilestone repeatingMilestone = RepeatingMilestone.get(args.get(0));
         if (repeatingMilestone == null) {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String message = String.join(" ", args.subList(2, args.size()));
+        String message = String.join(" ", args.subList(1, args.size()));
         repeatingMilestone.removeMessage(message);
         Playtime.getInstance().getStorage().updateRepeatingMilestone(repeatingMilestone);
         commandSender.sendMessage(Messages.REPEATING_MILESTONE_MESSAGE_REMOVED.getMessage());

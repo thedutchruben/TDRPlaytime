@@ -66,6 +66,7 @@ public enum Messages {
     PLAYER_ACTIVE_TIME("afk.player_active_time", "&8[&6PlayTime&8] &7%player%'s active playtime is %D% day(s) %H% hour(s) %M% minute(s) %S% second(s)"),
     PLAYER_MANUALLY_SET_AFK("afk.player_manually_set_afk", "&8[&6PlayTime&8] &7You have been marked as AFK"),
     PLAYER_MANUALLY_SET_NOT_AFK("afk.player_manually_set_not_afk", "&8[&6PlayTime&8] &7You are no longer AFK"),
+    AFK_KICK_MESSAGE ("afk.kick_message", "&cYou have been kicked for being AFK too long! Please rejoin to continue playing.")
     ;
 
     @Getter

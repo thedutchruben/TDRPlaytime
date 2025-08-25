@@ -42,5 +42,6 @@ public class BStatsExtension {
         metrics.addCustomChart(new SimplePie("uses_milestones", () -> String.valueOf(Playtime.getInstance().getMilestones().size() > 1)));
         metrics.addCustomChart(new SimplePie("uses_repeating_milestones", () -> String.valueOf(Playtime.getInstance().getRepeatingMilestones().size() > 1)));
         metrics.addCustomChart(new SimplePie("count_afk_time", () -> String.valueOf(Settings.AFK_COUNT_TIME.getValue())));
+        metrics.addCustomChart(new SimplePie("afk_enabled", () -> String.valueOf(Settings.AFK_ENABLED.getValue())));
     }
 }

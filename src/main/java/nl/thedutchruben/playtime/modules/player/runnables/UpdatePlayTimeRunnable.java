@@ -5,6 +5,7 @@ import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.afk.AFKManager;
 import nl.thedutchruben.playtime.core.objects.PlaytimeUser;
+import nl.thedutchruben.playtime.core.translations.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -35,7 +36,7 @@ public class UpdatePlayTimeRunnable implements Runnable {
             // Check if any players need to be kicked for being AFK too long
             if (Settings.AFK_KICK_ENABLED.getValueAsBoolean()) {
                 long kickThresholdMillis = Settings.AFK_KICK_THRESHOLD_MINUTES.getValueAsInteger() * 60 * 1000;
-                String kickMessage = Settings.AFK_KICK_MESSAGE.getValueAsString();
+                String kickMessage = Messages.AFK_KICK_MESSAGE.getMessage();
 
                 for (PlaytimeUser playtimeUser : Playtime.getInstance().getPlaytimeUsers().values()) {
                     if (playtimeUser.isAfk()) {

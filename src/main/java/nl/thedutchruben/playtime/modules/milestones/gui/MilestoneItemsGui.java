@@ -1,9 +1,12 @@
-package nl.thedutchruben.playtime.core.gui;
+package nl.thedutchruben.playtime.modules.milestones.gui;
 
 import nl.thedutchruben.mccore.spigot.ui.GUI;
 import nl.thedutchruben.mccore.spigot.ui.GUIItem;
 import nl.thedutchruben.mccore.utils.item.ItemBuilder;
+import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneUpdateEvent;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,7 +65,10 @@ public class MilestoneItemsGui {
                 gui = gui.setItem(slot, builder.build(), (event -> {
                     if (event.isRightClick()) {
                         milestone.removeItemStack(index);
+                        Playtime.getInstance().getStorage().updateMilestone(milestone);
+                        Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
                         buildGui(); // Refresh the GUI
+                        event.getWhoClicked().sendMessage(ChatColor.GREEN + "Item removed from milestone!");
                     }
                 }));
 
@@ -86,6 +92,8 @@ public class MilestoneItemsGui {
 
             if (heldItem != null && heldItem.getType() != Material.AIR) {
                 milestone.addItemStack(heldItem.clone());
+                Playtime.getInstance().getStorage().updateMilestone(milestone);
+                Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
                 player.sendMessage(ChatColor.GREEN + "Item added to milestone!");
                 buildGui(); // Refresh the GUI
             } else {

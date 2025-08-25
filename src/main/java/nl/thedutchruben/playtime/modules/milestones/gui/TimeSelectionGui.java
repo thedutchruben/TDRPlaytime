@@ -1,9 +1,12 @@
-package nl.thedutchruben.playtime.core.gui;
+package nl.thedutchruben.playtime.modules.milestones.gui;
 
 import nl.thedutchruben.mccore.spigot.ui.GUI;
 import nl.thedutchruben.mccore.spigot.ui.GUIItem;
 import nl.thedutchruben.mccore.utils.item.ItemBuilder;
+import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneUpdateEvent;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -232,6 +235,10 @@ public class TimeSelectionGui {
             // Convert back to the format expected by milestone (hours with decimal for minutes)
             double totalHours = selectedHours + (selectedMinutes / 60.0);
             milestone.setOnlineTime((long) Math.ceil(totalHours)); // Round up to ensure we don't lose precision
+
+            // Save to storage
+            Playtime.getInstance().getStorage().updateMilestone(milestone);
+            Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
 
             event.getWhoClicked().sendMessage(ChatColor.GREEN + "Time set to " + formatTime(selectedHours, selectedMinutes));
             parentGui.refresh();

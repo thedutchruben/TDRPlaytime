@@ -29,6 +29,7 @@ public enum Settings {
     STORAGE_MONGO_COLLECTION("mongo.collection", "playtime", 1.0, ConfigFiles.STORAGE),
 
     AFK_COUNT_TIME("settings.afk.countAfkTime", true, 1.0, ConfigFiles.CONFIG),
+    AFK_ENABLED("settings.afk.enabled", true, 1.0, ConfigFiles.CONFIG),
     AFK_USE_ESSENTIALS_API("settings.afk.useEssentialsApi", false, 1.0, ConfigFiles.CONFIG),
     AFK_THRESHOLD_MINUTES("settings.afk.thresholdMinutes", 5, 1.0, ConfigFiles.CONFIG),
     AFK_BROADCAST_MESSAGES("settings.afk.broadcastMessages", true, 1.0, ConfigFiles.CONFIG),

@@ -1,9 +1,12 @@
-package nl.thedutchruben.playtime.core.gui;
+package nl.thedutchruben.playtime.modules.milestones.gui;
 
 import nl.thedutchruben.mccore.spigot.ui.GUI;
 import nl.thedutchruben.mccore.spigot.ui.GUIItem;
 import nl.thedutchruben.mccore.utils.item.ItemBuilder;
+import nl.thedutchruben.playtime.Playtime;
+import nl.thedutchruben.playtime.core.events.milestone.MilestoneUpdateEvent;
 import nl.thedutchruben.playtime.core.objects.Milestone;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -37,8 +40,37 @@ public class MilestoneInfoGui {
                 .lore(ChatColor.GRAY + "Click to edit")
                 .build(), (event -> {
             event.getWhoClicked().closeInventory();
-            event.getWhoClicked().sendMessage(ChatColor.YELLOW + "Type the new milestone name in chat:");
-            // TODO: Add chat listener for name editing
+            Player player = (Player) event.getWhoClicked();
+            
+            ChatInputManager.getInstance().requestInput(player, 
+                "Enter the new milestone name:", 
+                this, 
+                (p, input) -> {
+                    if (input.isEmpty()) {
+                        p.sendMessage(ChatColor.RED + "Milestone name cannot be empty!");
+                        this.open(p);
+                        return;
+                    }
+                    
+                    // Check if milestone name already exists
+                    if (Milestone.getMilestone(input) != null && !input.equals(milestone.getMilestoneName())) {
+                        p.sendMessage(ChatColor.RED + "A milestone with that name already exists!");
+                        this.open(p);
+                        return;
+                    }
+                    
+                    String oldName = milestone.getMilestoneName();
+                    milestone.setMilestoneName(input);
+                    
+                    // Save to storage
+                    Playtime.getInstance().getStorage().updateMilestone(milestone);
+                    Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
+                    
+                    p.sendMessage(ChatColor.GREEN + "Milestone name changed from '" + oldName + "' to '" + input + "'");
+                    this.refresh();
+                    this.open(p);
+                }
+            );
         }));
 
         // Online Time
@@ -95,6 +127,8 @@ public class MilestoneInfoGui {
                 .lore(ChatColor.GRAY + "Click to toggle")
                 .build(), (event -> {
             milestone.setFireworkShow(!milestone.isFireworkShow());
+            Playtime.getInstance().getStorage().updateMilestone(milestone);
+            Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
             buildGui(); // Rebuild to update display
         }));
 
@@ -117,6 +151,8 @@ public class MilestoneInfoGui {
                 }
                 int newAmount = Math.max(1, milestone.getFireworkShowAmount() + change);
                 milestone.setFireworkShowAmount(newAmount);
+                Playtime.getInstance().getStorage().updateMilestone(milestone);
+                Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
                 buildGui(); // Rebuild to update display
             }));
 
@@ -138,6 +174,8 @@ public class MilestoneInfoGui {
                 }
                 int newDelay = Math.max(0, milestone.getFireworkShowSecondsBetween() + change);
                 milestone.setFireworkShowSecondsBetween(newDelay);
+                Playtime.getInstance().getStorage().updateMilestone(milestone);
+                Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
                 buildGui(); // Rebuild to update display
             }));
         }
@@ -147,9 +185,12 @@ public class MilestoneInfoGui {
                 .displayname(ChatColor.GREEN + "Save & Exit")
                 .lore(ChatColor.GRAY + "Click to save changes and close")
                 .build(), (event -> {
+            // Final save to ensure all changes are persisted
+            Playtime.getInstance().getStorage().updateMilestone(milestone);
+            Bukkit.getPluginManager().callEvent(new MilestoneUpdateEvent(milestone));
+            
             event.getWhoClicked().closeInventory();
-            event.getWhoClicked().sendMessage(ChatColor.GREEN + "Milestone saved successfully!");
-            // TODO: Add actual save logic here if needed
+            event.getWhoClicked().sendMessage(ChatColor.GREEN + "Milestone '" + milestone.getMilestoneName() + "' saved successfully!");
         }));
     }
 
