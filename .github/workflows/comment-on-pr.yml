@@ -45,7 +45,7 @@ jobs:
     steps:
     - name: Post comment on PR
       if: ${{ needs.build.result == 'success' || needs.build.result == 'failure' }}
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const status = '${{ needs.build.result }}';
