@@ -62,15 +62,6 @@ public class RepeatingMilestone {
     private RewardCondition conditions;
 
     /**
-     * Cooldown period in milliseconds before the reward can be claimed again
-     * For repeating milestones, this is in addition to the repeat interval
-     */
-    @Setter
-    @Getter
-    @SerializedName("cooldown_millis")
-    private long cooldownMillis = 0;
-
-    /**
      * Permission required to receive this reward
      */
     @Setter
@@ -104,13 +95,6 @@ public class RepeatingMilestone {
             }
         }
 
-        // Check cooldown
-        if (cooldownMillis > 0 && Playtime.getInstance().getRewardCooldownManager() != null) {
-            if (!Playtime.getInstance().getRewardCooldownManager().canClaim(player.getUniqueId(), milestoneName)) {
-                // Player is on cooldown
-                return;
-            }
-        }
         if (itemStacks != null) {
             if (_itemStackObjects == null) {
                 _itemStackObjects = new ArrayList<>();
@@ -157,16 +141,6 @@ public class RepeatingMilestone {
                 }
             });
 
-        }
-
-        // Set cooldown if configured
-        if (cooldownMillis > 0 && Playtime.getInstance().getRewardCooldownManager() != null) {
-            Playtime.getInstance().getRewardCooldownManager().setCooldown(
-                    player.getUniqueId(),
-                    milestoneName,
-                    "REPEATING_MILESTONE",
-                    cooldownMillis
-            );
         }
     }
 

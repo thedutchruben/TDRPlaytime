@@ -110,18 +110,6 @@ public class Milestone {
     @SerializedName("conditions")
     private RewardCondition conditions;
 
-    /**
-     * Cooldown period in milliseconds before the reward can be claimed again
-     * 0 means no cooldown (one-time reward)
-     * -- GETTER --
-     * get the cooldown period
-     * -- SETTER --
-     * set the cooldown period
-     */
-    @Setter
-    @Getter
-    @SerializedName("cooldown_millis")
-    private long cooldownMillis = 0;
 
     /**
      * Permission required to receive this reward
@@ -165,14 +153,6 @@ public class Milestone {
         if (conditions != null && conditions.hasConditions()) {
             if (!conditions.check(player, user)) {
                 return; // Conditions not met
-            }
-        }
-
-        // Check cooldown
-        if (cooldownMillis > 0 && Playtime.getInstance().getRewardCooldownManager() != null) {
-            if (!Playtime.getInstance().getRewardCooldownManager().canClaim(player.getUniqueId(), milestoneName)) {
-                // Player is on cooldown
-                return;
             }
         }
 
@@ -224,16 +204,6 @@ public class Milestone {
                     }
                 }
             });
-        }
-
-        // Set cooldown if configured
-        if (cooldownMillis > 0 && Playtime.getInstance().getRewardCooldownManager() != null) {
-            Playtime.getInstance().getRewardCooldownManager().setCooldown(
-                    player.getUniqueId(),
-                    milestoneName,
-                    "MILESTONE",
-                    cooldownMillis
-            );
         }
     }
 

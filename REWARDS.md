@@ -1,12 +1,11 @@
 # TDRPlaytime Enhanced Reward System
 
-This document describes the enhanced reward system available in TDRPlaytime 2.0+, including conditions, cooldowns, and permission-based rewards.
+This document describes the enhanced reward system available in TDRPlaytime 2.0+, including conditions and permission-based rewards.
 
 ## Table of Contents
 - [Overview](#overview)
 - [Milestone Types](#milestone-types)
 - [Reward Conditions](#reward-conditions)
-- [Cooldowns](#cooldowns)
 - [Permission-Based Rewards](#permission-based-rewards)
 - [Configuration Examples](#configuration-examples)
 - [Advanced Use Cases](#advanced-use-cases)
@@ -16,7 +15,6 @@ This document describes the enhanced reward system available in TDRPlaytime 2.0+
 The enhanced reward system in TDRPlaytime 2.0 provides advanced features for controlling when and how rewards are granted to players:
 
 - **Conditional Rewards**: Set specific conditions that must be met before a reward is granted
-- **Cooldowns**: Prevent players from claiming the same reward too frequently
 - **Permission-Based**: Require specific permissions to receive rewards
 - **Time-Based**: Restrict rewards to specific days or hours
 - **World-Based**: Only grant rewards in specific worlds
@@ -131,43 +129,6 @@ _Valid values: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY_
 ```
 _Example above: Only between 6 PM and 11 PM_
 
-## Cooldowns
-
-Cooldowns prevent players from claiming the same reward too frequently.
-
-### Configuration
-
-**For Regular Milestones:**
-```json
-{
-  "cooldown_millis": 86400000
-}
-```
-_Example: 24-hour cooldown (86400000 ms = 24 hours)_
-
-**For Repeating Milestones:**
-```json
-{
-  "cooldown_millis": 3600000
-}
-```
-_Note: For repeating milestones, cooldown is in addition to the repeat interval_
-
-### How Cooldowns Work
-
-1. Player claims a reward
-2. Cooldown timer starts
-3. Player cannot claim the same reward until cooldown expires
-4. Cooldown is tracked per-player, per-milestone
-
-### Time Conversions
-
-- 1 second = 1,000 milliseconds
-- 1 minute = 60,000 milliseconds
-- 1 hour = 3,600,000 milliseconds
-- 1 day = 86,400,000 milliseconds
-- 1 week = 604,800,000 milliseconds
-
 ## Permission-Based Rewards
 
 Simple permission check for receiving a reward.
@@ -208,8 +169,7 @@ A milestone that only VIP players can claim on weekends:
     "&eYou received 5 diamonds for playing on the weekend!"
   ],
   "firework_show": true,
-  "firework_show_amount": 3,
-  "cooldown_millis": 86400000
+  "firework_show_amount": 3
 }
 ```
 
@@ -280,7 +240,6 @@ Reward only available during peak server hours:
     "allowed_hours": [18, 19, 20, 21, 22, 23],
     "denied_worlds": ["lobby", "spawn"]
   },
-  "cooldown_millis": 21600000,
   "commands": [
     "give %playername% diamond 3",
     "give %playername% gold_ingot 10"
@@ -330,7 +289,6 @@ Reward for players who haven't been AFK at all:
     "denied_worlds": ["spawn", "lobby"],
     "min_active_playtime": 3000000
   },
-  "cooldown_millis": 1800000,
   "commands": [
     "give %playername% gold_nugget 5"
   ],
@@ -385,7 +343,6 @@ Create special rewards for weekend events:
     "allowed_hours": [12, 13, 14, 15, 16, 17, 18, 19, 20],
     "allowed_worlds": ["event_world"]
   },
-  "cooldown_millis": 86400000,
   "commands": [
     "give %playername% diamond 10",
     "give %playername% emerald 5"
@@ -446,10 +403,6 @@ Update the document's `conditions` field with the JSON object.
 **For YAML:**
 Edit the YAML file and add the conditions section.
 
-### Clearing Cooldowns
-
-Server administrators can manually clear cooldowns by removing entries from the cooldown cache. This requires server restart or database manipulation.
-
 ## Troubleshooting
 
 ### Reward Not Granted
@@ -457,28 +410,25 @@ Server administrators can manually clear cooldowns by removing entries from the 
 **Check the following:**
 
 1. **Permission**: Does the player have the required permission?
-2. **Cooldown**: Is the player on cooldown for this reward?
-3. **Conditions**: Review all conditions to ensure they're met
-4. **World**: Is the player in an allowed world?
-5. **Time**: Is it the right day/hour for the reward?
-6. **AFK Status**: Does the player meet AFK time requirements?
+2. **Conditions**: Review all conditions to ensure they're met
+3. **World**: Is the player in an allowed world?
+4. **Time**: Is it the right day/hour for the reward?
+5. **AFK Status**: Does the player meet AFK time requirements?
 
 ### Debugging Tips
 
 1. Check server console for any error messages
 2. Verify condition syntax in database/config
 3. Test with simplified conditions first
-4. Ensure cooldown times are in milliseconds
-5. Verify permission nodes are correct
+4. Verify permission nodes are correct
 
 ## Best Practices
 
 1. **Test Thoroughly**: Always test rewards on a staging server first
 2. **Clear Conditions**: Document what each reward requires
-3. **Reasonable Cooldowns**: Don't make cooldowns too long or too short
-4. **Balance**: Ensure rewards are balanced and fair
-5. **Performance**: Avoid too many complex conditions on frequently-triggered rewards
-6. **Player Communication**: Inform players about special reward conditions
+3. **Balance**: Ensure rewards are balanced and fair
+4. **Performance**: Avoid too many complex conditions on frequently-triggered rewards
+5. **Player Communication**: Inform players about special reward conditions
 
 ## Future Enhancements
 
@@ -487,7 +437,6 @@ The following features are planned for future versions:
 - GUI for managing conditions
 - More condition types (biome-based, weather-based, etc.)
 - Reward groups and categories
-- Cooldown reset commands
 - Condition testing commands
 - Reward history tracking
 - Player-specific reward multipliers
@@ -495,5 +444,3 @@ The following features are planned for future versions:
 ## Version Information
 
 These features are available in TDRPlaytime version 2.0.0-BETA and above.
-
-**Note**: Database storage for cooldowns is currently in-memory only. Full database persistence will be added in a future update.
