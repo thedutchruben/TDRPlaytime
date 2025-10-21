@@ -332,40 +332,4 @@ public class Mongodb extends Storage {
         return this.database.getCollection("playtime_history").find(query).first() != null;
     }
 
-    /**
-     * Get all reward cooldowns for a player
-     * TODO: Implement database storage for cooldowns
-     *
-     * @param uuid The UUID of the player
-     * @return Map of milestone name to cooldown
-     */
-    @Override
-    public CompletableFuture<java.util.Map<String, nl.thedutchruben.playtime.core.objects.RewardCooldown>> getRewardCooldowns(UUID uuid) {
-        return CompletableFuture.completedFuture(new java.util.HashMap<>());
-    }
-
-    /**
-     * Save a reward cooldown
-     * TODO: Implement database storage for cooldowns
-     *
-     * @param cooldown The cooldown to save
-     * @return CompletableFuture that completes when saved
-     */
-    @Override
-    public CompletableFuture<Boolean> saveRewardCooldown(nl.thedutchruben.playtime.core.objects.RewardCooldown cooldown) {
-        return CompletableFuture.completedFuture(true);
-    }
-
-    /**
-     * Delete a reward cooldown
-     * TODO: Implement database storage for cooldowns
-     *
-     * @param uuid The UUID of the player
-     * @param milestoneName The milestone name
-     * @return CompletableFuture that completes when deleted
-     */
-    @Override
-    public CompletableFuture<Boolean> deleteRewardCooldown(UUID uuid, String milestoneName) {
-        return CompletableFuture.completedFuture(true);
-    }
 }

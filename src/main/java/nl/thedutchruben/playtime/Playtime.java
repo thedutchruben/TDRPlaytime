@@ -78,9 +78,6 @@ public class Playtime {
     @Getter
     private AFKManager afkManager;
 
-    @Getter
-    private nl.thedutchruben.playtime.core.managers.RewardCooldownManager rewardCooldownManager;
-
     public Playtime(JavaPlugin playTimePlugin) {
         plugin = playTimePlugin;
     }
@@ -97,7 +94,6 @@ public class Playtime {
         this.storage.setup();
 
         this.afkManager = new AFKManager();
-        this.rewardCooldownManager = new nl.thedutchruben.playtime.core.managers.RewardCooldownManager();
 
         // Register the mc core
         mccore = new Mccore(plugin, "tdrplaytime", "623a25c0ea9f206b0ba31f3f", Mccore.PluginType.SPIGOT);
