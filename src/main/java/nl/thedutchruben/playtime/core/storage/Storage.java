@@ -174,6 +174,31 @@ public abstract class Storage {
      */
     public abstract CompletableFuture<List<PlaytimeHistory>> getPlaytimeHistoryByName(String name, int limit);
 
+    /**
+     * Get all reward cooldowns for a player
+     *
+     * @param uuid The UUID of the player
+     * @return Map of milestone name to cooldown
+     */
+    public abstract CompletableFuture<java.util.Map<String, nl.thedutchruben.playtime.core.objects.RewardCooldown>> getRewardCooldowns(UUID uuid);
+
+    /**
+     * Save a reward cooldown
+     *
+     * @param cooldown The cooldown to save
+     * @return CompletableFuture that completes when saved
+     */
+    public abstract CompletableFuture<Boolean> saveRewardCooldown(nl.thedutchruben.playtime.core.objects.RewardCooldown cooldown);
+
+    /**
+     * Delete a reward cooldown
+     *
+     * @param uuid The UUID of the player
+     * @param milestoneName The milestone name
+     * @return CompletableFuture that completes when deleted
+     */
+    public abstract CompletableFuture<Boolean> deleteRewardCooldown(UUID uuid, String milestoneName);
+
     public Gson getGson() {
         return gson;
     }

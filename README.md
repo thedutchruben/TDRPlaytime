@@ -16,23 +16,30 @@ TDRPlaytime is a comprehensive Minecraft plugin that tracks player playtime and 
 ## Features
 - **Playtime Tracking**: Accurately track and store player playtime
 - **Multiple Database Support**: Choose from MySQL, SQLite, MongoDB, or YAML storage
-- **Milestone System**: Create custom milestones based on playtime
+- **Enhanced Milestone System**: Create custom milestones based on playtime
   - Reward players with items, commands, and custom messages
   - Configure optional firework celebrations for milestones
-- **Repeating Milestones**: Set up rewards that repeat at regular playtime intervals
+  - **Conditional Rewards**: Set conditions that must be met (permissions, worlds, time-based)
+  - **Cooldown System**: Prevent reward spamming with configurable cooldowns
+  - **Permission-Based Rewards**: Require specific permissions to receive rewards
+  - **Time-Restricted Rewards**: Limit rewards to specific days or hours
+  - **World-Based Rewards**: Only grant rewards in specific worlds
+  - **AFK/Activity Requirements**: Require minimum active time or maximum AFK time
+- **Repeating Milestones**: Set up rewards that repeat at regular playtime intervals (with all condition features)
 - **Advanced AFK System**:
   - Detect when players are AFK based on activity
   - Configure whether AFK time should count toward playtime
   - Optional integration with Essentials AFK system
   - AFK kicking functionality with configurable messages
-- **PlaceholderAPI Integration**: Use playtime data in other plugins
-- **Playtime History**: Track when players join and leave (in development)
+- **PlaceholderAPI Integration**: Enhanced placeholder support with caching and new placeholder types
+- **Playtime History**: Track when players join and leave
 
 ## Documentation
 - [Setup Guide](SETUP.md) - Installation and configuration instructions
 - [Commands](COMMANDS.md) - List of all available commands
 - [Permissions](PERMISSIONS.md) - Permission nodes and explanations
 - [Placeholders](PLACEHOLDERS.md) - Complete PlaceholderAPI placeholder reference
+- [Enhanced Rewards](REWARDS.md) - Advanced reward system with conditions and cooldowns
 
 ## Installation
 1. Download the latest version from one of the platforms above
@@ -48,7 +55,7 @@ Version 2.0 brings significant improvements and new features:
 - ✅ Advanced AFK system
 - ✅ Playtime history system
 - ✅ Improved placeholders with caching and new placeholder types
-- ⏳ Enhanced reward system (in progress)
+- ✅ Enhanced reward system with conditions, cooldowns, and advanced features
 - ⏳ Migration from 1.x to 2.0 (in testing)
 
 **Note**: Version 2.0 is currently in development and may contain bugs or unfinished features. Use in production environments at your own risk.
