@@ -32,6 +32,7 @@ TDRPlaytime is a comprehensive Minecraft plugin that tracks player playtime and 
 - [Setup Guide](SETUP.md) - Installation and configuration instructions
 - [Commands](COMMANDS.md) - List of all available commands
 - [Permissions](PERMISSIONS.md) - Permission nodes and explanations
+- [Placeholders](PLACEHOLDERS.md) - Complete PlaceholderAPI placeholder reference
 
 ## Installation
 1. Download the latest version from one of the platforms above
@@ -46,7 +47,7 @@ Version 2.0 brings significant improvements and new features:
 - ✅ New database implementation
 - ✅ Advanced AFK system
 - ✅ Playtime history system
-- ⏳ Improved placeholders (in progress)
+- ✅ Improved placeholders with caching and new placeholder types
 - ⏳ Enhanced reward system (in progress)
 - ⏳ Migration from 1.x to 2.0 (in testing)
 
