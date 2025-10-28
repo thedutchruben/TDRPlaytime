@@ -98,6 +98,31 @@ public class Milestone {
     @SerializedName("firework_show_seconds_between_firework")
     private int fireworkShowSecondsBetween = 0;
 
+    /**
+     * Conditions that must be met for the reward to be granted
+     * -- GETTER --
+     * get the reward conditions
+     * -- SETTER --
+     * set the reward conditions
+     */
+    @Setter
+    @Getter
+    @SerializedName("conditions")
+    private RewardCondition conditions;
+
+
+    /**
+     * Permission required to receive this reward
+     * -- GETTER --
+     * get the required permission
+     * -- SETTER --
+     * set the required permission
+     */
+    @Setter
+    @Getter
+    @SerializedName("required_permission")
+    private String requiredPermission;
+
     public static Milestone getMilestone(String name) {
         return Playtime.getInstance()
                 .getMilestones().stream()
@@ -111,9 +136,29 @@ public class Milestone {
      * @param player The player to apply the milestone to
      */
     public void apply(Player player) {
+        // Check permission requirement
+        if (requiredPermission != null && !requiredPermission.isEmpty()) {
+            if (!player.hasPermission(requiredPermission)) {
+                return; // Player doesn't have required permission
+            }
+        }
+
+        // Get player's playtime data
+        PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(player.getUniqueId());
+        if (user == null) {
+            return;
+        }
+
+        // Check conditions
+        if (conditions != null && conditions.hasConditions()) {
+            if (!conditions.check(player, user)) {
+                return; // Conditions not met
+            }
+        }
+
         Bukkit.getScheduler().runTask(Playtime.getPlugin(), () ->
                 Bukkit.getPluginManager().callEvent(
-                        new MilestoneReceiveEvent(this, Playtime.getInstance().getPlaytimeUser(player.getUniqueId()).get()))
+                        new MilestoneReceiveEvent(this, user))
         );
 
         if (itemStacks != null && _itemStackObjects == null) {

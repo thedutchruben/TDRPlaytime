@@ -54,11 +54,47 @@ public class RepeatingMilestone {
     private List<String> messages;
 
     /**
+     * Conditions that must be met for the reward to be granted
+     */
+    @Setter
+    @Getter
+    @SerializedName("conditions")
+    private RewardCondition conditions;
+
+    /**
+     * Permission required to receive this reward
+     */
+    @Setter
+    @Getter
+    @SerializedName("required_permission")
+    private String requiredPermission;
+
+    /**
      * Apply the milestone on the player
      *
      * @param player The player to apply the milestone to
      */
     public void apply(Player player) {
+        // Check permission requirement
+        if (requiredPermission != null && !requiredPermission.isEmpty()) {
+            if (!player.hasPermission(requiredPermission)) {
+                return; // Player doesn't have required permission
+            }
+        }
+
+        // Get player's playtime data
+        PlaytimeUser user = Playtime.getInstance().getPlaytimeUsers().get(player.getUniqueId());
+        if (user == null) {
+            return;
+        }
+
+        // Check conditions
+        if (conditions != null && conditions.hasConditions()) {
+            if (!conditions.check(player, user)) {
+                return; // Conditions not met
+            }
+        }
+
         if (itemStacks != null) {
             if (_itemStackObjects == null) {
                 _itemStackObjects = new ArrayList<>();
