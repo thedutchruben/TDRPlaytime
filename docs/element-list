@@ -5,6 +5,7 @@ nl.thedutchruben.playtime.core.events.afk
 nl.thedutchruben.playtime.core.events.milestone
 nl.thedutchruben.playtime.core.events.player
 nl.thedutchruben.playtime.core.events.repeatingmilestone
+nl.thedutchruben.playtime.core.migration
 nl.thedutchruben.playtime.core.objects
 nl.thedutchruben.playtime.core.storage
 nl.thedutchruben.playtime.core.storage.exceptions
