@@ -16,6 +16,7 @@ nl.thedutchruben.playtime.extentions
 nl.thedutchruben.playtime.modules.afk.commands
 nl.thedutchruben.playtime.modules.afk.listeners
 nl.thedutchruben.playtime.modules.milestones.commands
+nl.thedutchruben.playtime.modules.milestones.gui
 nl.thedutchruben.playtime.modules.milestones.listeners
 nl.thedutchruben.playtime.modules.player.commands
 nl.thedutchruben.playtime.modules.player.listeners
