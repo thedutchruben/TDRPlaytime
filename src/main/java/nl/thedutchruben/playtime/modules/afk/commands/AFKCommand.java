@@ -101,7 +101,7 @@ public class AFKCommand {
             usage = "[player]",
             permission = "playtime.afk.active",
             minParams = 0,
-            maxParams = 1
+            maxParams = 0
     )
     public void activeTime(CommandSender sender, List<String> args) {
         Player target;

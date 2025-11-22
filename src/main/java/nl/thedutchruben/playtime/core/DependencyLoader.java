@@ -45,7 +45,7 @@ public class DependencyLoader {
         BSON("org{}mongodb", "bson", "5.2.1", null),
         MONGODB("org{}mongodb", "mongodb-driver-sync", "5.2.1", null),
         MONGODB_CORE("org{}mongodb", "mongodb-driver-core", "5.2.1", null),
-        MCCORE("nl{}thedutchruben", "mccore", "1.6.0", null),
+        MCCORE("nl{}thedutchruben", "mccore", "1.7.0", null),
         BSTATS("org{}bstats", "bstats-bukkit", "3.1.0", "nl{}thedutchruben{}playtime{}bstats"),
         BSTATS_BASE("org{}bstats", "bstats-base", "3.1.0", "nl{}thedutchruben{}playtime{}bstats"),
         HIKARI_CP("com{}zaxxer", "HikariCP", "6.2.1", null);

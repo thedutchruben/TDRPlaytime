@@ -241,32 +241,79 @@ public class Milestone {
     }
 
     /**
-     * @return The list of items to give the player.
+     * Gets the item stacks as ItemStack objects
+     */
+    public List<ItemStack> getItemStackObjects() {
+        if (itemStacks != null && _itemStackObjects == null) {
+            _itemStackObjects = new ArrayList<>();
+            for (Map<String, Object> itemStack : itemStacks) {
+                _itemStackObjects.add(ItemStack.deserialize(itemStack));
+            }
+        }
+        return _itemStackObjects;
+    }
+
+    /**
+     * Gets the raw item stacks map
      */
     public List<Map<String, Object>> getItemStacks() {
-        if (itemStacks == null) {
-            itemStacks = new ArrayList<>();
-        }
         return itemStacks;
     }
 
     /**
-     * @return The list of commands to execute
+     * Sets the item stacks
+     */
+    public void setItemStacks(List<Map<String, Object>> itemStacks) {
+        this.itemStacks = itemStacks;
+        this._itemStackObjects = null;
+    }
+
+    /**
+     * Gets the commands list
      */
     public List<String> getCommands() {
-        if (commands == null) {
-            commands = new ArrayList<>();
-        }
         return commands;
     }
 
     /**
-     * get the list of messages to send
+     * Sets the commands list
+     */
+    public void setCommands(List<String> commands) {
+        this.commands = commands;
+    }
+
+    /**
+     * Gets the messages list
      */
     public List<String> getMessages() {
-        if (messages == null) {
-            messages = new ArrayList<>();
-        }
         return messages;
+    }
+
+    /**
+     * Removes an ItemStack at the specified index
+     */
+    public void removeItemStack(int index) {
+        if (itemStacks != null && index >= 0 && index < itemStacks.size()) {
+            itemStacks.remove(index);
+            _itemStackObjects = null;
+        }
+    }
+
+    /**
+     * Removes a command at the specified index
+     */
+    public void removeCommand(int index) {
+        if (commands != null && index >= 0 && index < commands.size()) {
+            commands.remove(index);
+        }
+    }
+
+    /**
+     * Removes a message at the specified index
+     */
+    public void removeMessage(int index) {
+        if (messages != null && index >= 0 && index < messages.size()) {
+            messages.remove(index);
+        }
     }
 }

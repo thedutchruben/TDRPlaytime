@@ -29,6 +29,7 @@ public enum Settings {
     STORAGE_MONGO_COLLECTION("mongo.collection", "playtime", 1.0, ConfigFiles.STORAGE),
 
     AFK_COUNT_TIME("settings.afk.countAfkTime", true, 1.0, ConfigFiles.CONFIG),
+    AFK_ENABLED("settings.afk.enabled", true, 1.0, ConfigFiles.CONFIG),
     AFK_USE_ESSENTIALS_API("settings.afk.useEssentialsApi", false, 1.0, ConfigFiles.CONFIG),
     AFK_THRESHOLD_MINUTES("settings.afk.thresholdMinutes", 5, 1.0, ConfigFiles.CONFIG),
     AFK_BROADCAST_MESSAGES("settings.afk.broadcastMessages", true, 1.0, ConfigFiles.CONFIG),
@@ -38,7 +39,6 @@ public enum Settings {
     AFK_EVENTS_INTERACT("settings.afk.events.interactResetAfkTime", true, 1.0, ConfigFiles.CONFIG),
     AFK_KICK_ENABLED("settings.afk.kick.enabled", false, 1.0, ConfigFiles.CONFIG),
     AFK_KICK_THRESHOLD_MINUTES("settings.afk.kick.thresholdMinutes", 30, 1.0, ConfigFiles.CONFIG),
-    AFK_KICK_MESSAGE("settings.afk.kick.message", "&cYou have been kicked for being AFK too long.", 1.0, ConfigFiles.CONFIG),
 
     // Playtime history settings
     PLAYTIME_HISTORY_DATE_FORMAT("settings.playtime_history.date_format", "yyyy-MM-dd HH:mm:ss", 1.0, ConfigFiles.CONFIG),

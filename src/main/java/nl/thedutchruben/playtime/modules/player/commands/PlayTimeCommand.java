@@ -41,8 +41,8 @@ public class PlayTimeCommand {
         }
     }
 
-    @Fallback(minParams = 1, maxParams = 2)
-    @SubCommand(subCommand = "", minParams = 1, maxParams = 2, usage = "<player>", description = "Show a player's playtime")
+    @Fallback(minParams = 0, maxParams = 1)
+    @SubCommand(subCommand = "", minParams = 0, maxParams = 1, usage = "<player>", description = "Show a player's playtime")
     public void see(CommandSender sender, List<String> args) {
         String playerName = args.get(0);
         Player player = Bukkit.getPlayer(playerName);
@@ -60,20 +60,20 @@ public class PlayTimeCommand {
         }
     }
 
-    @SubCommand(subCommand = "top", minParams = 0, maxParams = 1, usage = "<amount>", permission = "playtime.playtime.top", console = true, description = "Show the top 10 players")
+    @SubCommand(subCommand = "top", minParams = 0, maxParams = 0, usage = "<amount>", permission = "playtime.playtime.top", console = true, description = "Show the top 10 players")
     public void top(CommandSender sender, List<String> args) {
         int amount = 10;
-        if (args.size() == 2) {
-            amount = Integer.parseInt(args.get(1));
+        if (args.size() == 1) {
+            amount = Integer.parseInt(args.get(0));
         }
         Playtime.getInstance().getStorage().getTopUsers(amount, 0).whenCompleteAsync((users, throwable) -> {
             users.forEach(user -> sendPlaytimeInfo(sender, user));
         });
     }
 
-    @SubCommand(subCommand = "reset", permission = "playtime.playtime.reset", minParams = 2, maxParams = 2, console = true, usage = "<player>", description = "Reset a player's playtime")
+    @SubCommand(subCommand = "reset", permission = "playtime.playtime.reset", minParams = 1, maxParams = 1, console = true, usage = "<player>", description = "Reset a player's playtime")
     public void reset(CommandSender sender, List<String> args) {
-        String playerName = args.get(1);
+        String playerName = args.get(0);
         Playtime.getInstance().getStorage().loadUserByName(playerName).thenAcceptAsync(user -> {
             if (user != null) {
                 user.setPlaytime(0);
@@ -87,10 +87,10 @@ public class PlayTimeCommand {
         });
     }
 
-    @SubCommand(subCommand = "add", permission = "playtime.playtime.add", minParams = 3, maxParams = 3, console = true, description = "Add playtime to a user", usage = "<player> <time>")
+    @SubCommand(subCommand = "add", permission = "playtime.playtime.add", minParams = 2, maxParams = 2, console = true, description = "Add playtime to a user", usage = "<player> <time>")
     public void add(CommandSender sender, List<String> args) {
-        String playerName = args.get(1);
-        String time = args.get(2);
+        String playerName = args.get(0);
+        String time = args.get(1);
         Map<String, Integer> timeMap = parseTime(time);
 
         Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(user -> {
@@ -108,10 +108,10 @@ public class PlayTimeCommand {
         });
     }
 
-    @SubCommand(subCommand = "remove", permission = "playtime.playtime.remove", minParams = 3, maxParams = 3, console = true, usage = "<player> <time>", description = "Remove playtime from a user")
+    @SubCommand(subCommand = "remove", permission = "playtime.playtime.remove", minParams = 2, maxParams = 2, console = true, usage = "<player> <time>", description = "Remove playtime from a user")
     public void remove(CommandSender sender, List<String> args) {
-        String playerName = args.get(1);
-        String time = args.get(2);
+        String playerName = args.get(0);
+        String time = args.get(1);
         Map<String, Integer> timeMap = parseTime(time);
 
         Playtime.getInstance().getPlaytimeUser(playerName).ifPresentOrElse(user -> {

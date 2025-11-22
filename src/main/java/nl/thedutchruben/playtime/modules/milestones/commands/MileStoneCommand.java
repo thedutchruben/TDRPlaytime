@@ -9,6 +9,7 @@ import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.milestone.MilestoneCreateEvent;
 import nl.thedutchruben.playtime.core.events.milestone.MilestoneDeleteEvent;
 import nl.thedutchruben.playtime.core.events.milestone.MilestoneUpdateEvent;
+import nl.thedutchruben.playtime.modules.milestones.gui.MilestoneInfoGui;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.utils.Replacement;
@@ -34,12 +35,12 @@ public class MileStoneCommand {
         usage = "<name> <time>",
         permission = "playtime.milestone.create",
         console = true,
-        minParams = 3,
-        maxParams = 3)
+        minParams = 2,
+        maxParams = 2)
     public void create(CommandSender commandSender, List<String> args) {
         Milestone milestone = new Milestone();
-        milestone.setMilestoneName(args.get(1));
-        long time = getTime(args.get(2));
+        milestone.setMilestoneName(args.get(0));
+        long time = getTime(args.get(1));
         milestone.setOnlineTime(time);
         Playtime.getInstance().getStorage().saveMilestone(milestone).thenAcceptAsync(aBoolean -> {
             if (aBoolean) {
@@ -53,16 +54,39 @@ public class MileStoneCommand {
     }
 
     @SubCommand(
+            subCommand = "open",
+            description = "Open the milestone GUI",
+            usage = "<milestone>",
+            permission = "playtime.milestone.open",
+            minParams = 1,
+            maxParams = 1
+    )
+    public void open(CommandSender commandSender, List<String> args) {
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage(Messages.ONLY_PLAYER_COMMAND.getMessage());
+            return;
+        }
+        Player player = (Player) commandSender;
+        Milestone milestone = Milestone.getMilestone(args.get(0));
+        if (milestone == null) {
+            player.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
+            return;
+        }
+        MilestoneInfoGui milestoneInfoGui = new MilestoneInfoGui(milestone);
+        milestoneInfoGui.open(player);
+    }
+
+    @SubCommand(
         subCommand = "delete",
         description = "Delete a milestone",
         usage = "<milestone>",
         permission = "playtime.milestone.delete",
-        minParams = 2,
-        maxParams = 2,
+        minParams = 1,
+        maxParams = 1,
         console = true
     )
     public void delete(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -106,12 +130,12 @@ public class MileStoneCommand {
         description = "Get info about a milestone",
         usage = "<milestone>",
         permission = "playtime.milestone.info",
-        minParams = 2,
-        maxParams = 2,
+        minParams = 1,
+        maxParams = 1,
         console = true
     )
     public void info(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -136,11 +160,11 @@ public class MileStoneCommand {
         description = "Execute the rewards of a milestone on yourself",
         usage = "<milestone>",
         permission = "playtime.milestone.test",
-        minParams = 2,
-        maxParams = 2
+        minParams = 1,
+        maxParams = 1
     )
     public void test(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -154,12 +178,12 @@ public class MileStoneCommand {
         description = "Add the item in your main hand to the milestone",
         usage = "<milestone>",
         permission = "playtime.milestone.addItemToMilestone",
-        minParams = 2,
-        maxParams = 2
+        minParams = 1,
+        maxParams = 1
     )
     public void addItemToMilestone(CommandSender commandSender, List<String> args) {
         Player player = (Player) commandSender;
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -175,17 +199,17 @@ public class MileStoneCommand {
         description = "Add a command to the milestone",
         usage = "<milestone> <command>",
         permission = "playtime.milestone.addCommand",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void addCommandToMilestone(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String command = String.join(" ", args.subList(2, args.size()));
+        String command = String.join(" ", args.subList(1, args.size()));
         milestone.addCommand(command);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_COMMAND_ADDED.getMessage());
@@ -197,12 +221,12 @@ public class MileStoneCommand {
         description = "Remove a command from the milestone",
         usage = "<milestone> <command>",
         permission = "playtime.milestone.removeCommand",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void removeCommandFromMilestone(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -219,12 +243,12 @@ public class MileStoneCommand {
         description = "Toggle the firework for a milestone",
         usage = "<milestone>",
         permission = "playtime.milestone.togglefirework",
-        minParams = 2,
-        maxParams = 2,
+        minParams = 1,
+        maxParams = 1,
         console = true
     )
     public void toggleFirework(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
@@ -240,17 +264,17 @@ public class MileStoneCommand {
         description = "Set the amount of firework for a milestone",
         usage = "<milestone> <amount>",
         permission = "playtime.milestone.setfireworkamount",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void setFireworkAmount(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        int amount = Integer.parseInt(args.get(2));
+        int amount = Integer.parseInt(args.get(1));
         milestone.setFireworkShowAmount(amount);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_SET_FIREWORK_AMOUNT.getMessage(new Replacement("<amount>", String.valueOf(amount))));
@@ -262,17 +286,17 @@ public class MileStoneCommand {
         description = "Set the delay between fireworks for a milestone",
         usage = "<milestone> <time in seconds>",
         permission = "playtime.milestone.setfireworkdelay",
-        minParams = 4,
-        maxParams = 4,
+        minParams = 3,
+        maxParams = 3,
         console = true
     )
     public void setFireworkDelay(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        int delay = Integer.parseInt(args.get(2));
+        int delay = Integer.parseInt(args.get(1));
         milestone.setFireworkShowSecondsBetween(delay);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_SET_FIREWORK_DELAY.getMessage(new Replacement("<amount>", String.valueOf(delay))));
@@ -284,17 +308,17 @@ public class MileStoneCommand {
         description = "Add a message to a milestone",
         usage = "<milestone> <message>",
         permission = "playtime.milestone.addMessage",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void addMessage(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String message = String.join(" ", args.subList(2, args.size()));
+        String message = String.join(" ", args.subList(1, args.size()));
         milestone.addMessage(message);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_MESSAGE_ADDED.getMessage());
@@ -306,17 +330,17 @@ public class MileStoneCommand {
         description = "Remove a message from a milestone",
         usage = "<milestone> <message>",
         permission = "playtime.milestone.removeMessage",
-        minParams = 3,
-        maxParams = 3,
+        minParams = 2,
+        maxParams = 2,
         console = true
     )
     public void removeMessage(CommandSender commandSender, List<String> args) {
-        Milestone milestone = Milestone.getMilestone(args.get(1));
+        Milestone milestone = Milestone.getMilestone(args.get(0));
         if (milestone == null) {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        String message = String.join(" ", args.subList(2, args.size()));
+        String message = String.join(" ", args.subList(1, args.size()));
         milestone.removeMessage(message);
         Playtime.getInstance().getStorage().updateMilestone(milestone);
         commandSender.sendMessage(Messages.MILESTONE_MESSAGE_REMOVED.getMessage());
