@@ -17,6 +17,7 @@ import nl.thedutchruben.playtime.core.storage.types.Mongodb;
 import nl.thedutchruben.playtime.core.storage.types.Mysql;
 import nl.thedutchruben.playtime.core.storage.types.SqlLite;
 import nl.thedutchruben.playtime.core.storage.types.Yaml;
+import nl.thedutchruben.playtime.core.migration.ConfigMigration;
 import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.extentions.BStatsExtension;
 import nl.thedutchruben.playtime.extentions.PlaceholderAPIExtension;
@@ -86,6 +87,12 @@ public class Playtime {
     public void onEnable(JavaPlugin playTimePlugin) {
         instance = this;
         this.fileManager = new FileManager(plugin);
+
+        // Check and perform migration from 1.x to 2.0 if needed
+        ConfigMigration configMigration = new ConfigMigration(fileManager, plugin.getDataFolder());
+        if (configMigration.needsMigration()) {
+            configMigration.migrate();
+        }
 
         Settings.setupDefaults();
         Messages.setupDefaults();

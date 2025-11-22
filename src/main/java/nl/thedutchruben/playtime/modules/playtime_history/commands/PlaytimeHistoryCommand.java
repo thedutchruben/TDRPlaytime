@@ -1,6 +1,9 @@
 package nl.thedutchruben.playtime.modules.playtime_history.commands;
 
 import nl.thedutchruben.mccore.spigot.commands.Command;
+import nl.thedutchruben.mccore.spigot.commands.Default;
+import nl.thedutchruben.mccore.spigot.commands.Fallback;
+import nl.thedutchruben.mccore.spigot.commands.SubCommand;
 import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.Settings;
 import nl.thedutchruben.playtime.core.objects.PlaytimeHistory;
@@ -22,58 +25,63 @@ import java.util.UUID;
 public class PlaytimeHistoryCommand {
 
     /**
-     * Default command to view your own playtime history or another player's history
+     * Default command to view your own playtime history
      *
-     * @param commandSender The sender of the command
+     * @param sender The sender of the command
      * @param args Command arguments
      */
-    public void execute(CommandSender commandSender, String[] args) {
+    @Default
+    @SubCommand(subCommand = "", description = "View your own playtime history")
+    public void viewOwnHistory(CommandSender sender, List<String> args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Messages.ONLY_PLAYER_COMMAND.getMessage());
+            return;
+        }
+
+        Player player = (Player) sender;
+        int limit = Settings.PLAYTIME_HISTORY_MAX_ENTRIES.getValueAsInteger();
+        showPlaytimeHistory(player.getUniqueId(), player.getName(), sender, limit);
+    }
+
+    /**
+     * View another player's playtime history
+     *
+     * @param sender The sender of the command
+     * @param args Command arguments (player name and optional limit)
+     */
+    @Fallback(minParams = 1, maxParams = 2)
+    @SubCommand(subCommand = "", minParams = 1, maxParams = 2, usage = "<player> [limit]",
+                description = "View another player's playtime history", permission = "playtime.history.others")
+    public void viewOtherHistory(CommandSender sender, List<String> args) {
+        String targetName = args.get(0);
         int limit = Settings.PLAYTIME_HISTORY_MAX_ENTRIES.getValueAsInteger();
 
-        if (args.length == 0) {
-            // View own history (only players can do this, not console)
-            if (!(commandSender instanceof Player)) {
-                commandSender.sendMessage(Messages.ONLY_PLAYER_COMMAND.getMessage());
+        // Try to parse custom limit if provided
+        if (args.size() > 1) {
+            try {
+                limit = Integer.parseInt(args.get(1));
+            } catch (NumberFormatException e) {
+                sender.sendMessage(Messages.INVALID_NUMBER.getMessage());
                 return;
             }
+        }
 
-            Player player = (Player) commandSender;
-            showPlaytimeHistory(player.getUniqueId(), player.getName(), commandSender, limit);
+        // Find player UUID from name
+        Player targetPlayer = Bukkit.getPlayer(targetName);
+        if (targetPlayer != null) {
+            showPlaytimeHistory(targetPlayer.getUniqueId(), targetPlayer.getName(), sender, limit);
         } else {
-            // Check permission for viewing other players' history
-            if (!commandSender.hasPermission("playtime.history.others")) {
-                commandSender.sendMessage(Messages.ONLY_PLAYER_COMMAND.getMessage());
-                return;
-            }
+            // Player not online, load from storage by name
+            int finalLimit = limit;
+            Playtime.getInstance().getStorage().loadUserByName(targetName)
+                .thenAccept(playtimeUser -> {
+                    if (playtimeUser == null) {
+                        sender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
+                        return;
+                    }
 
-            String targetName = args[0];
-
-            // Try to parse custom limit if provided
-            if (args.length > 1) {
-                try {
-                    limit = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
-                    // Ignore invalid number and use default limit
-                }
-            }
-
-            // Find player UUID from name
-            Player targetPlayer = Bukkit.getPlayer(targetName);
-            if (targetPlayer != null) {
-                showPlaytimeHistory(targetPlayer.getUniqueId(), targetPlayer.getName(), commandSender, limit);
-            } else {
-                // Player not online, load from storage by name
-                int finalLimit = limit;
-                Playtime.getInstance().getStorage().loadUserByName(targetName)
-                    .thenAccept(playtimeUser -> {
-                        if (playtimeUser == null) {
-                            commandSender.sendMessage(Messages.PLAYER_DOES_NOT_EXIST.getMessage());
-                            return;
-                        }
-
-                        showPlaytimeHistoryByName(targetName, commandSender, finalLimit);
-                    });
-            }
+                    showPlaytimeHistoryByName(targetName, sender, finalLimit);
+                });
         }
     }
 

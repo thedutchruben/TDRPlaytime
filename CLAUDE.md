@@ -2,80 +2,206 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Build and Development Commands
+## Project Overview
 
-### Maven Commands
-- `mvn clean compile` - Compile the project
-- `mvn clean package` - Build the plugin JAR file (outputs to `target/TDRPlaytime-{version}.jar`)
-- `mvn test` - Run JUnit 5 tests
-- `mvn test -Dtest=ClassName#methodName` - Run a specific test method
-- `mvn jacoco:report` - Generate code coverage reports (available at `target/site/jacoco/index.html`)
-- `mvn javadoc:javadoc` - Generate JavaDoc documentation (outputs to `target/site/`)
-- `mvn source:jar` - Generate source JAR file
+TDRPlaytime is a Spigot/Paper Minecraft plugin (Java 11) that tracks player playtime and rewards players through a milestone system. It supports multiple storage backends, features an AFK detection system, and integrates with PlaceholderAPI.
+
+**Current Version:** 2.0.0-BETA (active development)
+
+## Build & Development Commands
+
+### Building
+```bash
+mvn clean package
+```
+Built JAR: `target/TDRPlaytime-${version}.jar`
 
 ### Testing
-- Tests use JUnit 5 with Mockito and MockBukkit for Bukkit API mocking
-- Test files follow the pattern `**/*Test.java`
-- Coverage reports are generated with JaCoCo
-- Maven Surefire configured to run tests with parallel execution disabled
+```bash
+# Run all tests
+mvn test
 
-## Project Architecture
+# Run specific test
+mvn test -Dtest=ClassName#methodName
+
+# Run with coverage report
+mvn test jacoco:report
+# Coverage report: target/site/jacoco/index.html
+```
+
+### Documentation
+```bash
+# Generate JavaDoc
+mvn javadoc:javadoc
+# Output: target/site/
+```
+
+### Installing Locally
+```bash
+mvn clean install
+```
+
+## Architecture
 
 ### Core Plugin Structure
-- **Main Plugin Class**: `PlayTimePlugin.java` - Standard Bukkit plugin entry point that delegates to `Playtime.java`
-- **Core Manager**: `Playtime.java` - Central manager class handling plugin lifecycle, storage, and caching
-- **Dependency Loading**: Uses libby-bukkit for runtime dependency management to keep JAR size small
 
-### Package Structure
-- `core/` - Core functionality and configuration
-  - `afk/` - AFK detection and management system
-  - `events/` - Custom plugin events for milestones, AFK, and players
-  - `objects/` - Data models (PlaytimeUser, Milestone, RepeatingMilestone, PlaytimeHistory)
-  - `storage/` - Abstract storage layer with implementations for MySQL, SQLite, MongoDB, YAML
-  - `translations/` - Message management system
-- `extensions/` - Plugin integrations (BStats, PlaceholderAPI)
-- `modules/` - Feature modules organized by functionality
-  - `afk/` - AFK commands and listeners
-  - `milestones/` - Milestone commands, listeners, and GUI implementations
-  - `player/` - Player commands, listeners, and runnables
-  - `playtime_history/` - Playtime history tracking
-- `utils/` - Utility classes for time formatting and text replacement
+**Lifecycle Flow:**
+1. `PlayTimePlugin.onLoad()` → Downloads dependencies via libby (HikariCP, MongoDB, SQLite)
+2. `PlayTimePlugin.onEnable()` → Initializes `Playtime` class
+3. `Playtime.onEnable()` → Sets up storage, loads milestones, registers commands/listeners
+
+**Main Classes:**
+- `PlayTimePlugin`: Spigot JavaPlugin entry point
+- `Playtime`: Core singleton managing plugin state, storage, and user cache
+- `AFKManager`: Singleton managing AFK detection and status updates
 
 ### Storage System
-- Abstract `Storage` base class defines the interface
-- Four storage implementations: MySQL, SQLite, MongoDB, YAML
-- All storage operations use CompletableFuture for async handling
-- Storage type configured in `storage.yml` with `type` field
 
-### Milestone System
-- Two types: Regular milestones (one-time rewards) and Repeating milestones (recurring rewards)
-- Milestones support multiple reward types: commands, items, messages, fireworks
-- Event-driven system for milestone achievements
+**Abstract Pattern:** All storage implementations extend `Storage` abstract class with CompletableFuture-based async operations.
+
+**Supported Types:**
+- `Mysql`: MySQL/MariaDB via HikariCP connection pool
+- `SqlLite`: SQLite embedded database
+- `Mongodb`: MongoDB driver
+- `Yaml`: File-based (not recommended for production)
+
+**Key Points:**
+- Storage type selected in `Playtime.getSelectedStorage()` based on config
+- All user data cached in `Playtime.playtimeUsers` Map
+- Milestones and repeating milestones loaded at startup into lists
+
+### Module Structure
+
+Code organized into modules under `modules/` package:
+
+- **afk/**: AFK detection system (commands, listeners)
+- **milestones/**: Milestone and repeating milestone management (commands, listeners for checking/awarding)
+- **player/**: Player tracking (join/quit listeners, playtime update/save runnables, playtime command)
+- **playtime_history/**: Join/quit history tracking (in development)
+
+### Core Domain Objects
+
+**PlaytimeUser:**
+- Stores: UUID, name, total time (ms), AFK time (ms), AFK status, last activity timestamp
+- Methods: `updatePlaytime()` (checks AFK status), `translateTime()` (converts ms to [days, hours, mins, secs])
+- Uses Gson serialization annotations for storage persistence
+
+**Milestone:**
+- One-time rewards at specific playtime thresholds
+- Can contain: commands, items, messages, fireworks
+
+**RepeatingMilestone:**
+- Recurring rewards at regular intervals (e.g., every hour)
+- Same reward structure as Milestone
 
 ### AFK System
-- Configurable AFK detection based on player activity (chat, movement, interaction)
-- Optional integration with Essentials plugin
-- Supports AFK kicking and time exclusion from playtime tracking
 
-## Configuration Files
-- `config.yml` - Main plugin configuration (AFK settings, cache times, etc.)
-- `storage.yml` - Database connection configuration
-- `translations.yml` - All plugin messages and translations
-- Plugin uses custom Settings enum for type-safe configuration access
+**AFKManager Behavior:**
+- Tracks last activity timestamp per player
+- Configurable threshold (default: 5 minutes)
+- Optional Essentials integration (checks Essentials AFK status)
+- Player activity resets timer (chat, movement, interactions)
+- AFK time counted separately; optionally excluded from playtime
+- Fires custom events: `PlayerAFKEvent`, `PlayerReturnFromAFKEvent`
 
-## Key Dependencies
-- **MCCore**: Custom framework (nl.thedutchruben.mccore) for common Minecraft plugin functionality
-- **Spigot API**: 1.21.1 target version
-- **Lombok**: Used extensively for getters/setters
-- **PlaceholderAPI**: Optional integration for placeholder support
-- **Libby**: Runtime dependency loader
-- **HikariCP**: Database connection pooling (for MySQL)
+**Activity Listeners:** `AFKActivityListener` monitors player events to record activity
 
-## Development Notes
-- Plugin is currently version 2.0.0-BETA with significant refactoring from 1.x
-- Uses Java 11 target with annotation processing for Lombok
-- Extensive use of async patterns with CompletableFuture
-- Plugin supports hot-reload of milestones and configuration changes
-- All user data is cached in memory for performance
-- Maven Shade plugin relocates bstats to avoid conflicts
-- Dependencies loaded at runtime via libby-bukkit to keep JAR size minimal
+### Event System
+
+Custom events in `core/events/`:
+- **afk/**: AFK status changes
+- **milestone/**: Milestone CRUD and receive events
+- **player/**: User load/unload/save, playtime updates
+- **repeatingmilestone/**: Repeating milestone CRUD and receive events
+
+Events follow Bukkit event patterns and can be listened to by other plugins.
+
+### Scheduled Tasks
+
+**Runnables:**
+- `UpdatePlayTimeRunnable`: Periodically calls `updatePlaytime()` on all online users
+- `SavePlayTimeRunnable`: Periodically saves all user data to storage
+
+Both scheduled in module initialization.
+
+### Configuration
+
+**Files (managed by FileManager from mccore library):**
+- `Settings`: Enum-based config access via mccore
+- `Messages`: Translation system for all plugin messages
+- `ConfigFiles`: Constants for config file paths
+
+Configuration uses the mccore library's config system.
+
+### External Integrations
+
+**PlaceholderAPI:**
+- `PlaceholderAPIExtension`: Registers placeholders for playtime data
+- Provides top player, individual player, AFK status placeholders
+
+**bStats:**
+- `BStatsExtension`: Metrics collection
+
+**Essentials (optional):**
+- AFKManager can use Essentials AFK API if enabled in config
+
+## Important Patterns
+
+1. **CompletableFuture Usage:** All storage operations are async; use `.thenAccept()`, `.join()`, or `.get()` appropriately
+2. **Singleton Access:** `Playtime.getInstance()`, `AFKManager.getInstance()`
+3. **User Cache:** Always check `Playtime.getPlaytimeUsers()` map before loading from storage
+4. **Event Firing:** Schedule events on main thread via `Bukkit.getScheduler().runTask()` when called from async context
+5. **Time Storage:** All time values stored as float milliseconds internally
+6. **Lombok Usage:** Core objects use Lombok `@Getter` for field access
+
+## Testing Notes
+
+- Tests use JUnit 5, Mockito, and MockBukkit
+- Test classes: `MilestoneTest.java`, `PlaytimeUserTest.java`
+- Bukkit environment must be mocked for most tests
+- Storage implementations should be tested with actual database connections where feasible
+
+## Dependencies
+
+**Key Libraries:**
+- Spigot API 1.21.1 (provided)
+- Lombok 1.18.38 (compile-time)
+- HikariCP 6.2.1 (runtime downloaded)
+- MongoDB driver 5.2.1 (runtime downloaded)
+- SQLite JDBC 3.46.1.2 (runtime downloaded)
+- mccore 1.6.0 (provided - custom framework by author)
+- PlaceholderAPI 2.11.6 (optional)
+- Essentials 2.20.1 (optional)
+
+Dependencies downloaded at runtime via libby except provided ones.
+
+## Common Development Scenarios
+
+### Adding a New Storage Type
+1. Create new class in `core/storage/types/` extending `Storage`
+2. Implement all abstract methods with async CompletableFuture returns
+3. Add case to `Playtime.getSelectedStorage()` switch statement
+4. Document new storage type in SETUP.md
+
+### Adding a New Milestone Reward Type
+1. Add field to `Milestone`/`RepeatingMilestone` objects
+2. Update storage implementations to persist new field
+3. Add command in `MileStoneCommand`/`RepeatingMilestoneCommand` to configure
+4. Update `UpdatePlaytimeListener` to check and award new reward type
+
+### Adding New PlaceholderAPI Placeholders
+1. Add parsing logic in `PlaceholderAPIExtension.onRequest()`
+2. Use existing pattern: parse identifier, fetch user data, return formatted string
+3. Document in SETUP.md placeholder section
+
+## Version 2.0 Development Status
+
+Current focus areas:
+- Database implementation ✅
+- AFK system ✅
+- Playtime history system ✅
+- Improved placeholders (in progress)
+- Enhanced reward system (in progress)
+- Migration from 1.x to 2.0 (testing)
+
+Version 2.0 may contain bugs or incomplete features.

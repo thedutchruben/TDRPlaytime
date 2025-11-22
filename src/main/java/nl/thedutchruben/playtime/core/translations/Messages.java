@@ -13,6 +13,7 @@ import java.util.Map;
 public enum Messages {
 
     ONLY_PLAYER_COMMAND("only.player.command", "&cThis is a player only command!"),
+    INVALID_NUMBER("invalid.number", "&cInvalid number provided!"),
 
     PLAYTIME_INFO_OWN("command.playtime.time_message", "&8[&6PlayTime&8] &7Your playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)"),
     PLAYTIME_INFO_OTHER("command.playtime.user_time_message", "&8[&6PlayTime&8] &7%NAME% 's playtime is &6%D% &7day(s) &6%H% &7hour(s) &6%M% &7minute(s) &6%S% &7second(s)"),
