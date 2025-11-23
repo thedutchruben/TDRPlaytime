@@ -331,4 +331,5 @@ public class Mongodb extends Storage {
         Document query = new Document("uuid", uuid.toString()).append("date", date);
         return this.database.getCollection("playtime_history").find(query).first() != null;
     }
+
 }

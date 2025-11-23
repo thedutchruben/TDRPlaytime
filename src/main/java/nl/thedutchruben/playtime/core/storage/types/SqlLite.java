@@ -614,4 +614,5 @@ public class SqlLite extends Storage {
             return playtimeHistories;
         });
     }
+
 }
