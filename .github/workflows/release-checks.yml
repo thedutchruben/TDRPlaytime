@@ -56,7 +56,7 @@ jobs:
 
       - name: Add comment with testing results
         if: success()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -69,7 +69,7 @@ jobs:
 
       - name: Add comment with testing failures
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

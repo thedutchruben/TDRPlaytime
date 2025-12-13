@@ -90,7 +90,7 @@ jobs:
           commit_messages=$(git log $last_tag..HEAD --pretty=format:"- %s (%h)")
           echo "commit_messages=$commit_messages" >> $GITHUB_ENV
       - name: Create Pre-release and Upload Asset
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: github.event_name == 'release'
         with:
           script: |
