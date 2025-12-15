@@ -60,7 +60,7 @@ jobs:
             java-version: 17
 
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: Plugin-${{ matrix.downloadSource }}.jar
           path: ./plugin
