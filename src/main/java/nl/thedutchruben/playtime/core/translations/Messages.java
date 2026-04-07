@@ -22,6 +22,10 @@ public enum Messages {
     TIME_REMOVED("command.playtime.time_removed", "&aYou have successfully removed playtime from <player>"),
     PLAYTIME_IMPORTED("command.playtime.imported", "&aYou have successfully imported <count> players!"),
     PLAYER_DOES_NOT_EXIST("command.playtime.player_does_not_exist", "&cThe player does not exist!"),
+    PLAYTIME_TOP_HEADER("command.playtime.top_header", "&6━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"),
+    PLAYTIME_TOP_TITLE("command.playtime.top_title", "&6           Top %AMOUNT% Playtime"),
+    PLAYTIME_TOP_ENTRY("command.playtime.top_entry", "#%RANK% &f%NAME% &7- &6%D%&7d &6%H%&7h &6%M%&7m &6%S%&7s"),
+    PLAYTIME_TOP_FOOTER("command.playtime.top_footer", "&6━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"),
 
     MILESTONE_CREATED("command.milestone.created", "&aThe milestone is created!"),
     MILESTONE_ITEM_ADDED("command.milestone.item_added", "&aYou added successfully an item to the milestone!"),
@@ -50,7 +54,7 @@ public enum Messages {
     REPEATING_MILESTONE_FIREWORK_TOGGLED("command.repeating_milestone.firework_toggled", "&aYou <state> the firework for the repeating milestone"),
     REPEATING_MILESTONE_SET_FIREWORK_AMOUNT("command.repeating_milestone.set_firework_amount", "&aYou set the firework amount to <amount>"),
     REPEATING_MILESTONE_SET_FIREWORK_DELAY("command.repeating_milestone.set_firework_delay", "&aYou set the firework delay to <amount>"),
-    REPEATING_MILESTONE_LIST("command.repeating_milestone.list", "%MILESTONE_NAME% Time: Days: %D% Hours: %H% ,Minute's: %M% ,Seconds's: %S%"),
+    REPEATING_MILESTONE_LIST("command.repeating_milestone.list", "%REPEATING_MILESTONE_NAME% Time: Days: %D% Hours: %H% ,Minute's: %M% ,Seconds's: %S%"),
     REPEATING_MILESTONE_MESSAGE_ADDED("command.repeating_milestone.message_added", "&aYou have successfully added a message to a repeating milestone!"),
     REPEATING_MILESTONE_MESSAGE_REMOVED("command.repeating_milestone.message_removed", "&aYou have removed a message from a repeating milestone!"),
 

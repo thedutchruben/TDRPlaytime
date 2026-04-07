@@ -60,15 +60,75 @@ public class PlayTimeCommand {
         }
     }
 
-    @SubCommand(subCommand = "top", minParams = 0, maxParams = 0, usage = "<amount>", permission = "playtime.playtime.top", console = true, description = "Show the top 10 players")
+    @SubCommand(subCommand = "top", minParams = 0, maxParams = 1, usage = "<amount>", permission = "playtime.playtime.top", console = true, description = "Show the top 10 players")
     public void top(CommandSender sender, List<String> args) {
         int amount = 10;
         if (args.size() == 1) {
-            amount = Integer.parseInt(args.get(0));
+            try {
+                amount = Integer.parseInt(args.get(0));
+                if (amount < 1) amount = 10;
+                if (amount > 100) amount = 100; // Cap at 100
+            } catch (NumberFormatException e) {
+                sender.sendMessage(Messages.INVALID_NUMBER.getMessage());
+                return;
+            }
         }
+
+        final int finalAmount = amount;
         Playtime.getInstance().getStorage().getTopUsers(amount, 0).whenCompleteAsync((users, throwable) -> {
-            users.forEach(user -> sendPlaytimeInfo(sender, user));
+            if (throwable != null) {
+                sender.sendMessage(ChatColor.RED + "An error occurred while fetching top players.");
+                return;
+            }
+
+            // Header
+            sender.sendMessage(Messages.PLAYTIME_TOP_HEADER.getMessage());
+            sender.sendMessage(Messages.PLAYTIME_TOP_TITLE.getMessage(
+                new Replacement("%AMOUNT%", String.valueOf(finalAmount))
+            ));
+            sender.sendMessage(Messages.PLAYTIME_TOP_HEADER.getMessage());
+
+            // Empty check
+            if (users.isEmpty()) {
+                sender.sendMessage(ChatColor.GRAY + "  No players found.");
+            } else {
+                // Entries
+                int rank = 1;
+                for (PlaytimeUser user : users) {
+                    String rankColor = getRankColor(rank);
+                    sender.sendMessage(rankColor + Messages.PLAYTIME_TOP_ENTRY.getMessage(
+                        new Replacement("%RANK%", String.valueOf(rank)),
+                        new Replacement("%NAME%", user.getName()),
+                        new Replacement("%D%", String.valueOf(user.translateTime()[0])),
+                        new Replacement("%H%", String.valueOf(user.translateTime()[1])),
+                        new Replacement("%M%", String.valueOf(user.translateTime()[2])),
+                        new Replacement("%S%", String.valueOf(user.translateTime()[3]))
+                    ));
+                    rank++;
+                }
+            }
+
+            // Footer
+            sender.sendMessage(Messages.PLAYTIME_TOP_FOOTER.getMessage());
         });
+    }
+
+    /**
+     * Get color for rank position
+     * @param rank The rank position
+     * @return ChatColor code
+     */
+    private String getRankColor(int rank) {
+        switch (rank) {
+            case 1:
+                return ChatColor.GOLD.toString();
+            case 2:
+                return ChatColor.YELLOW.toString();
+            case 3:
+                return ChatColor.WHITE.toString();
+            default:
+                return ChatColor.GRAY.toString();
+        }
     }
 
     @SubCommand(subCommand = "reset", permission = "playtime.playtime.reset", minParams = 1, maxParams = 1, console = true, usage = "<player>", description = "Reset a player's playtime")
@@ -127,21 +187,6 @@ public class PlayTimeCommand {
                 });
             });
         });
-    }
-
-    @SubCommand(subCommand = "pluginInfo", permission = "playtime.playtime.pluginInfo", console = true, description = "Show info about the plugin", minParams = 1)
-    public void pluginInfo(CommandSender sender, List<String> args) {
-        sender.sendMessage(ChatColor.GREEN + "Playtime by TheDutchRuben");
-        sender.sendMessage(ChatColor.GREEN + "Version: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getVersion());
-        sender.sendMessage(ChatColor.GREEN + "Author: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getAuthors());
-        sender.sendMessage(ChatColor.GREEN + "Website: " + ChatColor.DARK_GRAY + Playtime.getPlugin().getDescription().getWebsite());
-        Playtime.getInstance().getStorage().getMilestones().whenComplete((milestones, throwable) -> {
-            sender.sendMessage(ChatColor.GREEN + "Milestones: " + ChatColor.DARK_GRAY + milestones.size());
-        });
-        Playtime.getInstance().getStorage().getRepeatingMilestones().whenComplete((milestones, throwable) -> {
-            sender.sendMessage(ChatColor.GREEN + "Repeating Milestones: " + ChatColor.DARK_GRAY + milestones.size());
-        });
-        Playtime.getInstance().getMccore().getUpdate(sender, true);
     }
 
     private void sendPlaytimeInfo(CommandSender sender, PlaytimeUser user) {

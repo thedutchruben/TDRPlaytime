@@ -25,13 +25,21 @@ public class UpdatePlaytimeListener implements Listener {
                 .forEach(milestone -> milestone.apply(event.getUser().getBukkitPlayer()));
 
         // Check and apply repeating milestones
-        for (float i = event.getOldPlaytime(); i < event.getNewPlaytime(); i++) {
-            if (i > 0) {
-                float finalI = i;
-                Playtime.getInstance().getRepeatingMilestones().stream()
-                        .filter(repeatingMilestone -> finalI % (repeatingMilestone.getOnlineTimeInMilliseconds() * 1000) == 1)
-                        .forEach(repeatingMilestone -> repeatingMilestone.apply(event.getUser().getBukkitPlayer()));
-            }
-        }
+        // For each repeating milestone, check if we crossed an interval boundary
+        Playtime.getInstance().getRepeatingMilestones().stream()
+                .filter(repeatingMilestone -> repeatingMilestone.getOnlineTimeInMilliseconds() > 0)
+                .forEach(repeatingMilestone -> {
+                    long interval = repeatingMilestone.getOnlineTimeInMilliseconds();
+
+                    // Calculate how many times this milestone should have been awarded
+                    long oldCount = (long) (event.getOldPlaytime() / interval);
+                    long newCount = (long) (event.getNewPlaytime() / interval);
+
+                    // If the count increased, award the milestone for each time crossed
+                    long timesToAward = newCount - oldCount;
+                    for (int i = 0; i < timesToAward; i++) {
+                        repeatingMilestone.apply(event.getUser().getBukkitPlayer());
+                    }
+                });
     }
 }

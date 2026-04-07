@@ -9,13 +9,15 @@ import nl.thedutchruben.playtime.Playtime;
 import nl.thedutchruben.playtime.core.events.milestone.MilestoneCreateEvent;
 import nl.thedutchruben.playtime.core.events.milestone.MilestoneDeleteEvent;
 import nl.thedutchruben.playtime.core.events.milestone.MilestoneUpdateEvent;
-import nl.thedutchruben.playtime.modules.milestones.gui.MilestoneInfoGui;
 import nl.thedutchruben.playtime.core.objects.Milestone;
 import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,29 +56,6 @@ public class MileStoneCommand {
     }
 
     @SubCommand(
-            subCommand = "open",
-            description = "Open the milestone GUI",
-            usage = "<milestone>",
-            permission = "playtime.milestone.open",
-            minParams = 1,
-            maxParams = 1
-    )
-    public void open(CommandSender commandSender, List<String> args) {
-        if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage(Messages.ONLY_PLAYER_COMMAND.getMessage());
-            return;
-        }
-        Player player = (Player) commandSender;
-        Milestone milestone = Milestone.getMilestone(args.get(0));
-        if (milestone == null) {
-            player.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
-            return;
-        }
-        MilestoneInfoGui milestoneInfoGui = new MilestoneInfoGui(milestone);
-        milestoneInfoGui.open(player);
-    }
-
-    @SubCommand(
         subCommand = "delete",
         description = "Delete a milestone",
         usage = "<milestone>",
@@ -95,7 +74,8 @@ public class MileStoneCommand {
             if (aBoolean) {
                 commandSender.sendMessage(Messages.MILESTONE_REMOVED.getMessage());
                 Bukkit.getPluginManager().callEvent(new MilestoneDeleteEvent(milestone));
-                Playtime.getInstance().getMilestones().removeIf(milestone1 -> milestone1.getMilestoneName().equals(milestone.getMilestoneName()));
+                Playtime.getInstance().getMilestones()
+                        .removeIf(milestone1 -> milestone1.getMilestoneName().equals(milestone.getMilestoneName()));
             } else {
                 commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             }
@@ -111,18 +91,26 @@ public class MileStoneCommand {
     )
     public void list(CommandSender commandSender, List<String> args) {
         List<Milestone> milestones = Playtime.getInstance().getMilestones();
-        commandSender.sendMessage("Milestones: ");
-        for (Milestone milestone : milestones) {
-            TextComponent message = new TextComponent(Messages.MILESTONE_LIST.getMessage(
-                new Replacement("%MILESTONE_NAME%", milestone.getMilestoneName()),
-                new Replacement("%D%", String.valueOf(TimeUnit.SECONDS.toDays(milestone.getOnlineTime()))),
-                new Replacement("%H%", String.valueOf(TimeUnit.SECONDS.toHours(milestone.getOnlineTime()) % 24)),
-                new Replacement("%M%", String.valueOf(TimeUnit.SECONDS.toMinutes(milestone.getOnlineTime()) % 60)),
-                new Replacement("%S%", String.valueOf(TimeUnit.SECONDS.toSeconds(milestone.getOnlineTime()) % 60))
-            ));
-            message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone info " + milestone.getMilestoneName()));
-            commandSender.spigot().sendMessage(message);
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        commandSender.sendMessage(ChatColor.GOLD + "           Milestones (" + ChatColor.YELLOW + milestones.size() + ChatColor.GOLD + ")");
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        if (milestones.isEmpty()) {
+            commandSender.sendMessage(ChatColor.GRAY + "  No milestones found.");
+        } else {
+            for (Milestone milestone : milestones) {
+                TextComponent message = new TextComponent(ChatColor.AQUA + " • " + ChatColor.WHITE + Messages.MILESTONE_LIST.getMessage(
+                    new Replacement("%MILESTONE_NAME%", milestone.getMilestoneName()),
+                    new Replacement("%D%", String.valueOf(TimeUnit.SECONDS.toDays(milestone.getOnlineTime()))),
+                    new Replacement("%H%", String.valueOf(TimeUnit.SECONDS.toHours(milestone.getOnlineTime()) % 24)),
+                    new Replacement("%M%", String.valueOf(TimeUnit.SECONDS.toMinutes(milestone.getOnlineTime()) % 60)),
+                    new Replacement("%S%", String.valueOf(TimeUnit.SECONDS.toSeconds(milestone.getOnlineTime()) % 60))
+                ));
+                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/milestone info " + milestone.getMilestoneName()));
+                commandSender.spigot().sendMessage(message);
+            }
         }
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        commandSender.sendMessage(ChatColor.GRAY + "  Click a milestone for more info");
     }
 
     @SubCommand(
@@ -140,19 +128,63 @@ public class MileStoneCommand {
             commandSender.sendMessage(Messages.MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        commandSender.sendMessage("Milestone: " + milestone.getMilestoneName());
-        commandSender.sendMessage(" Time: " + milestone.getOnlineTime());
-        commandSender.sendMessage(" Rewards("+ milestone.getItemStacks().size() +"): ");
-        milestone.getItemStacks().forEach(map -> commandSender.sendMessage("  " + map.toString()));
-        commandSender.sendMessage(" Commands("+ milestone.getCommands().size() +"): ");
-        milestone.getCommands().forEach(command -> commandSender.sendMessage("  " + command));
-        commandSender.sendMessage(" Messages("+ milestone.getMessages().size() +"): ");
-        milestone.getMessages().forEach(message -> commandSender.sendMessage("  " + message));
-        commandSender.sendMessage(" Firework show: " + milestone.isFireworkShow());
-        if (milestone.isFireworkShow()) {
-            commandSender.sendMessage(" Firework show delay: " + milestone.getFireworkShowSecondsBetween());
-            commandSender.sendMessage(" Firework show amount: " + milestone.getFireworkShowAmount());
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        commandSender.sendMessage(ChatColor.GOLD + "Milestone: " + ChatColor.YELLOW + milestone.getMilestoneName());
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        commandSender.sendMessage(ChatColor.AQUA + " Time: " + ChatColor.WHITE + milestone.getOnlineTime() + " seconds");
+        commandSender.sendMessage(ChatColor.AQUA + " Rewards " + ChatColor.YELLOW + "(" + milestone.getItemStacks().size() + ")" + ChatColor.AQUA + ": ");
+        if (milestone.getItemStacks().isEmpty()) {
+            commandSender.sendMessage(ChatColor.GRAY + "    (none)");
+        } else {
+            milestone.getItemStacks().forEach(map -> {
+                try {
+                    // Deserialize the ItemStack to get accurate information
+                    ItemStack itemStack = ItemStack.deserialize(map);
+                    ItemMeta meta = itemStack.getItemMeta();
+
+                    // Main item line
+                    String itemDisplay = ChatColor.GRAY + "  • " + ChatColor.GREEN + itemStack.getAmount() + "x " + ChatColor.WHITE + itemStack.getType().name();
+                    commandSender.sendMessage(itemDisplay);
+
+                    // Display name if exists
+                    if (meta != null && meta.hasDisplayName()) {
+                        commandSender.sendMessage(ChatColor.GRAY + "      Name: " + ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
+                    }
+
+                    // Lore/description if exists
+                    if (meta != null && meta.hasLore() && meta.getLore() != null) {
+                        List<String> lore = meta.getLore();
+                        if (!lore.isEmpty()) {
+                            commandSender.sendMessage(ChatColor.GRAY + "      Lore:");
+                            lore.forEach(loreLine ->
+                                commandSender.sendMessage(ChatColor.GRAY + "        - " + ChatColor.translateAlternateColorCodes('&', loreLine))
+                            );
+                        }
+                    }
+                } catch (Exception e) {
+                    // Fallback to map parsing if deserialization fails
+                    commandSender.sendMessage(ChatColor.GRAY + "  • " + ChatColor.RED + "Invalid item: " + ChatColor.GRAY + map.toString());
+                }
+            });
         }
+        commandSender.sendMessage(ChatColor.AQUA + " Commands " + ChatColor.YELLOW + "(" + milestone.getCommands().size() + ")" + ChatColor.AQUA + ": ");
+        if (milestone.getCommands().isEmpty()) {
+            commandSender.sendMessage(ChatColor.GRAY + "    (none)");
+        } else {
+            milestone.getCommands().forEach(command -> commandSender.sendMessage(ChatColor.GRAY + "  • " + ChatColor.YELLOW + "/" + ChatColor.WHITE + command));
+        }
+        commandSender.sendMessage(ChatColor.AQUA + " Messages " + ChatColor.YELLOW + "(" + milestone.getMessages().size() + ")" + ChatColor.AQUA + ": ");
+        if (milestone.getMessages().isEmpty()) {
+            commandSender.sendMessage(ChatColor.GRAY + "    (none)");
+        } else {
+            milestone.getMessages().forEach(message -> commandSender.sendMessage(ChatColor.GRAY + "  • " + ChatColor.WHITE + ChatColor.translateAlternateColorCodes('&', message)));
+        }
+        commandSender.sendMessage(ChatColor.AQUA + " Firework show: " + (milestone.isFireworkShow() ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
+        if (milestone.isFireworkShow()) {
+            commandSender.sendMessage(ChatColor.AQUA + "   └─ Delay: " + ChatColor.WHITE + milestone.getFireworkShowSecondsBetween() + " seconds");
+            commandSender.sendMessage(ChatColor.AQUA + "   └─ Amount: " + ChatColor.WHITE + milestone.getFireworkShowAmount());
+        }
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
     @SubCommand(

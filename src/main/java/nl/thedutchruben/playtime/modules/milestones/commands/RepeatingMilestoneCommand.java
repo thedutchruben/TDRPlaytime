@@ -13,8 +13,11 @@ import nl.thedutchruben.playtime.core.objects.RepeatingMilestone;
 import nl.thedutchruben.playtime.core.translations.Messages;
 import nl.thedutchruben.playtime.utils.Replacement;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +38,7 @@ public class RepeatingMilestoneCommand {
     @SubCommand(
             subCommand = "create",
             description = "Create a new reapeating milestone",
-            usage = "<n> <time>",
+            usage = "<name> <time>",
             permission = "playtime.repeatingmilestone.create",
             console = true,
             minParams = 2,
@@ -48,6 +51,7 @@ public class RepeatingMilestoneCommand {
         Playtime.getInstance().getStorage().saveRepeatingMilestone(repeatingMilestone).thenAcceptAsync(aBoolean -> {
             if (aBoolean) {
                 commandSender.sendMessage(Messages.REPEATING_MILESTONE_CREATED.getMessage());
+                Playtime.getInstance().getRepeatingMilestones().add(repeatingMilestone);
                 Bukkit.getPluginManager().callEvent(new RepeatingMilestoneCreateEvent(repeatingMilestone));
             } else {
                 commandSender.sendMessage(Messages.REPEATING_MILESTONE_COULD_NOT_BE_CREATED.getMessage());
@@ -72,6 +76,8 @@ public class RepeatingMilestoneCommand {
         }
         Playtime.getInstance().getStorage().deleteRepeatingMilestone(milestone).thenAcceptAsync(aBoolean -> {
             if (aBoolean) {
+                Playtime.getInstance().getRepeatingMilestones()
+                        .removeIf(repeatingMilestone -> repeatingMilestone.getMilestoneName().equalsIgnoreCase(milestone.getMilestoneName()));
                 commandSender.sendMessage(Messages.REPEATING_MILESTONE_DELETED.getMessage());
                 Bukkit.getPluginManager().callEvent(new RepeatingMilestoneDeleteEvent(milestone));
             } else {
@@ -89,18 +95,26 @@ public class RepeatingMilestoneCommand {
     )
     public void list(CommandSender commandSender, List<String> args) {
         List<RepeatingMilestone> repeatingMilestones = Playtime.getInstance().getRepeatingMilestones();
-        commandSender.sendMessage("Repeating milestones: ");
-        for (RepeatingMilestone milestone : repeatingMilestones) {
-            TextComponent message = new TextComponent(Messages.REPEATING_MILESTONE_LIST.getMessage(
-                    new Replacement("%REPEATING_MILESTONE_NAME%", milestone.getMilestoneName()),
-                    new Replacement("%D%", String.valueOf(TimeUnit.SECONDS.toDays(milestone.getOnlineTime()))),
-                    new Replacement("%H%", String.valueOf(TimeUnit.SECONDS.toHours(milestone.getOnlineTime()) % 24)),
-                    new Replacement("%M%", String.valueOf(TimeUnit.SECONDS.toMinutes(milestone.getOnlineTime()) % 60)),
-                    new Replacement("%S%", String.valueOf(TimeUnit.SECONDS.toSeconds(milestone.getOnlineTime()) % 60))
-            ));
-            message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/repeatingmilestone info " + milestone.getMilestoneName()));
-            commandSender.spigot().sendMessage(message);
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        commandSender.sendMessage(ChatColor.GOLD + "      Repeating Milestones (" + ChatColor.YELLOW + repeatingMilestones.size() + ChatColor.GOLD + ")");
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        if (repeatingMilestones.isEmpty()) {
+            commandSender.sendMessage(ChatColor.GRAY + "  No repeating milestones found.");
+        } else {
+            for (RepeatingMilestone milestone : repeatingMilestones) {
+                TextComponent message = new TextComponent(ChatColor.AQUA + " • " + ChatColor.WHITE + Messages.REPEATING_MILESTONE_LIST.getMessage(
+                        new Replacement("%REPEATING_MILESTONE_NAME%", milestone.getMilestoneName()),
+                        new Replacement("%D%", String.valueOf(TimeUnit.SECONDS.toDays(milestone.getOnlineTime()))),
+                        new Replacement("%H%", String.valueOf(TimeUnit.SECONDS.toHours(milestone.getOnlineTime()) % 24)),
+                        new Replacement("%M%", String.valueOf(TimeUnit.SECONDS.toMinutes(milestone.getOnlineTime()) % 60)),
+                        new Replacement("%S%", String.valueOf(TimeUnit.SECONDS.toSeconds(milestone.getOnlineTime()) % 60))
+                ));
+                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/repeatingmilestone info " + milestone.getMilestoneName()));
+                commandSender.spigot().sendMessage(message);
+            }
         }
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        commandSender.sendMessage(ChatColor.GRAY + "  Click a milestone for more info");
     }
 
     @SubCommand(
@@ -118,19 +132,63 @@ public class RepeatingMilestoneCommand {
             commandSender.sendMessage(Messages.REPEATING_MILESTONE_DOES_NOT_EXIST.getMessage());
             return;
         }
-        commandSender.sendMessage("Repeating milestone: " + repeatingMilestone.getMilestoneName());
-        commandSender.sendMessage(" Time: " + repeatingMilestone.getOnlineTime());
-        commandSender.sendMessage(" Rewards("+ repeatingMilestone.getItemStacks().size() +"): ");
-        repeatingMilestone.getItemStacks().forEach(map -> commandSender.sendMessage("  " + map.toString()));
-        commandSender.sendMessage(" Commands("+ repeatingMilestone.getCommands().size() +"): ");
-        repeatingMilestone.getCommands().forEach(command -> commandSender.sendMessage("  " + command));
-        commandSender.sendMessage(" Messages("+ repeatingMilestone.getMessages().size() +"): ");
-        repeatingMilestone.getMessages().forEach(message -> commandSender.sendMessage("  " + message));
-        commandSender.sendMessage(" Firework show: " + repeatingMilestone.isFireworkShow());
-        if (repeatingMilestone.isFireworkShow()) {
-            commandSender.sendMessage(" Firework show delay: " + repeatingMilestone.getFireworkShowSecondsBetween());
-            commandSender.sendMessage(" Firework show amount: " + repeatingMilestone.getFireworkShowAmount());
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        commandSender.sendMessage(ChatColor.GOLD + "Repeating Milestone: " + ChatColor.YELLOW + repeatingMilestone.getMilestoneName());
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        commandSender.sendMessage(ChatColor.AQUA + " Time: " + ChatColor.WHITE + repeatingMilestone.getOnlineTime() + " seconds");
+        commandSender.sendMessage(ChatColor.AQUA + " Rewards " + ChatColor.YELLOW + "(" + repeatingMilestone.getItemStacks().size() + ")" + ChatColor.AQUA + ": ");
+        if (repeatingMilestone.getItemStacks().isEmpty()) {
+            commandSender.sendMessage(ChatColor.GRAY + "    (none)");
+        } else {
+            repeatingMilestone.getItemStacks().forEach(map -> {
+                try {
+                    // Deserialize the ItemStack to get accurate information
+                    ItemStack itemStack = ItemStack.deserialize(map);
+                    ItemMeta meta = itemStack.getItemMeta();
+
+                    // Main item line
+                    String itemDisplay = ChatColor.GRAY + "  • " + ChatColor.GREEN + itemStack.getAmount() + "x " + ChatColor.WHITE + itemStack.getType().name();
+                    commandSender.sendMessage(itemDisplay);
+
+                    // Display name if exists
+                    if (meta != null && meta.hasDisplayName()) {
+                        commandSender.sendMessage(ChatColor.GRAY + "      Name: " + ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
+                    }
+
+                    // Lore/description if exists
+                    if (meta != null && meta.hasLore() && meta.getLore() != null) {
+                        List<String> lore = meta.getLore();
+                        if (!lore.isEmpty()) {
+                            commandSender.sendMessage(ChatColor.GRAY + "      Lore:");
+                            lore.forEach(loreLine ->
+                                commandSender.sendMessage(ChatColor.GRAY + "        - " + ChatColor.translateAlternateColorCodes('&', loreLine))
+                            );
+                        }
+                    }
+                } catch (Exception e) {
+                    // Fallback to map parsing if deserialization fails
+                    commandSender.sendMessage(ChatColor.GRAY + "  • " + ChatColor.RED + "Invalid item: " + ChatColor.GRAY + map.toString());
+                }
+            });
         }
+        commandSender.sendMessage(ChatColor.AQUA + " Commands " + ChatColor.YELLOW + "(" + repeatingMilestone.getCommands().size() + ")" + ChatColor.AQUA + ": ");
+        if (repeatingMilestone.getCommands().isEmpty()) {
+            commandSender.sendMessage(ChatColor.GRAY + "    (none)");
+        } else {
+            repeatingMilestone.getCommands().forEach(command -> commandSender.sendMessage(ChatColor.GRAY + "  • " + ChatColor.YELLOW + "/" + ChatColor.WHITE + command));
+        }
+        commandSender.sendMessage(ChatColor.AQUA + " Messages " + ChatColor.YELLOW + "(" + repeatingMilestone.getMessages().size() + ")" + ChatColor.AQUA + ": ");
+        if (repeatingMilestone.getMessages().isEmpty()) {
+            commandSender.sendMessage(ChatColor.GRAY + "    (none)");
+        } else {
+            repeatingMilestone.getMessages().forEach(message -> commandSender.sendMessage(ChatColor.GRAY + "  • " + ChatColor.WHITE + ChatColor.translateAlternateColorCodes('&', message)));
+        }
+        commandSender.sendMessage(ChatColor.AQUA + " Firework show: " + (repeatingMilestone.isFireworkShow() ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
+        if (repeatingMilestone.isFireworkShow()) {
+            commandSender.sendMessage(ChatColor.AQUA + "   └─ Delay: " + ChatColor.WHITE + repeatingMilestone.getFireworkShowSecondsBetween() + " seconds");
+            commandSender.sendMessage(ChatColor.AQUA + "   └─ Amount: " + ChatColor.WHITE + repeatingMilestone.getFireworkShowAmount());
+        }
+        commandSender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
     @SubCommand(

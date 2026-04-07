@@ -75,9 +75,25 @@ mvn clean install
 Code organized into modules under `modules/` package:
 
 - **afk/**: AFK detection system (commands, listeners)
-- **milestones/**: Milestone and repeating milestone management (commands, listeners for checking/awarding)
+- **milestones/**: Milestone and repeating milestone management (commands, listeners for checking/awarding, GUI system)
 - **player/**: Player tracking (join/quit listeners, playtime update/save runnables, playtime command)
-- **playtime_history/**: Join/quit history tracking (in development)
+- **playtime_history/**: Join/quit history tracking
+
+### GUI System
+
+**mccore Integration:** Uses mccore's GUI framework for inventory-based interfaces.
+
+**Milestone GUIs:**
+- `MilestoneInfoGui`: Edit milestone properties (name, enabled/disabled status, fireworks, time threshold)
+- `MilestoneCommandsGui`: Manage milestone reward commands
+- `MilestoneItemsGui`: Configure milestone item rewards
+- `MilestoneMessagesGui`: Set milestone messages
+- `TimeSelectionGui`: Select playtime thresholds with predefined intervals
+
+**ChatInputManager Pattern:**
+- Singleton manager for handling chat input during GUI interactions
+- Workflow: Player clicks GUI item → GUI closes → Chat prompt appears → Player types response → Callback processes input → GUI reopens
+- Used for editing text fields like milestone names, commands, messages
 
 ### Core Domain Objects
 
@@ -145,6 +161,16 @@ Configuration uses the mccore library's config system.
 **Essentials (optional):**
 - AFKManager can use Essentials AFK API if enabled in config
 
+### Configuration Migration
+
+**ConfigMigration Class:**
+- Handles automatic migration from TDRPlaytime 1.x to 2.0 configuration format
+- Triggered when old `database.yml` file is detected
+- **Important:** Only migrates configuration settings, not player data
+- Old format: `config.yml` + `database.yml` → New format: `config.yml` + `storage.yml`
+- Preserves storage type to ensure data continuity
+- Creates backup of old files as `.old` before migration
+
 ## Important Patterns
 
 1. **CompletableFuture Usage:** All storage operations are async; use `.thenAccept()`, `.join()`, or `.get()` appropriately
@@ -166,10 +192,10 @@ Configuration uses the mccore library's config system.
 **Key Libraries:**
 - Spigot API 1.21.1 (provided)
 - Lombok 1.18.38 (compile-time)
-- HikariCP 6.2.1 (runtime downloaded)
-- MongoDB driver 5.2.1 (runtime downloaded)
+- HikariCP 7.0.0 (runtime downloaded)
+- MongoDB driver 5.5.1 (runtime downloaded)
 - SQLite JDBC 3.46.1.2 (runtime downloaded)
-- mccore 1.6.0 (provided - custom framework by author)
+- mccore 1.8.1 (provided - custom framework by author)
 - PlaceholderAPI 2.11.6 (optional)
 - Essentials 2.20.1 (optional)
 
@@ -193,6 +219,13 @@ Dependencies downloaded at runtime via libby except provided ones.
 1. Add parsing logic in `PlaceholderAPIExtension.onRequest()`
 2. Use existing pattern: parse identifier, fetch user data, return formatted string
 3. Document in SETUP.md placeholder section
+
+### Adding a New GUI for Milestones
+1. Create new GUI class extending mccore's `GUI` framework
+2. Use `ChatInputManager.getInstance().requestInput()` for text input from players
+3. Fire appropriate events (e.g., `MilestoneUpdateEvent`) when changes are made
+4. Link to GUI from parent menu (e.g., `MilestoneInfoGui`)
+5. Follow existing pattern: build GUI → set items with click handlers → handle chat input → fire events on main thread
 
 ## Version 2.0 Development Status
 

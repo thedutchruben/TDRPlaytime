@@ -47,13 +47,13 @@ public class Milestone {
      * The list of items to give the player.
      */
     @SerializedName("item_stacks")
-    private List<Map<String, Object>> itemStacks;
+    private List<Map<String, Object>> itemStacks = new ArrayList<>();
 
     /**
      * The list of commands to execute
      */
     @SerializedName("commands")
-    private List<String> commands;
+    private List<String> commands = new ArrayList<>();
 
     /**
      * The list of messages to send
@@ -62,7 +62,7 @@ public class Milestone {
      */
     @Setter
     @SerializedName("messages")
-    private List<String> messages;
+    private List<String> messages = new ArrayList<>();
 
     /**
      * if there shall be a firework show
