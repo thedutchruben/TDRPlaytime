@@ -371,4 +371,5 @@ public class Yaml extends Storage {
             return getPlaytimeHistory(uuid, limit).join();
         });
     }
+
 }
